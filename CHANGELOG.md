@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.222 (Current)
+### 🔹 v2.223 (Current)
+* **05_web_build ➔ 웹 뷰어 실시간 자동 연결 및 Vercel/GitHub 원클릭 클라우드 업로드 파이프라인 구현 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html))**:
+  * **05_web_build ➔ 웹 뷰어 즉시 연결 & 모델 매니페스트(`models.json`) 자동화**: WebGL 패키징 시 `05_web_build/models.json` 매니페스트가 자동 생성/업데이트되며, 메인 웹 쇼케이스 포털([`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html))이 실시간 감지하여 3D 모델 갤러리 카드와 "Launch Viewer" 버튼으로 즉시 연결.
+  * **원클릭 클라우드 업로드 버튼 (`🚀 Upload to Web (Vercel)`) 추가**: Tab 3 툴바에 전용 업로드 버튼을 추가하여, 클릭 1번으로 `05_web_build` 결과물 동기화 및 GitHub 자동 커밋 & 푸시 실행 (`VercelUploadThread`). Vercel을 통해 전 세계 고객에게 약 15초 내 자동 라이브 배포 완료.
+  * **글로벌 스튜디오 영문 기본값 & 4개 국어 실시간 스위처**: English (NZ)를 기본으로 한국어, 中文, Te Reo Māori 언어 즉시 전환 지원.
+
+### 🔹 v2.222
 * **정식 비즈니스 브랜드 명칭 "Points & Reality" 전면 일괄 통일 및 디렉토리 개편**:
   * **앱 및 UI 브랜드 통일**: 기존 임시 명칭(SPLATIAL)을 정식 비즈니스 브랜드 명칭인 **Points & Reality**로 전체 코드베이스, 윈도우 타이틀, 최상단 헤더 로고(`✨ Points & Reality`), 번역 사전(`app_title`, `tab3_placeholder_watermark`), 기본 워터마크, WebGL 뷰어 HUD 및 오버레이 헤더까지 완벽하게 통일.
   * **컨트롤러 클래스 및 설정 마이그레이션**: 메인 컨트롤러 클래스명을 `PointsAndRealityController`로 변경하고, `QSettings("PointsAndReality", "3DGSController")` 및 프리셋 저장 경로(`~/.points_and_reality`)로 업그레이드하면서 기존 설정/프리셋 데이터를 자동 승계하도록 하위 호환성 지원.
