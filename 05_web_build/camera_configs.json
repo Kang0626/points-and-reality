@@ -1,0 +1,17 @@
+{
+  "D:\\SPLATIAL\\Works\\MyScan_02\\02_tracking_alignment\\fordEscape01.sog": {
+    "html_name": "fordEscape01.html",
+    "pos": [
+      -0.56,
+      8.427,
+      41.183
+    ],
+    "target": [
+      -0.653,
+      8.084,
+      37.214
+    ],
+    "fov": 50.0,
+    "label": "FordEscape_RearRight"
+  }
+}
