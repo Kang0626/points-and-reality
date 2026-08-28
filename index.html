@@ -1,24 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Points & Reality | High-End 3D Gaussian Splatting Pipeline</title>
-  <meta name="description" content="Next-Generation 3D Gaussian Splatting Pipeline Controller & WebGL Distribution Engine.">
+  <title>Points & Reality | 3D Gaussian Splatting & Spatial Capture Studio</title>
+  <meta name="description" content="New Zealand-based high-fidelity 3D Gaussian Splatting and spatial reality capture studio. Ultra-fast, photo-realistic WebGL 3D experiences.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #0a0b0e;
-      --card-bg: rgba(22, 25, 33, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --accent-blue: #0284c7;
-      --accent-cyan: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --accent-emerald: #10b981;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
+      --bg-primary: #090a0d;
+      --bg-surface: #121418;
+      --bg-surface-raised: #181b22;
+      --bg-card: rgba(24, 27, 34, 0.7);
+      --border-subtle: #232730;
+      --border-medium: #323846;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-steel: #38bdf8;
+      --accent-deep: #0284c7;
+      --font-display: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * {
@@ -28,375 +33,791 @@
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Pretendard', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow-x: hidden;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background-image: 
-        radial-gradient(circle at 20% 15%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
     }
 
-    /* Ambient Background Animation */
-    .bg-grid {
+    /* Architectural Subtle Grid */
+    .grid-overlay {
       position: fixed;
       inset: 0;
-      background-size: 40px 40px;
+      background-size: 64px 64px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
       pointer-events: none;
       z-index: 0;
     }
 
     header {
-      position: relative;
-      z-index: 10;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 48px;
-      border-bottom: 1px solid var(--card-border);
-      backdrop-filter: blur(16px);
-      background: rgba(10, 11, 14, 0.6);
+      padding: 18px 48px;
+      background: rgba(9, 10, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .brand {
+    .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       text-decoration: none;
-      color: var(--text-main);
     }
 
-    .brand-logo {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      border-radius: 10px;
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 18px;
-      color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
-    }
-
-    .brand-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 20px;
+      font-family: var(--font-display);
       font-weight: 800;
+      font-size: 15px;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
-    .brand-badge {
-      font-size: 11px;
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 17px;
       font-weight: 700;
-      padding: 3px 8px;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 20px;
-      color: var(--accent-cyan);
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
     }
 
     .nav-links {
       display: flex;
-      align-items: center;
-      gap: 20px;
+      gap: 28px;
+      list-style: none;
     }
 
     .nav-link {
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: color 0.2s;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
     }
 
     .nav-link:hover {
-      color: var(--text-main);
+      color: var(--text-primary);
     }
 
-    .btn-cta {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
-      border: 1px solid var(--accent-cyan);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 700;
+    /* Language Switcher */
+    .lang-selector-wrap {
+      position: relative;
+    }
+
+    .lang-select {
+      appearance: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 30px 7px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .lang-select:hover, .lang-select:focus {
+      border-color: var(--text-secondary);
+      background: var(--bg-surface-raised);
+    }
+
+    .lang-arrow {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      padding: 8px 18px;
+      border-radius: 6px;
       font-size: 13px;
+      font-weight: 600;
       text-decoration: none;
+      border: 1px solid var(--text-primary);
+      transition: var(--transition-smooth);
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 14px var(--accent-glow);
+      gap: 6px;
     }
 
-    .btn-cta:hover {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    .btn-primary:hover {
+      background: #e2e8f0;
+      border-color: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border-medium);
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-surface-raised);
+      border-color: var(--text-secondary);
       transform: translateY(-1px);
     }
 
     main {
       position: relative;
-      z-index: 5;
+      z-index: 10;
       flex: 1;
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 60px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+      padding: 60px 32px 100px;
+      width: 100%;
     }
 
-    .hero-pill {
+    /* Hero Section */
+    .hero {
+      padding: 50px 0 70px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 48px;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .location-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 16px;
-      background: rgba(2, 132, 199, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 30px;
-      font-size: 13px;
+      padding: 4px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--accent-cyan);
+      color: var(--text-secondary);
       margin-bottom: 24px;
-      animation: pulseGlow 3s infinite ease-in-out;
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.1); }
-      50% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+    .location-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
     }
 
     .hero-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: 900;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4.5vw, 54px);
+      font-weight: 700;
+      letter-spacing: -1.2px;
+      line-height: 1.15;
+      color: var(--text-primary);
       margin-bottom: 20px;
-      max-width: 900px;
     }
 
-    .hero-title span {
-      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #10b981 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero-desc {
+      font-size: 16.5px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 36px;
+      line-height: 1.7;
     }
 
-    .hero-subtitle {
-      font-size: clamp(16px, 2vw, 19px);
-      color: var(--text-muted);
-      max-width: 680px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
-
-    .hero-actions {
+    .hero-buttons {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 70px;
     }
 
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--text-main);
-      padding: 10px 22px;
-      border-radius: 8px;
+    .hero-metrics {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      backdrop-filter: blur(16px);
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 18px;
+    }
+
+    .metric-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .metric-label {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       font-weight: 600;
-      font-size: 13px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.25s ease;
-      backdrop-filter: blur(8px);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
+    /* Section Headers */
+    .section-header {
+      margin: 80px 0 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .feature-grid {
+    .section-eyebrow {
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-steel);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    /* Cards Grid */
+    .grid-3 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 24px;
-      width: 100%;
-      text-align: left;
     }
 
-    .feature-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
       padding: 32px;
-      backdrop-filter: blur(20px);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      transition: var(--transition-smooth);
     }
 
-    .feature-card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    .card:hover {
+      border-color: var(--border-medium);
+      background: var(--bg-surface-raised);
+      transform: translateY(-2px);
     }
 
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .feature-card:hover::before {
-      opacity: 1;
-    }
-
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(2, 132, 199, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 20px;
+    .card-num {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: block;
     }
 
     .card-title {
+      font-family: var(--font-display);
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--text-main);
+      margin-bottom: 12px;
+      color: var(--text-primary);
     }
 
     .card-desc {
       font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Showcase Banner */
+    .showcase-card {
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
+      border: 1px solid var(--border-medium);
+      border-radius: 14px;
+      padding: 48px;
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .showcase-content {
+      max-width: 650px;
+    }
+
+    .showcase-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .showcase-desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.7;
     }
 
     footer {
       position: relative;
       z-index: 10;
-      padding: 30px 48px;
-      border-top: 1px solid var(--card-border);
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      padding: 40px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
       color: var(--text-muted);
       font-size: 13px;
-      backdrop-filter: blur(12px);
-      background: rgba(10, 11, 14, 0.7);
     }
 
-    @media (max-width: 768px) {
-      header, footer {
-        padding: 20px;
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        padding: 16px 24px;
         flex-direction: column;
         gap: 16px;
+        align-items: flex-start;
       }
-      .feature-grid {
+      .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .hero {
         grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .showcase-card {
+        padding: 32px 24px;
+      }
+      footer {
+        padding: 24px;
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
-  <div class="bg-grid"></div>
+  <div class="grid-overlay"></div>
 
+  <!-- Header -->
   <header>
-    <a href="#" class="brand">
-      <div class="brand-logo">P&R</div>
-      <div class="brand-title">Points & Reality</div>
-      <span class="brand-badge">v2.222</span>
+    <a href="#" class="brand-group">
+      <div class="brand-mark">PR</div>
+      <div class="brand-text">
+        <span class="brand-name">Points & Reality</span>
+        <span class="brand-tagline" data-i18n="header_tagline">Spatial Capture & 3DGS Studio</span>
+      </div>
     </a>
-    <div class="nav-links">
-      <a href="#features" class="nav-link">파이프라인 기능</a>
-      <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
-      <a href="#demo" class="btn-cta">🌐 WebGL 뷰어 실행</a>
+
+    <div class="nav-actions">
+      <ul class="nav-links">
+        <li><a href="#services" class="nav-link" data-i18n="nav_services">Services</a></li>
+        <li><a href="#pipeline" class="nav-link" data-i18n="nav_pipeline">Pipeline</a></li>
+        <li><a href="#showcase" class="nav-link" data-i18n="nav_showcase">Viewer</a></li>
+      </ul>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <select id="langSelect" class="lang-select" aria-label="Select Language">
+          <option value="en" selected>English (NZ)</option>
+          <option value="ko">한국어 (Korean)</option>
+          <option value="zh">中文 (Chinese)</option>
+          <option value="mi">Te Reo Māori</option>
+        </select>
+        <span class="lang-arrow">▼</span>
+      </div>
+
+      <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" data-i18n="btn_launch_viewer">
+        Launch Viewer
+      </a>
     </div>
   </header>
 
+  <!-- Main Content -->
   <main>
-    <div class="hero-pill">
-      ✨ 3D Gaussian Splatting Production Controller
-    </div>
-    
-    <h1 class="hero-title">
-      현실을 점(Point)으로 담고,<br>
-      <span>차세대 3DGS 웹 뷰어로 완성하다</span>
-    </h1>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="location-badge">
+          <span class="location-dot"></span>
+          <span data-i18n="hero_location">Auckland, New Zealand & Global</span>
+        </div>
 
-    <p class="hero-subtitle">
-      비디오 인제스트, 고속 프레임 추출, 카메라 정렬, 스플랫 클린업부터<br>
-      초고속 WebGL 3DGS 독립 실행형 웹 패키징 및 글로벌 Vercel 배포까지.
-    </p>
+        <h1 class="hero-title" data-i18n="hero_title">
+          High-Fidelity 3D Gaussian Splatting & Reality Capture.
+        </h1>
 
-    <div class="hero-actions">
-      <a href="ui/templates/supersplat_template.html" class="btn-cta" target="_blank">
-        🚀 SuperSplat WebGL 뷰어 열기
-      </a>
-      <a href="#features" class="btn-secondary">
-        📖 파이프라인 둘러보기
-      </a>
-    </div>
-
-    <section id="features" class="feature-grid">
-      <div class="feature-card">
-        <div class="card-icon">⚡</div>
-        <h3 class="card-title">1. 초고속 인제스트 & 트레이너 브릿지</h3>
-        <p class="card-desc">
-          FFmpeg 멀티스레드 기반 프레임 추출과 3D LUT 컬러그레이딩을 지원하며, RealityCapture, Postshot, Lichtfeld Studio와 원클릭으로 연동됩니다.
+        <p class="hero-desc" data-i18n="hero_desc">
+          We reconstruct real-world automotive, architectural, and spatial environments into sub-millimeter accurate, photo-realistic 3DGS WebGL experiences with zero-latency browser rendering.
         </p>
+
+        <div class="hero-buttons">
+          <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" data-i18n="hero_cta_primary">
+            Open WebGL 3D Viewer
+          </a>
+          <a href="#services" class="btn-secondary" data-i18n="hero_cta_secondary">
+            Explore Capabilities
+          </a>
+        </div>
       </div>
 
-      <div class="feature-card">
-        <div class="card-icon">🧹</div>
-        <h3 class="card-title">2. 스플랫 클린업 & 배치 관리</h3>
-        <p class="card-desc">
-          학습 완료된 산출물을 자동 감지하여 SuperSplat 브릿지로 연결하고, 크롭 박스 및 불필요한 플로터(Floaters)를 정밀하게 제거합니다.
-        </p>
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <div class="metric-value">60+ FPS</div>
+          <div class="metric-label" data-i18n="metric_1">Browser WebGL Frame Rate</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">Sub-mm</div>
+          <div class="metric-label" data-i18n="metric_2">Point Precision & Calibration</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">100% Offline</div>
+          <div class="metric-label" data-i18n="metric_3">Standalone Client Bundles</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow" data-i18n="services_eyebrow">Studio Capabilities</div>
+          <h2 class="section-title" data-i18n="services_title">End-to-End Spatial Production</h2>
+        </div>
       </div>
 
-      <div class="feature-card">
-        <div class="card-icon">🌐</div>
-        <h3 class="card-title">3. Vercel & WebGL 오프라인 패키징</h3>
-        <p class="card-desc">
-          Three.js와 GaussianSplats3D를 내장하여 서버 의존성 없이 단일 HTML5/SOG 번들로 패키징하며, Vercel을 통해 전 세계 고객에게 초고속으로 스트리밍합니다.
-        </p>
+      <div class="grid-3">
+        <div class="card">
+          <span class="card-num">01</span>
+          <h3 class="card-title" data-i18n="service_1_title">Multi-Camera Photogrammetry & Ingest</h3>
+          <p class="card-desc" data-i18n="service_1_desc">
+            High-dynamic-range image extraction, 3D LUT color grading, and automated lens calibration designed for clean, artifact-free neural training inputs.
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="card-num">02</span>
+          <h3 class="card-title" data-i18n="service_2_title">Neural 3DGS Reconstruction & Cleanup</h3>
+          <p class="card-desc" data-i18n="service_2_desc">
+            Deep training through Postshot and Lichtfeld pipelines, followed by precision SuperSplat cropping to isolate assets and eliminate floating point noise.
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="card-num">03</span>
+          <h3 class="card-title" data-i18n="service_3_title">Zero-Install WebGL Distribution</h3>
+          <p class="card-desc" data-i18n="service_3_desc">
+            Packaged into lightweight, self-contained HTML5/SOG modules. Embedded with client review watermarks and smooth camera transitions on desktop and mobile.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pipeline Workflow -->
+    <section id="pipeline">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow" data-i18n="pipeline_eyebrow">Standardized Architecture</div>
+          <h2 class="section-title" data-i18n="pipeline_title">Structured 6-Stage Pipeline</h2>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <span class="card-num">STAGE 01-02</span>
+          <h3 class="card-title" data-i18n="pipe_1_title">Raw Capture & Alignment</h3>
+          <p class="card-desc" data-i18n="pipe_1_desc">
+            Standardized directory tracking from 4K/8K video footage to multi-threaded frame extractions and sparse point-cloud alignments.
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="card-num">STAGE 03-04</span>
+          <h3 class="card-title" data-i18n="pipe_2_title">Neural Training & Splat Polish</h3>
+          <p class="card-desc" data-i18n="pipe_2_desc">
+            GPU-accelerated Gaussian Splatting synthesis with bounding-box trims and density optimizations for minimal bundle sizes.
+          </p>
+        </div>
+
+        <div class="card">
+          <span class="card-num">STAGE 05-06</span>
+          <h3 class="card-title" data-i18n="pipe_3_title">Packaging & Vercel Delivery</h3>
+          <p class="card-desc" data-i18n="pipe_3_desc">
+            Pre-configured Three.js and GaussianSplats3D bundles deployed globally via Vercel edge networks for instant client presentation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Showcase Banner -->
+    <section id="showcase">
+      <div class="showcase-card">
+        <div class="showcase-content">
+          <h3 class="showcase-title" data-i18n="showcase_title">Experience the 3DGS Web Viewer</h3>
+          <p class="showcase-desc" data-i18n="showcase_desc">
+            Interact with Gaussian Splats directly in your browser. Fully optimized for high FPS navigation, customizable camera perspectives, and client review workflows.
+          </p>
+        </div>
+        <div>
+          <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" style="padding: 12px 24px; font-size: 14px;" data-i18n="showcase_btn">
+            Open Interactive Viewer
+          </a>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div>© 2026 Points & Reality. All rights reserved.</div>
-    <div>Built for High-End 3D Gaussian Splatting Workflows</div>
+    <div>
+      © 2026 Points & Reality. <span data-i18n="footer_rights">All rights reserved.</span>
+    </div>
+    <div class="footer-meta">
+      <span data-i18n="footer_base">Aotearoa New Zealand</span>
+      <span>•</span>
+      <span>Points & Reality 3DGS Pipeline v2.222</span>
+    </div>
   </footer>
+
+  <!-- Multilingual Engine Script -->
+  <script>
+    const translations = {
+      en: {
+        header_tagline: "Spatial Capture & 3DGS Studio",
+        nav_services: "Services",
+        nav_pipeline: "Pipeline",
+        nav_showcase: "Viewer",
+        btn_launch_viewer: "Launch Viewer",
+        hero_location: "Auckland, New Zealand & Global",
+        hero_title: "High-Fidelity 3D Gaussian Splatting & Reality Capture.",
+        hero_desc: "We reconstruct real-world automotive, architectural, and spatial environments into sub-millimeter accurate, photo-realistic 3DGS WebGL experiences with zero-latency browser rendering.",
+        hero_cta_primary: "Open WebGL 3D Viewer",
+        hero_cta_secondary: "Explore Capabilities",
+        metric_1: "Browser WebGL Frame Rate",
+        metric_2: "Point Precision & Calibration",
+        metric_3: "Standalone Client Bundles",
+        services_eyebrow: "Studio Capabilities",
+        services_title: "End-to-End Spatial Production",
+        service_1_title: "Multi-Camera Photogrammetry & Ingest",
+        service_1_desc: "High-dynamic-range image extraction, 3D LUT color grading, and automated lens calibration designed for clean, artifact-free neural training inputs.",
+        service_2_title: "Neural 3DGS Reconstruction & Cleanup",
+        service_2_desc: "Deep training through Postshot and Lichtfeld pipelines, followed by precision SuperSplat cropping to isolate assets and eliminate floating point noise.",
+        service_3_title: "Zero-Install WebGL Distribution",
+        service_3_desc: "Packaged into lightweight, self-contained HTML5/SOG modules. Embedded with client review watermarks and smooth camera transitions on desktop and mobile.",
+        pipeline_eyebrow: "Standardized Architecture",
+        pipeline_title: "Structured 6-Stage Pipeline",
+        pipe_1_title: "Raw Capture & Alignment",
+        pipe_1_desc: "Standardized directory tracking from 4K/8K video footage to multi-threaded frame extractions and sparse point-cloud alignments.",
+        pipe_2_title: "Neural Training & Splat Polish",
+        pipe_2_desc: "GPU-accelerated Gaussian Splatting synthesis with bounding-box trims and density optimizations for minimal bundle sizes.",
+        pipe_3_title: "Packaging & Vercel Delivery",
+        pipe_3_desc: "Pre-configured Three.js and GaussianSplats3D bundles deployed globally via Vercel edge networks for instant client presentation.",
+        showcase_title: "Experience the 3DGS Web Viewer",
+        showcase_desc: "Interact with Gaussian Splats directly in your browser. Fully optimized for high FPS navigation, customizable camera perspectives, and client review workflows.",
+        showcase_btn: "Open Interactive Viewer",
+        footer_rights: "All rights reserved.",
+        footer_base: "Aotearoa New Zealand"
+      },
+      ko: {
+        header_tagline: "스페이셜 캡처 & 3DGS 전문 스튜디오",
+        nav_services: "서비스",
+        nav_pipeline: "파이프라인",
+        nav_showcase: "3D 뷰어",
+        btn_launch_viewer: "3D 뷰어 실행",
+        hero_location: "뉴질랜드 오클랜드 & 글로벌 프로덕션",
+        hero_title: "초정밀 3D 가우시안 스플래팅 & 리얼리티 캡처.",
+        hero_desc: "실제 자동차, 건축 공간 및 환경을 서브 밀리미터 단위의 정밀도로 재구성하여 웹 브라우저에서 딜레이 없이 실시간 구동되는 실사급 3DGS WebGL 경험을 제공합니다.",
+        hero_cta_primary: "WebGL 3D 뷰어 열기",
+        hero_cta_secondary: "프로덕션 기능 살펴보기",
+        metric_1: "브라우저 WebGL 프레임 레이트",
+        metric_2: "포인트 정밀도 및 캘리브레이션",
+        metric_3: "독립 실행형 오프라인 번들",
+        services_eyebrow: "스튜디오 핵심 역량",
+        services_title: "엔드-투-엔드 스페이셜 프로덕션",
+        service_1_title: "다각도 사진 측량 & 영상 인제스트",
+        service_1_desc: "노이즈 없는 고품질 AI 학습 데이터를 위해 HDR 프레임 추출, 3D LUT 컬러그레이딩, 렌즈 왜곡 캘리브레이션을 자동으로 수행합니다.",
+        service_2_title: "신경망 3DGS 복원 및 스플랫 정제",
+        service_2_desc: "Postshot 및 Lichtfeld 파이프라인 학습 후, SuperSplat 편집 브릿지를 통해 피사체를 정밀 분리하고 공중 부유 노이즈(플로터)를 제거합니다.",
+        service_3_title: "무설치 WebGL 글로벌 배포",
+        service_3_desc: "별도 설치 없이 구동되는 경량 HTML5/SOG 패키징으로, 클라이언트 컨펌용 워터마크와 부드러운 카메라 전환을 지원합니다.",
+        pipeline_eyebrow: "표준화된 아키텍처",
+        pipeline_title: "체계적인 6단계 파이프라인",
+        pipe_1_title: "원천 캡처 및 카메라 정렬",
+        pipe_1_desc: "4K/8K 비디오 촬영부터 멀티스레드 프레임 추출, 스파스 포인트 클라우드 정렬까지 일원화된 디렉토리로 관리합니다.",
+        pipe_2_title: "AI 훈련 및 스플랫 클린업",
+        pipe_2_desc: "GPU 가속 가우시안 스플래팅 학습과 바운딩 박스 크롭, 밀도 최적화로 번들 용량을 대폭 경량화합니다.",
+        pipe_3_title: "패키징 및 Vercel 배포",
+        pipe_3_desc: "사전 구성된 Three.js 및 GaussianSplats3D 번들을 Vercel 글로벌 엣지 네트워크를 통해 전 세계 고객에게 즉시 전달합니다.",
+        showcase_title: "3DGS 인터랙티브 웹 뷰어 체험",
+        showcase_desc: "브라우저에서 바로 실시간 3D 가우시안 스플랫을 조작해 보세요. 초당 60FPS 이상의 부드러운 내비게이션과 시점 조정을 지원합니다.",
+        showcase_btn: "인터랙티브 뷰어 열기",
+        footer_rights: "모든 권리 보유.",
+        footer_base: "뉴질랜드 아오테아로아"
+      },
+      zh: {
+        header_tagline: "空间实景捕捉与 3DGS 工作室",
+        nav_services: "核心服务",
+        nav_pipeline: "制作流程",
+        nav_showcase: "3D 浏览器",
+        btn_launch_viewer: "启动 3D 浏览器",
+        hero_location: "新西兰奥克兰 & 全球交付",
+        hero_title: "高精度 3D 高斯泼溅 (3DGS) 与实景三维捕捉。",
+        hero_desc: "我们将现实世界中的车辆、建筑与复杂空间环境，高保真重构为毫米级精度、照片级真实的 WebGL 3DGS 网页体验，无需任何插件即可流畅浏览。",
+        hero_cta_primary: "打开 WebGL 3D 浏览器",
+        hero_cta_secondary: "了解制作能力",
+        metric_1: "网页端 WebGL 渲染帧率",
+        metric_2: "点云精度与相机标定",
+        metric_3: "独立离线交付模块",
+        services_eyebrow: "工作室专业能力",
+        services_title: "端到端空间三维制作流程",
+        service_1_title: "多角度摄影测量与视频摄取",
+        service_1_desc: "支持高动态范围图像提取、3D LUT 色彩校正和自动镜头标定，为神经网络训练提供极致纯净的数据。",
+        service_2_title: "神经网络 3DGS 重建与精细清理",
+        service_2_desc: "采用 Postshot 与 Lichtfeld 深度训练管线，结合 SuperSplat 精准裁剪，彻底清除杂乱悬浮噪点。",
+        service_3_title: "免安装 WebGL 全球分发",
+        service_3_desc: "打包为独立的轻量化 HTML5/SOG 模块，内置客户审阅水印与平滑镜头转场，跨平台即开即览。",
+        pipeline_eyebrow: "标准化架构",
+        pipeline_title: "结构化 6 阶段制作管线",
+        pipe_1_title: "素材采集与相机对齐",
+        pipe_1_desc: "从 4K/8K 拍摄视频到多线程帧抽取与稀疏点云对齐，实现统一标准化的工程目录追踪。",
+        pipe_2_title: "神经训练与点云优化",
+        pipe_2_desc: "GPU 加速的高斯泼溅训练，配合空间包围盒裁剪与密度优化，实现极小体积传输。",
+        pipe_3_title: "模块打包与 Vercel 分发",
+        pipe_3_desc: "预集成 Three.js 与 GaussianSplats3D 渲染引擎，通过 Vercel 全球网络实现秒级极速访问。",
+        showcase_title: "体验 3DGS 交互式网页浏览器",
+        showcase_desc: "直接在浏览器中操控 3D 高斯点云模型，体验流畅的 60FPS 视角浏览与客户审阅流。",
+        showcase_btn: "打开交互式浏览器",
+        footer_rights: "保留所有权利。",
+        footer_base: "新西兰 (Aotearoa)"
+      },
+      mi: {
+        header_tagline: "Whakarite Mokowā me te Whare 3DGS",
+        nav_services: "Ratonga",
+        nav_pipeline: "Rarangi Mahi",
+        nav_showcase: "Tirotiro 3D",
+        btn_launch_viewer: "Whakatere Tirotiro",
+        hero_location: "Tāmaki Makaurau, Aotearoa",
+        hero_title: "Te Rongoā 3D Gaussian Splatting me te Whakaaturanga Tuturu.",
+        hero_desc: "Ka hangaia anō e mātou ngā waka, ngā hoahoanga whare, me ngā ta taiao hei wheako 3DGS WebGL tino pono mō te tirotiro tere i runga ipurangi.",
+        hero_cta_primary: "Whakatuwheratia te 3D WebGL",
+        hero_cta_secondary: "Tirohia ngā Rawa",
+        metric_1: "Tere Whakaatu WebGL",
+        metric_2: "Tika Whakarite Piro",
+        metric_3: "Pukapuka Motuhake",
+        services_eyebrow: "Pūmanawa Whare Mahi",
+        services_title: "Hanga Mokowā Whānui",
+        service_1_title: "Hopu me te Whakariterite Whakaahua",
+        service_1_desc: "Te tango whakaahua kounga teitei me te whakatika tae mō te whakangungu rorohiko mārama.",
+        service_2_title: "Whakangungu 3DGS me te Whakapai",
+        service_2_desc: "Whakangungu hōhonu me te tango i ngā kōrero poke kia mārama pai te āhua.",
+        service_3_title: "Tuku Whānui ki te Ipurangi",
+        service_3_desc: "Kua whakaritea ki te HTML5/SOG mō te tirotiro noa i runga rorohiko, waea pukoro hoki.",
+        pipeline_eyebrow: "Hanganga Whakarite",
+        pipeline_title: "Tukanga Mahi 6",
+        pipe_1_title: "Hopu me te Tūhono",
+        pipe_1_desc: "Mai i ngā ataata 4K ki ngā whakaahua kua whakaritea pai.",
+        pipe_2_title: "Whakangungu me te Whakapaipai",
+        pipe_2_desc: "Whakangungu GPU mō te hanga āhua 3D māmā te rahi.",
+        pipe_3_title: "Tuku ki Vercel",
+        pipe_3_desc: "Tukuna ki te ao katoa mā te kōtuitui Vercel.",
+        showcase_title: "Tirohia te 3DGS i te Ipurangi",
+        showcase_desc: "Whakamātauria te tirohanga 3D i tō pūtirotiro ipurangi ināianei.",
+        showcase_btn: "Tīmatahia te Tirotiro",
+        footer_rights: "Pūmau te mana.",
+        footer_base: "Aotearoa New Zealand"
+      }
+    };
+
+    function applyLanguage(lang) {
+      const selected = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (selected[key]) {
+          el.textContent = selected[key];
+        }
+      });
+      document.documentElement.lang = lang;
+      localStorage.setItem('pr_preferred_lang', lang);
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('pr_preferred_lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', (e) => {
+      applyLanguage(e.target.value);
+    });
+  </script>
 </body>
 </html>
