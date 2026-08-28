@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Showroom & Deliverables | Points & Reality</title>
+  <meta name="description" content="Explore high-fidelity 3D Gaussian Splatting models and spatial computing deliverables reconstructed by Points & Reality Studio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #090a0d;
+      --bg-surface: #121418;
+      --bg-surface-raised: #181b22;
+      --bg-card: rgba(24, 27, 34, 0.75);
+      --border-subtle: #232730;
+      --border-medium: #323846;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-steel: #38bdf8;
+      --accent-deep: #0284c7;
+      --font-display: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Architectural Grid Overlay */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-size: 64px 64px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 48px;
+      background: rgba(9, 10, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-primary);
+    }
+
+    .nav-link.active {
+      font-weight: 700;
+      color: var(--accent-steel);
+    }
+
+    /* Language Switcher */
+    .lang-selector-wrap {
+      position: relative;
+    }
+
+    .lang-select {
+      appearance: none;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 7px 30px 7px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .lang-select:hover, .lang-select:focus {
+      border-color: var(--text-secondary);
+      background: var(--bg-surface-raised);
+    }
+
+    .lang-arrow {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--text-primary);
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #e2e8f0;
+      border-color: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border-medium);
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-surface-raised);
+      border-color: var(--text-secondary);
+      transform: translateY(-1px);
+    }
+
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 32px 100px;
+      width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+      padding: 20px 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 36px;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-steel);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+
+    .page-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 620px;
+      margin-top: 8px;
+    }
+
+    .status-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Interactive 3D Stage Section */
+    .stage-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 48px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage-header {
+      padding: 16px 24px;
+      background: var(--bg-surface-raised);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stage-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stage-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stage-frame-container {
+      position: relative;
+      width: 100%;
+      height: 560px;
+      background: #000000;
+    }
+
+    .stage-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .stage-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(9, 10, 13, 0.85);
+      color: var(--text-secondary);
+      font-size: 14px;
+      gap: 12px;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .filter-pill:hover, .filter-pill.active {
+      border-color: var(--accent-steel);
+      color: var(--text-primary);
+      background: var(--bg-surface-raised);
+    }
+
+    .filter-pill.active {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent-steel);
+      color: var(--accent-steel);
+    }
+
+    /* Model Cards Grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .asset-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .asset-card:hover {
+      border-color: var(--border-medium);
+      background: var(--bg-surface-raised);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .asset-card.active-stage {
+      border-color: var(--accent-steel);
+      background: var(--bg-surface-raised);
+    }
+
+    .asset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .asset-format-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-steel);
+      text-transform: uppercase;
+    }
+
+    .asset-date {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .asset-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 8px 0 4px;
+    }
+
+    .asset-filename {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .asset-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-stage {
+      flex: 1;
+      justify-content: center;
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border: 1px solid var(--text-primary);
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-stage:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-fullscreen {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-medium);
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-fullscreen:hover {
+      background: var(--bg-surface-raised);
+      border-color: var(--text-secondary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-medium);
+      border-radius: 12px;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+
+    footer {
+      position: relative;
+      z-index: 10;
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        padding: 16px 24px;
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .stage-frame-container {
+        height: 380px;
+      }
+      footer {
+        padding: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand-group">
+      <div class="brand-mark">PR</div>
+      <div class="brand-text">
+        <span class="brand-name">Points & Reality</span>
+        <span class="brand-tagline" data-i18n="header_tagline">Spatial Capture & 3DGS Studio</span>
+      </div>
+    </a>
+
+    <div class="nav-actions">
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link" data-i18n="nav_home">Home</a></li>
+        <li><a href="showroom.html" class="nav-link active" data-i18n="nav_showroom">Showroom</a></li>
+        <li><a href="index.html#services" class="nav-link" data-i18n="nav_services">Services</a></li>
+        <li><a href="index.html#pipeline" class="nav-link" data-i18n="nav_pipeline">Pipeline</a></li>
+      </ul>
+
+      <!-- Language Selector -->
+      <div class="lang-selector-wrap">
+        <select id="langSelect" class="lang-select" aria-label="Select Language">
+          <option value="en" selected>English (NZ)</option>
+          <option value="ko">한국어 (Korean)</option>
+          <option value="zh">中文 (Chinese)</option>
+          <option value="mi">Te Reo Māori</option>
+        </select>
+        <span class="lang-arrow">▼</span>
+      </div>
+
+      <a href="index.html" class="btn-secondary" data-i18n="btn_back_home">
+        ← Back to Portal
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow" data-i18n="showroom_eyebrow">Deliverables & Spatial Archive</div>
+        <h1 class="page-title" data-i18n="showroom_title">3DGS Spatial Showroom</h1>
+        <p class="page-desc" data-i18n="showroom_desc">
+          Browse and interact with client deliverables and neural 3D Gaussian Splats generated by the Points & Reality Pipeline. Zero-install, ultra-fast 60+ FPS WebGL rendering.
+        </p>
+      </div>
+
+      <div class="status-count-badge">
+        <span class="status-dot"></span>
+        <span id="modelCountLabel" data-i18n="loading_models">Scanning Deliverables...</span>
+      </div>
+    </div>
+
+    <!-- Live Interactive Stage -->
+    <section class="stage-section">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <span style="font-size: 13px; font-weight: 700; color: var(--accent-steel); text-transform: uppercase;" data-i18n="active_stage_badge">Active Stage:</span>
+          <span id="activeModelTitle" class="stage-title">Interactive 3DGS Engine Preview</span>
+        </div>
+        <div class="stage-controls">
+          <a id="btnOpenStandalone" href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" style="font-size: 12px; padding: 6px 14px;" data-i18n="btn_open_standalone">
+            ↗ Open Full Window
+          </a>
+        </div>
+      </div>
+
+      <div class="stage-frame-container">
+        <iframe id="stageIframe" class="stage-iframe" src="ui/templates/supersplat_template.html" title="3D WebGL Viewer Stage" allow="fullscreen"></iframe>
+      </div>
+    </section>
+
+    <!-- Filter & Model Cards Grid -->
+    <section>
+      <div class="filter-bar">
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="all" data-i18n="filter_all">All Deliverables</button>
+          <button class="filter-pill" data-filter="sog" data-i18n="filter_sog">SuperSplat (.sog)</button>
+          <button class="filter-pill" data-filter="ply" data-i18n="filter_ply">GaussianSplats (.ply)</button>
+        </div>
+
+        <div style="font-size: 13px; color: var(--text-muted);" data-i18n="pipeline_sync_note">
+          ⚡ Auto-synced from 05_web_build pipeline
+        </div>
+      </div>
+
+      <div id="showroomGrid" class="grid-3">
+        <!-- Dynamically populated from 05_web_build/models.json -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      © 2026 Points & Reality. <span data-i18n="footer_rights">All rights reserved.</span>
+    </div>
+    <div class="footer-meta">
+      <span data-i18n="footer_base">Aotearoa New Zealand</span>
+      <span>•</span>
+      <span>Points & Reality 3DGS Showroom v2.223</span>
+    </div>
+  </footer>
+
+  <!-- Multilingual & Showroom Manifest Script -->
+  <script>
+    const translations = {
+      en: {
+        header_tagline: "Spatial Capture & 3DGS Studio",
+        nav_home: "Home",
+        nav_showroom: "Showroom",
+        nav_services: "Services",
+        nav_pipeline: "Pipeline",
+        btn_back_home: "← Back to Portal",
+        showroom_eyebrow: "Deliverables & Spatial Archive",
+        showroom_title: "3DGS Spatial Showroom",
+        showroom_desc: "Browse and interact with client deliverables and neural 3D Gaussian Splats generated by the Points & Reality Pipeline. Zero-install, ultra-fast 60+ FPS WebGL rendering.",
+        loading_models: "Scanning Deliverables...",
+        active_stage_badge: "Active Stage:",
+        btn_open_standalone: "↗ Open Full Window",
+        filter_all: "All Deliverables",
+        filter_sog: "SuperSplat (.sog)",
+        filter_ply: "GaussianSplats (.ply)",
+        pipeline_sync_note: "⚡ Auto-synced from 05_web_build pipeline",
+        btn_load_stage: "▶ View in Stage",
+        btn_fullscreen: "↗ Full Tab",
+        empty_title: "No 05_web_build deliverables detected yet",
+        empty_desc: "Build WebGL models in the Points & Reality Controller and click [🚀 Upload to Web (Vercel)] to publish them here.",
+        footer_rights: "All rights reserved.",
+        footer_base: "Aotearoa New Zealand"
+      },
+      ko: {
+        header_tagline: "스페이셜 캡처 & 3DGS 전문 스튜디오",
+        nav_home: "홈",
+        nav_showroom: "쇼룸",
+        nav_services: "서비스",
+        nav_pipeline: "파이프라인",
+        btn_back_home: "← 메인 포털로",
+        showroom_eyebrow: "3D 산출물 및 스페이셜 아카이브",
+        showroom_title: "3DGS 스페이셜 쇼룸",
+        showroom_desc: "Points & Reality 파이프라인에서 생성된 3D 가우시안 스플래팅 결과물과 클라이언트 납품 모델들을 한곳에서 인터랙티브하게 감상할 수 있습니다.",
+        loading_models: "산출물 검색 중...",
+        active_stage_badge: "현재 뷰어:",
+        btn_open_standalone: "↗ 전체 화면 창 열기",
+        filter_all: "전체 모델",
+        filter_sog: "SuperSplat (.sog)",
+        filter_ply: "GaussianSplats (.ply)",
+        pipeline_sync_note: "⚡ 05_web_build 파이프라인 실시간 동기화",
+        btn_load_stage: "▶ 뷰어에 로드",
+        btn_fullscreen: "↗ 새 탭 전체보기",
+        empty_title: "아직 등록된 05_web_build 산출물이 없습니다",
+        empty_desc: "Points & Reality 컨트롤러에서 WebGL을 빌드한 후 [🚀 웹 뷰어로 업로드 (Vercel 배포)]를 누르면 여기에 자동 등록됩니다.",
+        footer_rights: "모든 권리 보유.",
+        footer_base: "뉴질랜드 아오테아로아"
+      },
+      zh: {
+        header_tagline: "空间实景捕捉与 3DGS 工作室",
+        nav_home: "首页",
+        nav_showroom: "三维展厅",
+        nav_services: "核心服务",
+        nav_pipeline: "制作流程",
+        btn_back_home: "← 返回主站",
+        showroom_eyebrow: "空间三维成果与交付档案",
+        showroom_title: "3DGS 空间全景展厅",
+        showroom_desc: "浏览由 Points & Reality 管线制作的高保真 3D 高斯泼溅模型与交付成果，无需安装任何插件，即开即享 60+ FPS 超清交互体验。",
+        loading_models: "正在扫描成果...",
+        active_stage_badge: "当前模型:",
+        btn_open_standalone: "↗ 打开全屏窗口",
+        filter_all: "全部交付成果",
+        filter_sog: "SuperSplat (.sog)",
+        filter_ply: "GaussianSplats (.ply)",
+        pipeline_sync_note: "⚡ 与 05_web_build 管线实时同步",
+        btn_load_stage: "▶ 载入展台",
+        btn_fullscreen: "↗ 新标签页全屏",
+        empty_title: "暂未检测到 05_web_build 成果",
+        empty_desc: "在 Points & Reality 控制器中构建 WebGL 模型后，点击 [🚀 上传到 Web (Vercel)] 即可发布至此处。",
+        footer_rights: "保留所有权利。",
+        footer_base: "新西兰 (Aotearoa)"
+      },
+      mi: {
+        header_tagline: "Whakarite Mokowā me te Whare 3DGS",
+        nav_home: "Kāinga",
+        nav_showroom: "Whare Whakaari",
+        nav_services: "Ratonga",
+        nav_pipeline: "Rarangi Mahi",
+        btn_back_home: "← Hoki ki te Kāinga",
+        showroom_eyebrow: "Rawa me ngā Whakaaturanga 3D",
+        showroom_title: "Whare Whakaari 3DGS",
+        showroom_desc: "Tirohia ngā whakaaturanga 3D Gaussian Splatting kua oti te hanga e te Points & Reality. He tere, he pono te tirotiro i runga ipurangi.",
+        loading_models: "E kimi ana i ngā rawa...",
+        active_stage_badge: "Tirohanga Ināianei:",
+        btn_open_standalone: "↗ Whakatuwhera Whānui",
+        filter_all: "Ngā Rawa Katoa",
+        filter_sog: "SuperSplat (.sog)",
+        filter_ply: "GaussianSplats (.ply)",
+        pipeline_sync_note: "⚡ Kua tūhono ki te 05_web_build",
+        btn_load_stage: "▶ Tirohia ki te Whare",
+        btn_fullscreen: "↗ Whakatuwhera",
+        empty_title: "Kāore anō kia kitea he rawa 05_web_build",
+        empty_desc: "Hangaia ngā tauira 3D ki te Points & Reality Controller, ka tuku ai ki konei.",
+        footer_rights: "Pūmau te mana.",
+        footer_base: "Aotearoa New Zealand"
+      }
+    };
+
+    function applyLanguage(lang) {
+      const selected = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (selected[key]) {
+          el.textContent = selected[key];
+        }
+      });
+      document.documentElement.lang = lang;
+      localStorage.setItem('pr_preferred_lang', lang);
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('pr_preferred_lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', (e) => {
+      applyLanguage(e.target.value);
+    });
+
+    let allLoadedModels = [];
+
+    async function initShowroom() {
+      const grid = document.getElementById('showroomGrid');
+      const countLabel = document.getElementById('modelCountLabel');
+      const stageIframe = document.getElementById('stageIframe');
+      const activeTitle = document.getElementById('activeModelTitle');
+      const btnStandalone = document.getElementById('btnOpenStandalone');
+
+      try {
+        const res = await fetch('05_web_build/models.json?v=' + Date.now());
+        if (!res.ok) throw new Error('No models.json manifest');
+        const data = await res.json();
+        allLoadedModels = data.models || [];
+
+        if (allLoadedModels.length > 0) {
+          countLabel.textContent = `${allLoadedModels.length} Active Model(s)`;
+          
+          // Set first model as active stage
+          const first = allLoadedModels.find(m => m.is_index) || allLoadedModels[0];
+          setActiveStage(first);
+
+          renderCards(allLoadedModels);
+        } else {
+          showDemoFallback();
+        }
+      } catch (err) {
+        showDemoFallback();
+      }
+    }
+
+    function setActiveStage(model) {
+      const stageIframe = document.getElementById('stageIframe');
+      const activeTitle = document.getElementById('activeModelTitle');
+      const btnStandalone = document.getElementById('btnOpenStandalone');
+
+      activeTitle.textContent = model.title;
+      stageIframe.src = model.path;
+      btnStandalone.href = model.path;
+
+      // Update card active visual state
+      document.querySelectorAll('.asset-card').forEach(card => {
+        if (card.getAttribute('data-path') === model.path) {
+          card.classList.add('active-stage');
+        } else {
+          card.classList.remove('active-stage');
+        }
+      });
+    }
+
+    function renderCards(models) {
+      const grid = document.getElementById('showroomGrid');
+      grid.innerHTML = '';
+      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
+      const t = translations[currentLang] || translations.en;
+
+      models.forEach(m => {
+        const ext = m.filename.toLowerCase().includes('.sog') ? 'SOG' : 'PLY / WebGL';
+        const card = document.createElement('div');
+        card.className = 'asset-card';
+        card.setAttribute('data-path', m.path);
+        card.innerHTML = `
+          <div>
+            <div class="asset-header">
+              <span class="asset-format-badge">${ext}</span>
+              <span class="asset-date">${m.is_index ? 'Primary Index' : '3DGS Model'}</span>
+            </div>
+            <h3 class="asset-title">${m.title}</h3>
+            <div class="asset-filename">${m.filename}</div>
+          </div>
+          <div class="asset-actions">
+            <button class="btn-stage" onclick='setActiveStage(${JSON.stringify(m)})'>
+              ${t.btn_load_stage || '▶ View in Stage'}
+            </button>
+            <a href="${m.path}" target="_blank" class="btn-fullscreen">
+              ${t.btn_fullscreen || '↗ Full'}
+            </a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function showDemoFallback() {
+      const countLabel = document.getElementById('modelCountLabel');
+      const grid = document.getElementById('showroomGrid');
+      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
+      const t = translations[currentLang] || translations.en;
+
+      countLabel.textContent = "Engine Ready";
+
+      // Show interactive demo cards
+      const demoModels = [
+        {
+          title: "SuperSplat 3DGS Engine Preview",
+          filename: "supersplat_template.html",
+          path: "ui/templates/supersplat_template.html",
+          is_index: true
+        }
+      ];
+
+      setActiveStage(demoModels[0]);
+      renderCards(demoModels);
+    }
+
+    // Filter pills handler
+    document.querySelectorAll('.filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+
+        if (filter === 'all') {
+          renderCards(allLoadedModels.length > 0 ? allLoadedModels : [{
+            title: "SuperSplat 3DGS Engine Preview",
+            filename: "supersplat_template.html",
+            path: "ui/templates/supersplat_template.html"
+          }]);
+        } else if (filter === 'sog') {
+          const filtered = allLoadedModels.filter(m => m.filename.toLowerCase().includes('.sog'));
+          renderCards(filtered);
+        } else if (filter === 'ply') {
+          const filtered = allLoadedModels.filter(m => !m.filename.toLowerCase().includes('.sog'));
+          renderCards(filtered);
+        }
+      });
+    });
+
+    initShowroom();
+  </script>
+</body>
+</html>
