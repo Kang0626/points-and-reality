@@ -1,0 +1,82 @@
+# ==========================================
+# Points & Reality 3DGS Controller - .gitignore
+# ==========================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.obj
+*.o
+
+# C / Temporary compile artifacts
+test_chunk.int.c
+test_exact.cpp4.int.c
+cudafe_wrapper.obj
+imgui.ini
+
+# C extensions & OS files
+*.so
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Pipeline Data & Heavy Media Folders (Ignore project data runs)
+00_raw_footage/
+01_extracted_frames/
+02_camera_alignment/
+03_splats_exports/
+04_splats_cleaned/
+Works/
+
+# Large 3DGS binary files outside templates
+*.ply
+*.splat
+*.sog
+*.exr
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.cube
+
+# Local Vercel build output
+.vercel/

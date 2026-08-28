@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points & Reality | High-End 3D Gaussian Splatting Pipeline</title>
+  <meta name="description" content="Next-Generation 3D Gaussian Splatting Pipeline Controller & WebGL Distribution Engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0b0e;
+      --card-bg: rgba(22, 25, 33, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-emerald: #10b981;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Pretendard', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 20% 15%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 60%);
+    }
+
+    /* Ambient Background Animation */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      background: rgba(10, 11, 14, 0.6);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 20px;
+      color: var(--accent-cyan);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+    }
+
+    .btn-cta {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border: 1px solid var(--accent-cyan);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-cta:hover {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+      transform: translateY(-1px);
+    }
+
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(2, 132, 199, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin-bottom: 24px;
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.1); }
+      50% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
+    }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+      max-width: 900px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 70px;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 30px 48px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      backdrop-filter: blur(12px);
+      background: rgba(10, 11, 14, 0.7);
+    }
+
+    @media (max-width: 768px) {
+      header, footer {
+        padding: 20px;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header>
+    <a href="#" class="brand">
+      <div class="brand-logo">P&R</div>
+      <div class="brand-title">Points & Reality</div>
+      <span class="brand-badge">v2.222</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">파이프라인 기능</a>
+      <a href="https://github.com" target="_blank" class="nav-link">GitHub</a>
+      <a href="#demo" class="btn-cta">🌐 WebGL 뷰어 실행</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-pill">
+      ✨ 3D Gaussian Splatting Production Controller
+    </div>
+    
+    <h1 class="hero-title">
+      현실을 점(Point)으로 담고,<br>
+      <span>차세대 3DGS 웹 뷰어로 완성하다</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      비디오 인제스트, 고속 프레임 추출, 카메라 정렬, 스플랫 클린업부터<br>
+      초고속 WebGL 3DGS 독립 실행형 웹 패키징 및 글로벌 Vercel 배포까지.
+    </p>
+
+    <div class="hero-actions">
+      <a href="ui/templates/supersplat_template.html" class="btn-cta" target="_blank">
+        🚀 SuperSplat WebGL 뷰어 열기
+      </a>
+      <a href="#features" class="btn-secondary">
+        📖 파이프라인 둘러보기
+      </a>
+    </div>
+
+    <section id="features" class="feature-grid">
+      <div class="feature-card">
+        <div class="card-icon">⚡</div>
+        <h3 class="card-title">1. 초고속 인제스트 & 트레이너 브릿지</h3>
+        <p class="card-desc">
+          FFmpeg 멀티스레드 기반 프레임 추출과 3D LUT 컬러그레이딩을 지원하며, RealityCapture, Postshot, Lichtfeld Studio와 원클릭으로 연동됩니다.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-icon">🧹</div>
+        <h3 class="card-title">2. 스플랫 클린업 & 배치 관리</h3>
+        <p class="card-desc">
+          학습 완료된 산출물을 자동 감지하여 SuperSplat 브릿지로 연결하고, 크롭 박스 및 불필요한 플로터(Floaters)를 정밀하게 제거합니다.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-icon">🌐</div>
+        <h3 class="card-title">3. Vercel & WebGL 오프라인 패키징</h3>
+        <p class="card-desc">
+          Three.js와 GaussianSplats3D를 내장하여 서버 의존성 없이 단일 HTML5/SOG 번들로 패키징하며, Vercel을 통해 전 세계 고객에게 초고속으로 스트리밍합니다.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© 2026 Points & Reality. All rights reserved.</div>
+    <div>Built for High-End 3D Gaussian Splatting Workflows</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,444 @@
+# ui/ui_main_master.py
+import os
+import json
+import time
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
+                             QGroupBox, QLabel, QPushButton, QSplitter, 
+                             QSizePolicy, QComboBox, QLineEdit, QFileDialog, 
+                             QInputDialog, QMessageBox, QScrollArea, QFrame, 
+                             QTabBar, QStackedWidget)
+from PyQt5.QtCore import Qt, QSettings
+from config import DARK_THEME_CSS, APP_VERSION
+from ui.ui_translations import TRANSLATIONS
+from ui.ui_components import AutoScrollTextBrowser
+from ui.tabs.capture_sections.section_project import ProjectConfigWidget
+from ui.tabs.capture_sections.section_ingest import IngestWidget
+from ui.tabs.capture_sections.section_launcher import LauncherWidget
+from ui.tabs.tab_cleanup import CleanupTab
+from ui.tabs.tab_webgl import WebGLTab
+
+class PointsAndRealityController(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(f"Points & Reality 3DGS Controller - {APP_VERSION}")
+        
+        self.resize(1120, 880)
+        self.setMinimumSize(850, 650)
+        self.setStyleSheet(DARK_THEME_CSS)
+        
+        self.settings = QSettings("PointsAndReality", "3DGSController")
+        # Migrate legacy settings if available
+        legacy_settings = QSettings("SplatialPipeline", "3DGSController")
+        if not self.settings.allKeys() and legacy_settings.allKeys():
+            for key in legacy_settings.allKeys():
+                self.settings.setValue(key, legacy_settings.value(key))
+                
+        self.current_lang = self.settings.value("ui_language", "KO")
+        
+        self.init_ui()
+        self.load_presets()
+        self.apply_language(self.current_lang)
+
+    def init_ui(self):
+        main_widget = QWidget()
+        main_layout = QVBoxLayout(main_widget)
+        main_layout.setContentsMargins(12, 10, 12, 10)
+        main_layout.setSpacing(8)
+
+        # ----------------------------------------------------
+        # 1. Top Global Header (2-Tier Vertical Layout)
+        # ----------------------------------------------------
+        header_card = QFrame()
+        header_card.setObjectName("headerCard")
+        header_card.setStyleSheet("""
+            QFrame#headerCard {
+                background-color: #1a1c22;
+                border: 1px solid #2d3139;
+                border-radius: 8px;
+            }
+        """)
+        header_vlayout = QVBoxLayout(header_card)
+        header_vlayout.setContentsMargins(12, 8, 12, 8)
+        header_vlayout.setSpacing(8)
+
+        # ----------------------------------------------------
+        # Tier 1: Brand Title & Utility Controls (Presets + Language)
+        # ----------------------------------------------------
+        top_tier = QHBoxLayout()
+        top_tier.setSpacing(10)
+
+        # App Brand Title
+        title_box = QHBoxLayout()
+        title_box.setSpacing(8)
+        
+        lbl_logo = QLabel("✨ Points & Reality")
+        lbl_logo.setStyleSheet("color: #38bdf8; font-size: 15px; font-weight: 900; letter-spacing: 0.5px;")
+        
+        lbl_ver = QLabel("3DGS Pipeline Controller")
+        lbl_ver.setStyleSheet("color: #94a3b8; font-size: 12px; font-weight: 600;")
+        
+        title_box.addWidget(lbl_logo)
+        title_box.addWidget(lbl_ver)
+        top_tier.addLayout(title_box)
+        top_tier.addStretch()
+
+        # Right Controls: Preset & Language
+        controls_box = QHBoxLayout()
+        controls_box.setSpacing(6)
+
+        self.lbl_preset = QLabel("Preset:")
+        self.lbl_preset.setStyleSheet("color: #94a3b8; font-size: 11px; font-weight: bold;")
+        
+        self.combo_preset = QComboBox()
+        self.combo_preset.setMinimumWidth(130)
+        self.combo_preset.currentIndexChanged.connect(self.apply_preset)
+
+        self.btn_preset_browse = QPushButton("📂 폴더")
+        self.btn_preset_browse.setToolTip("Set Preset Directory")
+        self.btn_preset_browse.clicked.connect(self.browse_preset_dir)
+
+        self.btn_preset_save = QPushButton("💾 저장")
+        self.btn_preset_save.setToolTip("Save Current Preset")
+        self.btn_preset_save.clicked.connect(self.save_preset)
+
+        self.btn_preset_del = QPushButton("🗑 삭제")
+        self.btn_preset_del.setToolTip("Delete Selected Preset")
+        self.btn_preset_del.clicked.connect(self.delete_preset)
+
+        self.btn_lang = QPushButton(f"🌐 {self.current_lang}")
+        self.btn_lang.setCursor(Qt.PointingHandCursor)
+        self.btn_lang.setFixedWidth(68)
+        self.btn_lang.clicked.connect(self.toggle_language)
+
+        controls_box.addWidget(self.lbl_preset)
+        controls_box.addWidget(self.combo_preset)
+        controls_box.addWidget(self.btn_preset_browse)
+        controls_box.addWidget(self.btn_preset_save)
+        controls_box.addWidget(self.btn_preset_del)
+        controls_box.addSpacing(4)
+        controls_box.addWidget(self.btn_lang)
+
+        top_tier.addLayout(controls_box)
+        header_vlayout.addLayout(top_tier)
+
+        # Subtle separator line between Tier 1 and Tier 2
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setFrameShadow(QFrame.Plain)
+        sep.setStyleSheet("color: #262930; background-color: #262930; height: 1px; border: none; margin: 0px;")
+        sep.setFixedHeight(1)
+        header_vlayout.addWidget(sep)
+
+        # ----------------------------------------------------
+        # Tier 2: Pipeline Step Navigation Tabs (Full Width Dedicated Row)
+        # ----------------------------------------------------
+        tier2_layout = QHBoxLayout()
+        tier2_layout.setContentsMargins(0, 0, 0, 0)
+        tier2_layout.setSpacing(8)
+
+        # Pipeline Navigation Tabs
+        self.tab_bar = QTabBar()
+        self.tab_bar.setDrawBase(False)
+        self.tab_bar.setExpanding(False)
+        self.tab_bar.setUsesScrollButtons(False)
+        self.tab_bar.addTab("캡처 & 인제스트")
+        self.tab_bar.addTab("스플랫 클린업")
+        self.tab_bar.addTab("WebGL 빌드")
+        self.tab_bar.setStyleSheet("""
+            QTabBar {
+                background-color: transparent;
+            }
+            QTabBar::tab { 
+                background-color: #14161a; 
+                color: #94a3b8; 
+                padding: 6px 16px; 
+                border: 1px solid #2d3139;
+                border-radius: 6px;
+                margin-right: 6px;
+                font-weight: bold;
+                font-size: 11.5px;
+            }
+            QTabBar::tab:hover { 
+                background-color: #222630; 
+                color: #f1f5f9; 
+                border-color: #38bdf8;
+            }
+            QTabBar::tab:selected { 
+                background-color: #0284c7; 
+                color: #ffffff; 
+                border: 1px solid #38bdf8;
+            }
+        """)
+        tier2_layout.addWidget(self.tab_bar)
+        tier2_layout.addStretch()
+
+        header_vlayout.addLayout(tier2_layout)
+        main_layout.addWidget(header_card)
+
+        # ----------------------------------------------------
+        # 2. Main Body Splitter (Tabs Stack + Log Console)
+        # ----------------------------------------------------
+        self.main_splitter = QSplitter(Qt.Vertical)
+        self.main_splitter.setStyleSheet("""
+            QSplitter::handle:vertical {
+                background-color: #2d3139;
+                height: 5px;
+                border-radius: 2px;
+                margin: 2px 0px;
+            }
+            QSplitter::handle:vertical:hover {
+                background-color: #38bdf8;
+            }
+        """)
+
+        # Stacked Pages
+        self.stacked_widget = QStackedWidget()
+        self.tab_bar.currentChanged.connect(self._on_tab_changed)
+
+        # --- Tab 1: Capture & Ingest Pipeline ---
+        tab1_widget = QWidget()
+        tab1_layout = QVBoxLayout(tab1_widget)
+        tab1_layout.setContentsMargins(0, 0, 0, 0)
+        
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.NoFrame)
+        scroll_area.setStyleSheet("QScrollArea { border: none; background-color: transparent; }")
+        
+        scroll_content = QWidget()
+        scroll_content.setObjectName("scrollContent")
+        scroll_content.setStyleSheet("QWidget#scrollContent { background-color: transparent; }")
+        scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout.setContentsMargins(0, 4, 4, 4)
+        scroll_layout.setSpacing(10)
+        
+        self.sec_proj = ProjectConfigWidget()
+        self.sec_ingest = IngestWidget()
+        self.sec_launch = LauncherWidget()
+        
+        # Connect signals
+        self.sec_proj.proj_dir_changed.connect(self.sec_launch.set_proj_dir)
+        self.sec_proj.proj_dir_changed.connect(self.sec_ingest.set_proj_dir)
+        self.sec_proj.log_signal.connect(self.log)
+        
+        self.sec_ingest.log_signal.connect(self.log)
+        self.sec_ingest.request_max_toggle.connect(lambda max_state: (
+            self.sec_proj.set_expanded(not max_state),
+            self.sec_launch.set_expanded(not max_state)
+        ))
+        
+        self.sec_launch.log_signal.connect(self.log)
+
+        scroll_layout.addWidget(self.sec_proj)
+        scroll_layout.addWidget(self.sec_ingest)
+        scroll_layout.addWidget(self.sec_launch)
+        scroll_layout.addStretch()
+        
+        scroll_area.setWidget(scroll_content)
+        tab1_layout.addWidget(scroll_area)
+
+        # Tab 2 & 3 instances
+        self.tab_cleanup = CleanupTab()
+        self.tab_cleanup.log_signal.connect(self.log)
+        
+        self.tab_webgl = WebGLTab()
+        self.tab_webgl.log_signal.connect(self.log)
+        
+        self.sec_proj.proj_dir_changed.connect(self.tab_cleanup.set_proj_dir)
+        self.sec_proj.proj_dir_changed.connect(self.tab_webgl.set_proj_dir)
+
+        # Add to stack
+        self.stacked_widget.addWidget(tab1_widget)
+        self.stacked_widget.addWidget(self.tab_cleanup)
+        self.stacked_widget.addWidget(self.tab_webgl)
+        
+        self.main_splitter.addWidget(self.stacked_widget)
+
+        # ----------------------------------------------------
+        # 3. Bottom Log Console Dock
+        # ----------------------------------------------------
+        log_frame = QFrame()
+        log_frame.setStyleSheet("""
+            QFrame {
+                background-color: #15171b;
+                border: 1px solid #2d3139;
+                border-radius: 8px;
+            }
+        """)
+        log_layout = QVBoxLayout(log_frame)
+        log_layout.setContentsMargins(10, 8, 10, 8)
+        log_layout.setSpacing(6)
+
+        log_header = QHBoxLayout()
+        self.lbl_log_title = QLabel("📟 Backend Console & Activity Log")
+        self.lbl_log_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #94a3b8;")
+
+        self.btn_clear_log = QPushButton("Clear")
+        self.btn_clear_log.setStyleSheet("padding: 2px 8px; font-size: 10px;")
+        self.btn_clear_log.clicked.connect(lambda: self.log_console.clear())
+
+        log_header.addWidget(self.lbl_log_title)
+        log_header.addStretch()
+        log_header.addWidget(self.btn_clear_log)
+        log_layout.addLayout(log_header)
+
+        self.log_console = AutoScrollTextBrowser()
+        self.log_console.setMinimumHeight(100)
+        self.log_console.setStyleSheet("""
+            QTextBrowser {
+                background-color: #0f1013;
+                border: 1px solid #24272e;
+                border-radius: 6px;
+                color: #e2e8f0;
+                font-family: Consolas, 'Cascadia Code', monospace;
+                font-size: 11px;
+                padding: 6px;
+            }
+        """)
+        log_layout.addWidget(self.log_console)
+        self.main_splitter.addWidget(log_frame)
+
+        self.main_splitter.setSizes([620, 180])
+        main_layout.addWidget(self.main_splitter)
+        self.setCentralWidget(main_widget)
+        
+        self.log(f"[ READY ] Points & Reality 3DGS Controller {APP_VERSION} initialized.", level="success")
+
+    def browse_preset_dir(self):
+        saved_dir = self.settings.value("preset_dir", "")
+        dir_path = QFileDialog.getExistingDirectory(self, "Select Preset Directory", saved_dir)
+        if dir_path:
+            self.settings.setValue("preset_dir", dir_path)
+            self.load_presets()
+            self.log(f"Preset directory set to: {dir_path}", "info")
+
+    def load_presets(self):
+        t = TRANSLATIONS.get(self.current_lang, TRANSLATIONS["EN"])
+        self.combo_preset.blockSignals(True)
+        self.combo_preset.clear()
+        self.combo_preset.addItem(t.get("preset_default", "--- Select Preset ---"))
+        
+        preset_dir = self.settings.value("preset_dir", "")
+        if not preset_dir:
+            preset_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "presets")
+            os.makedirs(preset_dir, exist_ok=True)
+            self.settings.setValue("preset_dir", preset_dir)
+        
+        if preset_dir and os.path.exists(preset_dir):
+            for f in os.listdir(preset_dir):
+                if f.endswith(".json"):
+                    self.combo_preset.addItem(f[:-5])
+                    
+        self.combo_preset.blockSignals(False)
+
+    def save_preset(self):
+        preset_dir = self.settings.value("preset_dir", "")
+        if not preset_dir or not os.path.exists(preset_dir):
+            preset_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "presets")
+            os.makedirs(preset_dir, exist_ok=True)
+            self.settings.setValue("preset_dir", preset_dir)
+
+        t = TRANSLATIONS.get(self.current_lang, TRANSLATIONS["EN"])
+        name, ok = QInputDialog.getText(self, t.get("preset_prompt_title", "Save Preset"), t.get("preset_prompt_msg", "Enter Preset Name:"))
+        if ok and name.strip():
+            name = name.strip()
+            data = {
+                "ingest": self.sec_ingest.get_preset_data(),
+                "launcher": self.sec_launch.get_preset_data()
+            }
+            filepath = os.path.join(preset_dir, f"{name}.json")
+            try:
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=4)
+                self.load_presets()
+                self.combo_preset.setCurrentText(name)
+                self.log(f"Preset '{name}.json' saved successfully.", "success")
+            except Exception as e:
+                self.log(f"[ERROR] Failed to save preset: {e}", "error")
+
+    def apply_preset(self):
+        name = self.combo_preset.currentText()
+        preset_dir = self.settings.value("preset_dir", "")
+        t = TRANSLATIONS.get(self.current_lang, TRANSLATIONS["EN"])
+        
+        if name and name != t.get("preset_default") and preset_dir:
+            filepath = os.path.join(preset_dir, f"{name}.json")
+            if os.path.exists(filepath):
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    if "ingest" in data: self.sec_ingest.set_preset_data(data["ingest"])
+                    if "launcher" in data: self.sec_launch.set_preset_data(data["launcher"])
+                    self.log(f"Preset '{name}' applied.", "info")
+                except Exception as e:
+                    self.log(f"[ERROR] Failed to load preset: {e}", "error")
+
+    def delete_preset(self):
+        name = self.combo_preset.currentText()
+        preset_dir = self.settings.value("preset_dir", "")
+        t = TRANSLATIONS.get(self.current_lang, TRANSLATIONS["EN"])
+        
+        if name and name != t.get("preset_default") and preset_dir:
+            filepath = os.path.join(preset_dir, f"{name}.json")
+            if os.path.exists(filepath):
+                try:
+                    os.remove(filepath)
+                    self.load_presets()
+                    self.log(f"Preset '{name}.json' deleted.", "warning")
+                except Exception as e:
+                    self.log(f"[ERROR] Failed to delete preset: {e}", "error")
+
+    def toggle_language(self):
+        self.current_lang = "EN" if self.current_lang == "KO" else "KO"
+        self.settings.setValue("ui_language", self.current_lang)
+        self.apply_language(self.current_lang)
+        self.log(f"UI language changed to: {self.current_lang}", level="info")
+
+    def apply_language(self, lang):
+        t = TRANSLATIONS.get(lang, TRANSLATIONS["EN"])
+        self.btn_lang.setText(f"🌐 {lang}")
+        
+        self.tab_bar.setTabText(0, t.get("tab_capture", "Capture && Ingest").replace("&", "&&") if "&&" not in t.get("tab_capture", "") else t.get("tab_capture"))
+        self.tab_bar.setTabText(1, t.get("tab_cleanup", "Splat Cleanup").replace("&", "&&") if "&&" not in t.get("tab_cleanup", "") else t.get("tab_cleanup"))
+        self.tab_bar.setTabText(2, t.get("tab_webgl", "WebGL Build").replace("&", "&&") if "&&" not in t.get("tab_webgl", "") else t.get("tab_webgl"))
+        
+        self.lbl_log_title.setText(f"📟 {t.get('log_title', 'Backend Console & Activity Log')}")
+        self.btn_clear_log.setText(t.get("btn_clear_log", "Clear"))
+        self.lbl_preset.setText(t.get("lbl_preset", "Preset:"))
+        self.btn_preset_browse.setText(t.get("btn_preset_browse", "📂 폴더"))
+        self.btn_preset_save.setText(t.get("btn_preset_save", "💾 저장"))
+        self.btn_preset_del.setText(t.get("btn_preset_del", "🗑 삭제"))
+        
+        if self.combo_preset.currentIndex() == 0:
+            self.combo_preset.setItemText(0, t.get("preset_default", "--- Select Preset ---"))
+        
+        self.sec_proj.update_language(t)
+        self.sec_ingest.update_language(t)
+        self.sec_launch.update_language(t)
+        if hasattr(self, 'tab_cleanup'):
+            self.tab_cleanup.update_language(t)
+        if hasattr(self, 'tab_webgl'):
+            self.tab_webgl.update_language(t)
+
+    def _on_tab_changed(self, index):
+        self.stacked_widget.setCurrentIndex(index)
+        if index == 1 and hasattr(self, 'tab_cleanup'):
+            self.tab_cleanup.scan_exported_splats(silent=True)
+        elif index == 2 and hasattr(self, 'tab_webgl'):
+            self.tab_webgl.scan_project_models()
+
+    def log(self, text, level="info"):
+        colors = {
+            "error": "#f87171",
+            "warning": "#fbbf24",
+            "success": "#34d399",
+            "info": "#94a3b8"
+        }
+        c = colors.get(level.lower(), "#94a3b8")
+        time_str = time.strftime("%H:%M:%S")
+        formatted = f'<span style="color: #64748b;">[{time_str}]</span> <span style="color: {c}; font-family: Consolas;">{text.replace(chr(10), "<br>")}</span>'
+        self.log_console.append(formatted)
+        self.log_console.verticalScrollBar().setValue(self.log_console.verticalScrollBar().maximum())
+
+# Backward compatibility alias
+SplatialController = PointsAndRealityController
