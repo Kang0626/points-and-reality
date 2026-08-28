@@ -9,20 +9,20 @@ from utils import ExtractorThread, get_video_metadata
 
 STYLE_PRESET_ACTIVE = (
     "QPushButton { "
-    "background-color: #1e3a5f; color: #38bdf8; "
-    "border: 1px solid #0284c7; border-radius: 4px; "
-    "padding: 3px 8px; font-size: 10px; font-weight: bold; "
+    "background-color: #1e293b; color: #f1f5f9; "
+    "border: 1px solid #3b82f6; border-radius: 4px; "
+    "padding: 3px 10px; font-size: 10.5px; font-weight: 600; "
     "} "
-    "QPushButton:hover { background-color: #0284c7; color: #ffffff; border-color: #38bdf8; }"
+    "QPushButton:hover { background-color: #2563eb; color: #ffffff; }"
 )
 
 STYLE_PRESET_INACTIVE = (
     "QPushButton { "
-    "background-color: #24272f; color: #cbd5e1; "
-    "border: 1px solid #333842; border-radius: 4px; "
-    "padding: 3px 8px; font-size: 10px; "
+    "background-color: #171920; color: #94a3b8; "
+    "border: 1px solid #232732; border-radius: 4px; "
+    "padding: 3px 10px; font-size: 10.5px; font-weight: 500; "
     "} "
-    "QPushButton:hover { background-color: #2d323c; color: #ffffff; border-color: #475569; }"
+    "QPushButton:hover { background-color: #20242e; color: #f1f5f9; border-color: #3b4254; }"
 )
 
 class IngestWidget(ModernStepCard):
@@ -30,7 +30,7 @@ class IngestWidget(ModernStepCard):
     request_max_toggle = pyqtSignal(bool)
 
     def __init__(self):
-        super().__init__(step_num="", title="Video Ingest & Frame Extractor", subtitle="Drop video files and extract high-quality frames for 3DGS")
+        super().__init__(step_num="", title="Video Ingest & Frame Extraction", subtitle="Import video footage and extract calibrated image sequences")
         self.proj_dir = ""
         self.all_videos_checked = True
         self.lut_path = ""
@@ -49,18 +49,18 @@ class IngestWidget(ModernStepCard):
         hlayout_top = QHBoxLayout()
         hlayout_top.setSpacing(6)
         
-        self.btn_add_video = QPushButton("🎬 + Add Videos")
+        self.btn_add_video = QPushButton("Add Videos...")
         self.btn_add_video.setObjectName("PrimaryBtn")
         self.btn_add_video.setCursor(Qt.PointingHandCursor)
         self.btn_add_video.clicked.connect(self.add_videos)
         self.btn_add_videos = self.btn_add_video
         
-        self.btn_remove_selected = QPushButton("✕ Remove Selected")
+        self.btn_remove_selected = QPushButton("Remove Selected")
         self.btn_remove_selected.setCursor(Qt.PointingHandCursor)
         self.btn_remove_selected.clicked.connect(self.remove_selected_videos)
         self.btn_remove_video = self.btn_remove_selected
         
-        self.btn_remove_all = QPushButton("🗑 Clear All")
+        self.btn_remove_all = QPushButton("Clear All")
         self.btn_remove_all.setCursor(Qt.PointingHandCursor)
         self.btn_remove_all.clicked.connect(self.clear_videos)
         self.btn_clear_videos = self.btn_remove_all
@@ -71,21 +71,21 @@ class IngestWidget(ModernStepCard):
         hlayout_top.addSpacing(10)
 
         # Quick Preset Chips
-        lbl_presets_title = QLabel("⚡ Quick Presets:")
-        lbl_presets_title.setStyleSheet("color: #94a3b8; font-size: 11px; font-weight: bold;")
+        lbl_presets_title = QLabel("Presets:")
+        lbl_presets_title.setStyleSheet("color: #94a3b8; font-size: 11px; font-weight: 600;")
         hlayout_top.addWidget(lbl_presets_title)
 
-        self.chip_balanced = QPushButton("🎯 Standard (4 FPS / PNG)")
+        self.chip_balanced = QPushButton("Standard (4 FPS / PNG)")
         self.chip_balanced.setToolTip("Standard balanced 3DGS dataset (4 FPS, 8-bit PNG)")
         self.chip_balanced.setStyleSheet(STYLE_PRESET_ACTIVE)
         self.chip_balanced.clicked.connect(lambda: self.apply_quick_preset(4, "8-bit PNG (Lossless - Recommended)", "100% (Original)"))
 
-        self.chip_fast = QPushButton("⚡ Fast (2 FPS / JPG)")
+        self.chip_fast = QPushButton("Draft (2 FPS / JPG)")
         self.chip_fast.setToolTip("Fast draft training (2 FPS, High-Quality JPG, 1080p)")
         self.chip_fast.setStyleSheet(STYLE_PRESET_INACTIVE)
         self.chip_fast.clicked.connect(lambda: self.apply_quick_preset(2, "JPG (High Quality - 98%)", "1080p Max Width"))
 
-        self.chip_ultra = QPushButton("💎 Ultra (6 FPS / 16-bit)")
+        self.chip_ultra = QPushButton("Ultra (6 FPS / 16-bit)")
         self.chip_ultra.setToolTip("VFX High-Bitdepth (6 FPS, 16-bit PNG Lossless)")
         self.chip_ultra.setStyleSheet(STYLE_PRESET_INACTIVE)
         self.chip_ultra.clicked.connect(lambda: self.apply_quick_preset(6, "16-bit PNG (ProRes/Log)", "100% (Original)"))
@@ -227,9 +227,9 @@ class IngestWidget(ModernStepCard):
         self.combo_scale.currentIndexChanged.connect(self._on_params_changed)
 
         # Custom LUT File (Optional)
-        self.btn_lut = QPushButton("🎨 + LUT (.cube)")
+        self.btn_lut = QPushButton("Apply LUT (.cube)")
         self.btn_lut.setToolTip("Select custom 3D LUT (.cube) file to apply color conversion during extraction")
-        self.btn_lut.setStyleSheet("font-size: 10px; padding: 3px 8px;")
+        self.btn_lut.setStyleSheet("font-size: 10.5px; padding: 4px 8px;")
         self.btn_lut.clicked.connect(self.select_lut_file)
 
         hlayout_opt.addWidget(self.lbl_fps)
@@ -246,7 +246,7 @@ class IngestWidget(ModernStepCard):
 
         # Total Est. Frames Summary Label
         self.lbl_total_summary = QLabel("Total Est: 0 frames")
-        self.lbl_total_summary.setStyleSheet("color: #38bdf8; font-weight: bold; font-size: 11px;")
+        self.lbl_total_summary.setStyleSheet("color: #94a3b8; font-weight: 600; font-size: 11px;")
         hlayout_opt.addWidget(self.lbl_total_summary)
 
         vlayout.addWidget(opt_frame)
@@ -257,16 +257,16 @@ class IngestWidget(ModernStepCard):
         hlayout_run = QHBoxLayout()
         hlayout_run.setSpacing(8)
 
-        self.btn_run_extract = QPushButton("⚡ Run Frame Extraction")
+        self.btn_run_extract = QPushButton("Extract Frames")
         self.btn_run_extract.setObjectName("PrimaryBtn")
         self.btn_run_extract.setCursor(Qt.PointingHandCursor)
         self.btn_run_extract.clicked.connect(self.run_extraction)
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
-        self.progress_bar.setFixedHeight(28)
+        self.progress_bar.setFixedHeight(26)
 
-        self.btn_open_extracted = QPushButton("📂 Open Extracted Frames")
+        self.btn_open_extracted = QPushButton("Open Frames Folder")
         self.btn_open_extracted.setCursor(Qt.PointingHandCursor)
         self.btn_open_extracted.clicked.connect(self.open_extracted_folder)
         
@@ -517,17 +517,17 @@ class IngestWidget(ModernStepCard):
             self.log_signal.emit("[ERROR] Batch extraction finished with errors.", "error")
 
     def update_language(self, t):
-        self.setTitle(t.get("group_ingest", "Video Ingest & Frame Extractor"), t.get("sub_ingest", "Drop video files and extract frames"))
-        self.btn_add_video.setText(t.get("btn_add_videos", "🎬 + Add Videos"))
-        self.btn_remove_selected.setText(t.get("btn_remove_selected", "✕ Remove Selected"))
-        self.btn_remove_all.setText(t.get("btn_remove_all", "🗑 Clear All"))
-        self.lbl_fps.setText(t.get("lbl_framerate", "FPS Rate:"))
+        self.setTitle(t.get("group_ingest", "Video Ingest & Frame Extraction"), t.get("sub_ingest", "Import video footage and extract calibrated image sequences"))
+        self.btn_add_video.setText(t.get("btn_add_videos", "Add Videos..."))
+        self.btn_remove_selected.setText(t.get("btn_remove_selected", "Remove Selected"))
+        self.btn_remove_all.setText(t.get("btn_remove_all", "Clear All"))
+        self.lbl_fps.setText(t.get("lbl_fps", "FPS Rate:"))
         self.lbl_bitdepth.setText(t.get("lbl_bitdepth", "Format:"))
         self.lbl_scale.setText(t.get("lbl_scale", "Resolution Scale:"))
-        self.btn_run_extract.setText(t.get("btn_run_extract", "⚡ Run Frame Extraction"))
-        self.btn_open_extracted.setText(t.get("btn_open_extracted", "📂 Open Frames"))
+        self.btn_run_extract.setText(t.get("btn_run_extract", "Extract Frames"))
+        self.btn_open_extracted.setText(t.get("btn_open_extracted", "Open Frames Folder"))
         self.table.setHorizontalHeaderLabels([
-            t.get("tbl_col_check", "☑ All"),
+            t.get("tbl_col_check", "Select"),
             t.get("tbl_col_video", "Video File Path"),
             t.get("tbl_col_duration", "Duration"),
             t.get("tbl_col_res_codec", "Resolution / Codec"),

@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.223 (Current)
+### 🔹 v2.224 (Current)
+* **데스크톱 앱(PyQt5) UI/UX 전면 개편: AI틱한 네온/이모지 배제 및 전문가용 프로덕션 스튜디오 스타일 구축 ([`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py))**:
+  * **불필요한 이모지 및 장식적 요소 100% 제거**: 버튼, 타이틀, 카드 헤더, 테이블 헤더, 콘솔창 등에 남발되던 이모지(`✨`, `🚀`, `🎬`, `⚡`, `📂`, `💾`, `🗑`, `🎯`, `📐`, `🚗`, `🚁`, `🛡️`, `📟` 등)를 전면 제거하고 직관적이고 정갈한 프로페셔널 텍스트로 정돈.
+  * **하이엔드 스튜디오 다크 테마(Pro Studio Neutral Dark QSS)**: 인위적이고 유치한 네온 사이언 테두리와 형광 컬러를 배제하고, Houdini/Nuke/Resolve 스타일의 정밀 슬레이트 차콜 팔레트(`#101216`, `#15181f`, `#232732`, `#2563eb`)로 전면 개편.
+  * **헤더, 탭바, 콘솔창 및 카드 컴포넌트 레이아웃 정돈**: 미니멀 브랜드 타이포그래피(`POINTS & REALITY`), 군더더기 없는 프리셋 툴바, 심플한 상태 칩(StatusPill), 접이식 카드(ModernStepCard)로 가독성 극대화.
+
+### 🔹 v2.223
 * **05_web_build ➔ 웹 뷰어 실시간 자동 연결 및 Vercel/GitHub 원클릭 클라우드 업로드 파이프라인 구현 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html))**:
   * **05_web_build ➔ 웹 뷰어 즉시 연결 & 모델 매니페스트(`models.json`) 자동화**: WebGL 패키징 시 `05_web_build/models.json` 매니페스트가 자동 생성/업데이트되며, 메인 웹 쇼케이스 포털([`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html))이 실시간 감지하여 3D 모델 갤러리 카드와 "Launch Viewer" 버튼으로 즉시 연결.
   * **원클릭 클라우드 업로드 버튼 (`🚀 Upload to Web (Vercel)`) 추가**: Tab 3 툴바에 전용 업로드 버튼을 추가하여, 클릭 1번으로 `05_web_build` 결과물 동기화 및 GitHub 자동 커밋 & 푸시 실행 (`VercelUploadThread`). Vercel을 통해 전 세계 고객에게 약 15초 내 자동 라이브 배포 완료.

@@ -47,26 +47,26 @@ class CleanupTab(QWidget):
         c1_layout = QVBoxLayout()
         c1_toolbar = QHBoxLayout()
 
-        self.btn_add_ply = QPushButton("+ Add Splat (.ply / .splat)")
+        self.btn_add_ply = QPushButton("Add Splat Files...")
         self.btn_add_ply.setObjectName("PrimaryBtn")
         self.btn_add_ply.setCursor(Qt.PointingHandCursor)
         self.btn_add_ply.clicked.connect(self.add_splat_files)
 
-        self.btn_scan_splats = QPushButton("🔄 Scan Folder")
+        self.btn_scan_splats = QPushButton("Scan Folder")
         self.btn_scan_splats.setCursor(Qt.PointingHandCursor)
         self.btn_scan_splats.setToolTip("Scan 03_splats_exports folder for newly trained 3DGS models")
         self.btn_scan_splats.clicked.connect(lambda: self.scan_exported_splats(silent=False))
 
-        self.btn_select_all = QPushButton("☑️ Toggle All")
+        self.btn_select_all = QPushButton("Select All")
         self.btn_select_all.setCursor(Qt.PointingHandCursor)
         self.btn_select_all.clicked.connect(self.toggle_select_all)
 
-        self.btn_remove_selected = QPushButton("🗑 Remove")
+        self.btn_remove_selected = QPushButton("Remove")
         self.btn_remove_selected.setCursor(Qt.PointingHandCursor)
         self.btn_remove_selected.setToolTip("Remove selected rows from list")
         self.btn_remove_selected.clicked.connect(self.remove_selected_rows)
 
-        self.btn_clear_ply = QPushButton("🧹 Clear All")
+        self.btn_clear_ply = QPushButton("Clear All")
         self.btn_clear_ply.setCursor(Qt.PointingHandCursor)
         self.btn_clear_ply.clicked.connect(self.clear_all_rows)
 
@@ -81,7 +81,7 @@ class CleanupTab(QWidget):
         # Table: Col 0 (Checkbox), Col 1 (File Path), Col 2 (Size), Col 3 (Status)
         self.table_ply = QTableWidget(0, 4)
         self.table_ply.setItemDelegateForColumn(1, ElideLeftDelegate(self.table_ply))
-        self.table_ply.setHorizontalHeaderLabels(["☑️ Clean", "Splat File Path", "Size (MB)", "Status"])
+        self.table_ply.setHorizontalHeaderLabels(["Select", "Splat File Path", "Size (MB)", "Status"])
         self.table_ply.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.table_ply.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.table_ply.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
@@ -171,20 +171,20 @@ class CleanupTab(QWidget):
         # Preset Filters Display Frame
         filter_box = QFrame()
         filter_box.setObjectName("filterBox")
-        filter_box.setStyleSheet("QFrame#filterBox { background-color: #141619; border: 1px solid #2d3139; border-radius: 6px; }")
+        filter_box.setStyleSheet("QFrame#filterBox { background-color: #15181f; border: 1px solid #232732; border-radius: 6px; }")
         filter_layout = QVBoxLayout(filter_box)
         filter_layout.setSpacing(6)
 
-        lbl_desc = QLabel("✨ <b>Active Procedural Filters (Houdini Network):</b>")
-        lbl_desc.setStyleSheet("color: #38bdf8; font-size: 12px;")
+        lbl_desc = QLabel("<b>Active Procedural Filters (Houdini Network):</b>")
+        lbl_desc.setStyleSheet("color: #3b82f6; font-size: 11.5px; font-weight: 600;")
         filter_layout.addWidget(lbl_desc)
 
         f1 = QLabel("• <b>Box Clip / Sphere Mask:</b> Removes floating artifacts, distant background floaters, and ceiling boundaries.")
-        f1.setStyleSheet("color: #cbd5e1; font-size: 11px;")
+        f1.setStyleSheet("color: #94a3b8; font-size: 11px;")
         f2 = QLabel("• <b>Ground Plane Alignment:</b> Automatically detects floor plane and levels rotation (Transform by Attrib).")
-        f2.setStyleSheet("color: #cbd5e1; font-size: 11px;")
-        f3 = QLabel("• <b>Scale & Center Re-normalization:</b> Centers origin and bakes clean coordinate frame.")
-        f3.setStyleSheet("color: #cbd5e1; font-size: 11px;")
+        f2.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        f3 = QLabel("• <b>Scale & Center Normalization:</b> Centers origin and bakes clean coordinate frame.")
+        f3.setStyleSheet("color: #94a3b8; font-size: 11px;")
 
         filter_layout.addWidget(f1)
         filter_layout.addWidget(f2)
@@ -193,12 +193,12 @@ class CleanupTab(QWidget):
 
         # Action Buttons
         actions_layout = QHBoxLayout()
-        self.btn_run_houdini = QPushButton("🚀 Run Houdini Procedural Cleanup")
+        self.btn_run_houdini = QPushButton("Run Procedural Cleanup")
         self.btn_run_houdini.setObjectName("SuccessBtn")
         self.btn_run_houdini.setCursor(Qt.PointingHandCursor)
         self.btn_run_houdini.clicked.connect(self.run_houdini_cleanup)
 
-        self.btn_open_cleaned = QPushButton("📂 Open Cleaned Splats Folder")
+        self.btn_open_cleaned = QPushButton("Open Cleaned Folder")
         self.btn_open_cleaned.setCursor(Qt.PointingHandCursor)
         self.btn_open_cleaned.clicked.connect(self.open_cleaned_folder)
 
@@ -443,22 +443,22 @@ class CleanupTab(QWidget):
         self.current_translations = t
         self.card_input.setTitle(
             t.get("tab2_card1_title", "Target Splat Models"), 
-            t.get("tab2_card1_sub", "Exported 3DGS .ply or .splat files to clean")
+            t.get("tab2_card1_sub", "Exported 3DGS .ply or .splat files for cleanup")
         )
-        self.btn_add_ply.setText(t.get("tab2_btn_add", "+ Add Splat (.ply / .splat)"))
+        self.btn_add_ply.setText(t.get("tab2_btn_add", "Add Splat Files..."))
         if hasattr(self, 'btn_scan_splats') and self.btn_scan_splats is not None:
-            self.btn_scan_splats.setText(t.get("tab2_btn_scan", "🔄 Scan Folder"))
+            self.btn_scan_splats.setText(t.get("tab2_btn_scan", "Scan Folder"))
         if hasattr(self, 'btn_select_all') and self.btn_select_all is not None:
-            self.btn_select_all.setText(t.get("tab2_btn_select_all", "☑️ Toggle All"))
+            self.btn_select_all.setText(t.get("tab2_btn_select_all", "Select All"))
         if hasattr(self, 'btn_remove_selected') and self.btn_remove_selected is not None:
-            self.btn_remove_selected.setText(t.get("tab2_btn_remove", "🗑 Remove"))
-        self.btn_clear_ply.setText(t.get("tab2_btn_clear", "🧹 Clear All"))
+            self.btn_remove_selected.setText(t.get("tab2_btn_remove", "Remove"))
+        self.btn_clear_ply.setText(t.get("tab2_btn_clear", "Clear All"))
 
         # Table Column Headers
         clean_label = t.get("tab2_tbl_col_clean", "Clean")
         clean_clean = clean_label.replace("☑️", "").replace("☑", "").replace("☐", "").strip()
         self.table_ply.setHorizontalHeaderLabels([
-            f"☑️ {clean_clean}",
+            f"{clean_clean}",
             t.get("tab2_tbl_col_file", "Splat File Path"),
             t.get("tab2_tbl_col_size", "Size (MB)"),
             t.get("tab2_tbl_col_status", "Status")
@@ -468,7 +468,7 @@ class CleanupTab(QWidget):
 
         self.card_tools.setTitle(
             t.get("tab2_card2_title", "Houdini Splat Cleanup Pipeline"), 
-            t.get("tab2_card2_sub", "Execute procedural cleanup network")
+            t.get("tab2_card2_sub", "Execute procedural bounding box trim and noise elimination")
         )
-        self.btn_run_houdini.setText(t.get("tab2_btn_run", "🚀 Run Houdini Procedural Cleanup"))
-        self.btn_open_cleaned.setText(t.get("tab2_btn_open", "📂 Open Cleaned Splats Folder"))
+        self.btn_run_houdini.setText(t.get("tab2_btn_run", "Run Procedural Cleanup"))
+        self.btn_open_cleaned.setText(t.get("tab2_btn_open", "Open Cleaned Folder"))

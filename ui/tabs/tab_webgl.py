@@ -480,33 +480,33 @@ class WebGLTab(QWidget):
         c1_toolbar = QHBoxLayout()
         c1_toolbar.setSpacing(8)
 
-        self.btn_add_files = QPushButton("➕ Add Files...")
+        self.btn_add_files = QPushButton("Add Files...")
         self.btn_add_files.setObjectName("PrimaryBtn")
         self.btn_add_files.setCursor(Qt.PointingHandCursor)
         self.btn_add_files.setToolTip("Select .ply or .sog files to package into WebGL")
         self.btn_add_files.clicked.connect(self.browse_add_files)
 
-        self.btn_scan_proj = QPushButton("🔄 Scan Folder")
+        self.btn_scan_proj = QPushButton("Scan Folder")
         self.btn_scan_proj.setCursor(Qt.PointingHandCursor)
         self.btn_scan_proj.setToolTip("Automatically scan standard project export/cleaned directories for models")
         self.btn_scan_proj.clicked.connect(self.scan_project_models)
 
-        self.btn_select_all = QPushButton("☑️ Toggle All")
+        self.btn_select_all = QPushButton("Select All")
         self.btn_select_all.setCursor(Qt.PointingHandCursor)
         self.btn_select_all.setToolTip("Select or deselect all models for packaging")
         self.btn_select_all.clicked.connect(self.toggle_select_all)
 
-        self.btn_set_index = QPushButton("🏷️ Set 1st as index.html")
+        self.btn_set_index = QPushButton("Set 1st as index.html")
         self.btn_set_index.setCursor(Qt.PointingHandCursor)
         self.btn_set_index.setToolTip("Designate top model as main landing page (index.html)")
         self.btn_set_index.clicked.connect(self.set_first_as_index)
 
-        self.btn_remove_row = QPushButton("🗑 Remove")
+        self.btn_remove_row = QPushButton("Remove")
         self.btn_remove_row.setCursor(Qt.PointingHandCursor)
         self.btn_remove_row.setToolTip("Remove selected model(s) from packaging list")
         self.btn_remove_row.clicked.connect(self.remove_selected_rows)
 
-        self.btn_clear_table = QPushButton("🧹 Clear All")
+        self.btn_clear_table = QPushButton("Clear All")
         self.btn_clear_table.setCursor(Qt.PointingHandCursor)
         self.btn_clear_table.setToolTip("Clear all models from packaging list")
         self.btn_clear_table.clicked.connect(self.clear_models_table)
@@ -524,11 +524,11 @@ class WebGLTab(QWidget):
         self.table_models = QTableWidget(0, 5)
         self.table_models.setCornerButtonEnabled(False)
         self.table_models.setHorizontalHeaderLabels([
-            "☑️ Build", 
+            "Build", 
             "Source Model", 
-            "Output HTML File (✏️ Editable)", 
+            "Output HTML File", 
             "Camera Viewport", 
-            "Direct Action"
+            "Action"
         ])
         
         h_header = self.table_models.horizontalHeader()
@@ -631,15 +631,15 @@ class WebGLTab(QWidget):
 
         # Active Model Header & Live Preview Row
         model_action_row = QHBoxLayout()
-        self.lbl_active_model = QLabel("📷 <b>Target Model:</b> <i>No model selected (select a row in list)</i>")
-        self.lbl_active_model.setStyleSheet("color: #38bdf8; font-size: 12.5px;")
+        self.lbl_active_model = QLabel("<b>Target Model:</b> <i>No model selected (select a row in list)</i>")
+        self.lbl_active_model.setStyleSheet("color: #cbd5e1; font-size: 12px;")
         
-        self.btn_live_preview_cam = QPushButton("🌐 Open Viewer to Adjust Camera")
+        self.btn_live_preview_cam = QPushButton("Adjust View in Browser")
         self.btn_live_preview_cam.setObjectName("PrimaryBtn")
         self.btn_live_preview_cam.setCursor(Qt.PointingHandCursor)
         self.btn_live_preview_cam.clicked.connect(self.open_active_model_in_browser)
 
-        self.btn_paste_cam = QPushButton("📋 Paste Copied View")
+        self.btn_paste_cam = QPushButton("Paste Camera View")
         self.btn_paste_cam.setObjectName("SuccessBtn")
         self.btn_paste_cam.setCursor(Qt.PointingHandCursor)
         self.btn_paste_cam.clicked.connect(self.paste_camera_from_clipboard)
@@ -653,26 +653,26 @@ class WebGLTab(QWidget):
         preset_row = QHBoxLayout()
         preset_row.setSpacing(6)
 
-        self.lbl_presets = QLabel("⚡ Quick Presets:")
-        self.lbl_presets.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 11px;")
+        self.lbl_presets = QLabel("Presets:")
+        self.lbl_presets.setStyleSheet("font-weight: 600; color: #94a3b8; font-size: 11px;")
         preset_row.addWidget(self.lbl_presets)
 
-        self.btn_cam_front = QPushButton("🎯 Front View")
+        self.btn_cam_front = QPushButton("Front")
         self.btn_cam_front.setCursor(Qt.PointingHandCursor)
         self.btn_cam_front.setStyleSheet("padding: 3px 8px; font-size: 11px;")
         self.btn_cam_front.clicked.connect(lambda: self.apply_camera_preset([0.0, 1.2, 3.8], [0.0, 0.0, 0.0], 50, "Front View"))
 
-        self.btn_cam_quarter = QPushButton("📐 Quarter (3/4)")
+        self.btn_cam_quarter = QPushButton("Quarter (3/4)")
         self.btn_cam_quarter.setCursor(Qt.PointingHandCursor)
         self.btn_cam_quarter.setStyleSheet("padding: 3px 8px; font-size: 11px;")
         self.btn_cam_quarter.clicked.connect(lambda: self.apply_camera_preset([2.5, 1.8, -2.5], [0.0, 0.0, 0.0], 50, "Quarter 3/4"))
 
-        self.btn_cam_side = QPushButton("🚗 Side View")
+        self.btn_cam_side = QPushButton("Side")
         self.btn_cam_side.setCursor(Qt.PointingHandCursor)
         self.btn_cam_side.setStyleSheet("padding: 3px 8px; font-size: 11px;")
         self.btn_cam_side.clicked.connect(lambda: self.apply_camera_preset([3.8, 1.2, 0.0], [0.0, 0.0, 0.0], 50, "Side View"))
 
-        self.btn_cam_top = QPushButton("🚁 Top-Down")
+        self.btn_cam_top = QPushButton("Top-Down")
         self.btn_cam_top.setCursor(Qt.PointingHandCursor)
         self.btn_cam_top.setStyleSheet("padding: 3px 8px; font-size: 11px;")
         self.btn_cam_top.clicked.connect(lambda: self.apply_camera_preset([0.0, 6.0, 0.1], [0.0, 0.0, 0.0], 55, "Top-Down"))
@@ -683,8 +683,8 @@ class WebGLTab(QWidget):
         preset_row.addWidget(self.btn_cam_top)
 
         preset_row.addSpacing(10)
-        self.lbl_saved_views = QLabel("⭐ Saved Views:")
-        self.lbl_saved_views.setStyleSheet("font-weight: 600; color: #f59e0b; font-size: 11px;")
+        self.lbl_saved_views = QLabel("Saved Views:")
+        self.lbl_saved_views.setStyleSheet("font-weight: 600; color: #94a3b8; font-size: 11px;")
         preset_row.addWidget(self.lbl_saved_views)
 
         self.combo_saved_views = QComboBox()
@@ -692,14 +692,13 @@ class WebGLTab(QWidget):
         self.combo_saved_views.currentIndexChanged.connect(self._on_saved_view_selected)
         preset_row.addWidget(self.combo_saved_views)
 
-        self.btn_save_cam_preset = QPushButton("💾 Save View")
+        self.btn_save_cam_preset = QPushButton("Save View")
         self.btn_save_cam_preset.setCursor(Qt.PointingHandCursor)
         self.btn_save_cam_preset.setToolTip("Save current camera coordinates as a reusable preset")
-        self.btn_save_cam_preset.setStyleSheet("font-size: 11px; padding: 3px 8px; font-weight: bold; background-color: #065f46; color: #34d399; border: 1px solid #10b981;")
         self.btn_save_cam_preset.clicked.connect(self.save_custom_camera_preset)
         preset_row.addWidget(self.btn_save_cam_preset)
 
-        self.btn_del_cam_preset = QPushButton("🗑 Del")
+        self.btn_del_cam_preset = QPushButton("Delete")
         self.btn_del_cam_preset.setCursor(Qt.PointingHandCursor)
         self.btn_del_cam_preset.setToolTip("Delete selected saved camera view")
         self.btn_del_cam_preset.setStyleSheet("font-size: 11px; padding: 3px 6px;")
@@ -712,12 +711,13 @@ class WebGLTab(QWidget):
         # Coordinate Inputs Frame
         cam_frame = QFrame()
         cam_frame.setObjectName("camFrame")
-        cam_frame.setStyleSheet("QFrame#camFrame { background-color: #141619; border: 1px solid #2d3139; border-radius: 6px; }")
+        cam_frame.setStyleSheet("QFrame#camFrame { background-color: #15181f; border: 1px solid #232732; border-radius: 6px; }")
         cam_inputs_layout = QHBoxLayout(cam_frame)
         cam_inputs_layout.setSpacing(12)
 
         # Position (X, Y, Z)
-        self.lbl_cam_pos_title = QLabel("<b>Cam Position (X,Y,Z):</b>")
+        self.lbl_cam_pos_title = QLabel("Position (X,Y,Z):")
+        self.lbl_cam_pos_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
         cam_inputs_layout.addWidget(self.lbl_cam_pos_title)
         self.input_cam_pos = QLineEdit("0.0, 1.2, 3.8")
         self.input_cam_pos.setToolTip("Camera starting position coordinates [X, Y, Z]")
@@ -725,7 +725,8 @@ class WebGLTab(QWidget):
         cam_inputs_layout.addWidget(self.input_cam_pos, 2)
 
         # Target (X, Y, Z)
-        self.lbl_cam_tgt_title = QLabel("<b>LookAt Target:</b>")
+        self.lbl_cam_tgt_title = QLabel("Target:")
+        self.lbl_cam_tgt_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
         cam_inputs_layout.addWidget(self.lbl_cam_tgt_title)
         self.input_cam_target = QLineEdit("0.0, 0.0, 0.0")
         self.input_cam_target.setToolTip("Camera focal center point [X, Y, Z]")
@@ -733,7 +734,8 @@ class WebGLTab(QWidget):
         cam_inputs_layout.addWidget(self.input_cam_target, 2)
 
         # FOV
-        self.lbl_cam_fov_title = QLabel("<b>FOV:</b>")
+        self.lbl_cam_fov_title = QLabel("FOV:")
+        self.lbl_cam_fov_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
         cam_inputs_layout.addWidget(self.lbl_cam_fov_title)
         self.input_cam_fov = QLineEdit("50")
         self.input_cam_fov.setMaximumWidth(45)
@@ -746,12 +748,12 @@ class WebGLTab(QWidget):
         main_layout.addWidget(self.card_camera)
 
         # ----------------------------------------------------
-        # Card 3: Output Destination & Batch Packaging
+        # Card 3: Output Destination & Web Publishing
         # ----------------------------------------------------
         self.card_config = ModernStepCard(
             step_num="", 
-            title="Output Destination & Batch Packaging", 
-            subtitle="Specify destination directory, build all selected models, and toggle local web server"
+            title="Output Destination & Web Publishing", 
+            subtitle="Specify destination directory, build WebGL packages, and upload to cloud"
         )
         self.pill_config = StatusPill("Ready", "ready")
         self.card_config.add_header_action(self.pill_config)
@@ -765,7 +767,7 @@ class WebGLTab(QWidget):
         self.lbl_dest_title.setStyleSheet("font-weight: 600; color: #cbd5e1;")
         self.input_output_dir = QLineEdit()
         self.input_output_dir.setPlaceholderText("Select output directory (default: 05_web_build)...")
-        self.btn_browse_output = QPushButton("📁 Browse...")
+        self.btn_browse_output = QPushButton("Browse...")
         self.btn_browse_output.clicked.connect(self.browse_output_dir)
         dest_row.addWidget(self.lbl_dest_title)
         dest_row.addWidget(self.input_output_dir, 1)
@@ -776,22 +778,22 @@ class WebGLTab(QWidget):
         opts_row = QHBoxLayout()
         opts_row.setSpacing(12)
         
-        self.chk_watermark = QCheckBox("🛡️ Client Review Watermark (고객 컨펌용 워터마크)")
-        self.chk_watermark.setStyleSheet("color: #38bdf8; font-weight: 600;")
+        self.chk_watermark = QCheckBox("Client Review Watermark")
+        self.chk_watermark.setStyleSheet("color: #cbd5e1; font-weight: 600;")
         self.chk_watermark.setChecked(False)
         
         self.input_watermark_text = QLineEdit("Points & Reality")
         self.input_watermark_text.setPlaceholderText("Watermark text (default: Points & Reality)")
         self.input_watermark_text.setEnabled(False)
-        self.input_watermark_text.setStyleSheet("background: #14171d; border: 1px solid #333842; border-radius: 6px; padding: 5px 10px; color: #64748b;")
+        self.input_watermark_text.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 5px 10px; color: #64748b;")
         
         def _on_chk_watermark_changed(state):
             is_on = (state != 0)
             self.input_watermark_text.setEnabled(is_on)
             if is_on:
-                self.input_watermark_text.setStyleSheet("background: #1e222b; border: 1px solid #38bdf8; border-radius: 6px; padding: 5px 10px; color: #f8fafc;")
+                self.input_watermark_text.setStyleSheet("background: #111318; border: 1px solid #3b82f6; border-radius: 4px; padding: 5px 10px; color: #f8fafc;")
             else:
-                self.input_watermark_text.setStyleSheet("background: #14171d; border: 1px solid #333842; border-radius: 6px; padding: 5px 10px; color: #64748b;")
+                self.input_watermark_text.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 5px 10px; color: #64748b;")
 
         self.chk_watermark.stateChanged.connect(_on_chk_watermark_changed)
         
@@ -803,23 +805,22 @@ class WebGLTab(QWidget):
         actions_layout = QHBoxLayout()
         actions_layout.setSpacing(10)
 
-        self.btn_build_web = QPushButton("⚡ Build Selected Models WebGL")
+        self.btn_build_web = QPushButton("Build Selected WebGL Packages")
         self.btn_build_web.setObjectName("PrimaryBtn")
         self.btn_build_web.setCursor(Qt.PointingHandCursor)
         self.btn_build_web.clicked.connect(self.build_web_package)
 
-        self.btn_upload_web = QPushButton("🚀 Upload to Web (Vercel)")
+        self.btn_upload_web = QPushButton("Upload to Web (Vercel)")
         self.btn_upload_web.setObjectName("PrimaryBtn")
         self.btn_upload_web.setCursor(Qt.PointingHandCursor)
-        self.btn_upload_web.setStyleSheet("background-color: #0284c7; border: 1px solid #38bdf8; color: #ffffff; font-weight: bold; padding: 6px 14px;")
         self.btn_upload_web.clicked.connect(self.upload_to_web)
 
-        self.btn_toggle_server = QPushButton("🌐 Launch Web Server")
+        self.btn_toggle_server = QPushButton("Start Local Server")
         self.btn_toggle_server.setObjectName("SuccessBtn")
         self.btn_toggle_server.setCursor(Qt.PointingHandCursor)
         self.btn_toggle_server.clicked.connect(self.toggle_preview_server)
 
-        self.btn_open_web = QPushButton("📂 Open Web Build Folder")
+        self.btn_open_web = QPushButton("Open Web Build Folder")
         self.btn_open_web.setCursor(Qt.PointingHandCursor)
         self.btn_open_web.clicked.connect(self.open_web_folder)
 
@@ -1893,77 +1894,77 @@ class WebGLTab(QWidget):
         # Card Titles
         self.card_source.setTitle(
             t.get("tab3_card1_title", "WebGL Models & Output Filenames"), 
-            t.get("tab3_card1_sub", "Manage splat models and customize individual HTML output filenames")
+            t.get("tab3_card1_sub", "Manage splat assets and configure individual HTML output filenames")
         )
         self.card_camera.setTitle(
-            t.get("tab3_card2_title", "Selected Model Camera Viewport Setup"), 
-            t.get("tab3_card2_sub", "Interactive camera viewport configuration and clipboard sync for selected model")
+            t.get("tab3_card2_title", "Camera Viewport Configuration"), 
+            t.get("tab3_card2_sub", "Configure initial camera angle and synchronize viewpoint coordinates")
         )
         self.card_config.setTitle(
-            t.get("tab3_card3_title", "Output Destination & Batch Packaging"), 
-            t.get("tab3_card3_sub", "Specify destination directory, build all selected models, and toggle local web server")
+            t.get("tab3_card3_title", "Output Destination & Web Publishing"), 
+            t.get("tab3_card3_sub", "Specify destination directory, build WebGL packages, and upload to cloud")
         )
 
         # Toolbar Buttons
-        self.btn_add_files.setText(t.get("tab3_btn_add_files", "➕ Add Files..."))
-        self.btn_scan_proj.setText(t.get("tab3_btn_scan_proj", "🔄 Scan Folder"))
+        self.btn_add_files.setText(t.get("tab3_btn_add_files", "Add Files..."))
+        self.btn_scan_proj.setText(t.get("tab3_btn_scan_proj", "Scan Folder"))
         if hasattr(self, 'btn_select_all') and self.btn_select_all is not None:
-            self.btn_select_all.setText(t.get("tab3_btn_select_all", "☑️ Toggle All"))
-        self.btn_set_index.setText(t.get("tab3_btn_set_index", "🏷️ Set 1st as index.html"))
-        self.btn_remove_row.setText(t.get("tab3_btn_remove", "🗑 Remove"))
-        self.btn_clear_table.setText(t.get("tab3_btn_clear", "🧹 Clear All"))
+            self.btn_select_all.setText(t.get("tab3_btn_select_all", "Select All"))
+        self.btn_set_index.setText(t.get("tab3_btn_set_index", "Set 1st as index.html"))
+        self.btn_remove_row.setText(t.get("tab3_btn_remove", "Remove"))
+        self.btn_clear_table.setText(t.get("tab3_btn_clear", "Clear All"))
 
         # Table Column Headers
         build_label = t.get("tab3_tbl_col_build", "Build")
         clean_build = build_label.replace("☑️", "").replace("☑", "").replace("☐", "").strip()
         self.table_models.setHorizontalHeaderLabels([
-            f"☑️ {clean_build}",
+            f"{clean_build}",
             t.get("tab3_tbl_col_model", "Source Model"),
-            t.get("tab3_tbl_col_output", "Output HTML File (✏️ Editable)"),
+            t.get("tab3_tbl_col_output", "Output HTML File"),
             t.get("tab3_tbl_col_cam", "Camera Viewport"),
-            t.get("tab3_tbl_col_action", "Direct Action")
+            t.get("tab3_tbl_col_action", "Action")
         ])
         self._update_build_header()
 
         # Step 2 Widgets
-        self.btn_live_preview_cam.setText(t.get("tab3_btn_open_viewer", "🌐 1. Open Viewer to Adjust Camera"))
-        self.btn_paste_cam.setText(t.get("tab3_btn_paste_cam", "📋 2. Paste Copied View"))
-        self.lbl_presets.setText(t.get("tab3_lbl_presets", "⚡ Quick Presets:"))
-        self.btn_cam_front.setText(t.get("tab3_btn_cam_front", "🎯 Front View"))
-        self.btn_cam_quarter.setText(t.get("tab3_btn_cam_quarter", "📐 Quarter (3/4)"))
-        self.btn_cam_side.setText(t.get("tab3_btn_cam_side", "🚗 Side View"))
-        self.btn_cam_top.setText(t.get("tab3_btn_cam_top", "🚁 Top-Down"))
+        self.btn_live_preview_cam.setText(t.get("tab3_btn_open_viewer", "Adjust View in Browser"))
+        self.btn_paste_cam.setText(t.get("tab3_btn_paste_cam", "Paste Camera View"))
+        self.lbl_presets.setText(t.get("tab3_lbl_presets", "Presets:"))
+        self.btn_cam_front.setText(t.get("tab3_btn_cam_front", "Front"))
+        self.btn_cam_quarter.setText(t.get("tab3_btn_cam_quarter", "Quarter (3/4)"))
+        self.btn_cam_side.setText(t.get("tab3_btn_cam_side", "Side"))
+        self.btn_cam_top.setText(t.get("tab3_btn_cam_top", "Top-Down"))
         if hasattr(self, 'lbl_saved_views') and self.lbl_saved_views is not None:
-            self.lbl_saved_views.setText(t.get("tab3_lbl_saved_views", "⭐ Saved Views:"))
+            self.lbl_saved_views.setText(t.get("tab3_lbl_saved_views", "Saved Views:"))
         if hasattr(self, 'btn_save_cam_preset') and self.btn_save_cam_preset is not None:
-            self.btn_save_cam_preset.setText(t.get("tab3_btn_save_cam_preset", "💾 Save View"))
+            self.btn_save_cam_preset.setText(t.get("tab3_btn_save_cam_preset", "Save View"))
         if hasattr(self, 'btn_del_cam_preset') and self.btn_del_cam_preset is not None:
-            self.btn_del_cam_preset.setText(t.get("tab3_btn_del_cam_preset", "🗑 Del"))
+            self.btn_del_cam_preset.setText(t.get("tab3_btn_del_cam_preset", "Delete"))
         self._refresh_saved_views_combo()
-        self.lbl_cam_pos_title.setText(f"<b>{t.get('tab3_lbl_cam_pos', 'Cam Position (X,Y,Z):')}</b>")
-        self.lbl_cam_tgt_title.setText(f"<b>{t.get('tab3_lbl_cam_tgt', 'LookAt Target:')}</b>")
-        self.lbl_cam_fov_title.setText(f"<b>{t.get('tab3_lbl_cam_fov', 'FOV:')}</b>")
+        self.lbl_cam_pos_title.setText(t.get('tab3_lbl_cam_pos', 'Position (X,Y,Z):'))
+        self.lbl_cam_tgt_title.setText(t.get('tab3_lbl_cam_tgt', 'Target:'))
+        self.lbl_cam_fov_title.setText(t.get('tab3_lbl_cam_fov', 'FOV:'))
 
         # Step 3 Widgets
         self.lbl_dest_title.setText(t.get("tab3_lbl_output_folder", "Output Folder:"))
-        self.btn_browse_output.setText(t.get("tab3_btn_browse_output", "📁 Browse..."))
+        self.btn_browse_output.setText(t.get("tab3_btn_browse_output", "Browse..."))
         if hasattr(self, 'chk_watermark') and self.chk_watermark is not None:
-            self.chk_watermark.setText(t.get("tab3_chk_watermark", "🛡️ Client Review Watermark"))
+            self.chk_watermark.setText(t.get("tab3_chk_watermark", "Client Review Watermark"))
         if hasattr(self, 'input_watermark_text') and self.input_watermark_text is not None:
-            self.input_watermark_text.setPlaceholderText(t.get("tab3_placeholder_watermark", "Watermark Text (default: Points & Reality)"))
-        self.btn_build_web.setText(t.get("tab3_btn_build", "⚡ Build Selected Models WebGL"))
+            self.input_watermark_text.setPlaceholderText(t.get("tab3_placeholder_watermark", "Watermark Text (e.g. Points & Reality)"))
+        self.btn_build_web.setText(t.get("tab3_btn_build", "Build Selected WebGL Packages"))
         if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
-            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
+            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload to Web (Vercel)"))
         is_running = self.server_thread and self.server_thread.isRunning()
         self.btn_toggle_server.setText(
-            t.get("tab3_btn_toggle_server_off", "■ Stop Web Server") if is_running else t.get("tab3_btn_toggle_server_on", "🌐 Launch Web Server")
+            t.get("tab3_btn_toggle_server_off", "Stop Local Server") if is_running else t.get("tab3_btn_toggle_server_on", "Start Local Server")
         )
-        self.btn_open_web.setText(t.get("tab3_btn_open_folder", "📂 Open Web Build Folder"))
+        self.btn_open_web.setText(t.get("tab3_btn_open_folder", "Open Web Build Folder"))
 
         # Row Action buttons in table
         for r in range(self.table_models.rowCount()):
             btn = self.table_models.cellWidget(r, 4)
             if isinstance(btn, QPushButton):
-                btn.setText(t.get("tab3_btn_row_preview", "🌐 Preview"))
+                btn.setText(t.get("tab3_btn_row_preview", "Preview"))
 
         self.on_table_selection_changed()

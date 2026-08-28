@@ -13,7 +13,7 @@ class ElideLeftDelegate(QStyledItemDelegate):
         super().paint(painter, option, index)
 
 class StatusPill(QFrame):
-    """A sleek status badge component with colored indicator dot."""
+    """A sleek, professional status badge component with colored indicator dot."""
     def __init__(self, text="IDLE", status_type="idle", parent=None):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
@@ -22,7 +22,7 @@ class StatusPill(QFrame):
 
         self.dot = QLabel("●")
         self.lbl_text = QLabel(text)
-        self.lbl_text.setStyleSheet("font-weight: bold; font-size: 11px;")
+        self.lbl_text.setStyleSheet("font-weight: 600; font-size: 11px;")
         
         self.layout.addWidget(self.dot)
         self.layout.addWidget(self.lbl_text)
@@ -32,7 +32,7 @@ class StatusPill(QFrame):
         self.lbl_text.setText(text)
         
         colors = {
-            "idle": ("#64748b", "#334155", "#0f172a"),
+            "idle": ("#64748b", "#232732", "#15181f"),
             "running": ("#38bdf8", "#0284c7", "#0c4a6e"),
             "success": ("#34d399", "#059669", "#064e3b"),
             "warning": ("#fbbf24", "#d97706", "#78350f"),
@@ -41,13 +41,13 @@ class StatusPill(QFrame):
         }
         dot_color, border_color, bg_color = colors.get(status_type, colors["idle"])
         
-        self.dot.setStyleSheet(f"color: {dot_color}; font-size: 10px;")
-        self.lbl_text.setStyleSheet(f"color: {dot_color}; font-weight: bold; font-size: 11px;")
+        self.dot.setStyleSheet(f"color: {dot_color}; font-size: 9px;")
+        self.lbl_text.setStyleSheet(f"color: {dot_color}; font-weight: 600; font-size: 11px;")
         self.setStyleSheet(f"""
             QFrame {{
                 background-color: {bg_color};
                 border: 1px solid {border_color};
-                border-radius: 10px;
+                border-radius: 4px;
             }}
         """)
 
@@ -86,7 +86,7 @@ class DragDropTableWidget(QTableWidget):
             super().dropEvent(event)
 
 class ModernStepCard(QFrame):
-    """A sleek, modern card with Step Badge, Title, Status, and Collapsible/Action header."""
+    """A clean, professional card with Title, Subtitle, and Collapsible header."""
     def __init__(self, step_num="1", title="Step Title", subtitle="", parent=None):
         super().__init__(parent)
         self.setObjectName("ModernStepCard")
@@ -97,7 +97,7 @@ class ModernStepCard(QFrame):
         
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(12, 10, 12, 12)
-        self.main_layout.setSpacing(10)
+        self.main_layout.setSpacing(8)
 
         # Header Bar
         self.header_layout = QHBoxLayout()
@@ -105,11 +105,11 @@ class ModernStepCard(QFrame):
 
         # Title Label
         self.lbl_title = QLabel(title)
-        self.lbl_title.setStyleSheet("font-size: 13px; font-weight: bold; color: #f1f5f9;")
+        self.lbl_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
 
         # Subtitle
         self.lbl_subtitle = QLabel(subtitle)
-        self.lbl_subtitle.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        self.lbl_subtitle.setStyleSheet("font-size: 11px; color: #64748b;")
 
         self.header_layout.addWidget(self.lbl_title)
         if subtitle:
@@ -123,13 +123,13 @@ class ModernStepCard(QFrame):
 
         # Toggle Button
         self.btn_toggle = QPushButton("▾")
-        self.btn_toggle.setFixedSize(24, 24)
+        self.btn_toggle.setFixedSize(22, 22)
         self.btn_toggle.setCursor(Qt.PointingHandCursor)
         self.btn_toggle.setStyleSheet("""
             QPushButton {
-                background: transparent; border: none; color: #94a3b8; font-size: 14px; font-weight: bold; padding: 0px;
+                background: transparent; border: none; color: #64748b; font-size: 12px; font-weight: bold; padding: 0px;
             }
-            QPushButton:hover { color: #38bdf8; }
+            QPushButton:hover { color: #3b82f6; }
         """)
         self.btn_toggle.clicked.connect(self.toggle)
         self.header_layout.addWidget(self.btn_toggle)
@@ -145,9 +145,9 @@ class ModernStepCard(QFrame):
 
         self.setStyleSheet("""
             #ModernStepCard {
-                background-color: #1e2025;
-                border: 1px solid #2d3139;
-                border-radius: 8px;
+                background-color: #15181f;
+                border: 1px solid #232732;
+                border-radius: 6px;
             }
         """)
 

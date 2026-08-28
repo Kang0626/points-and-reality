@@ -30,14 +30,14 @@ class ProjectConfigWidget(ModernStepCard):
         self.input_proj_dir.setStyleSheet("background-color: #141619; border: 1px solid #333842; font-family: Consolas, monospace; font-size: 11px;")
         self.input_proj_dir.editingFinished.connect(self.on_proj_dir_edited)
         
-        self.btn_new_proj = QPushButton("+ New Project")
+        self.btn_new_proj = QPushButton("New Project")
         self.btn_new_proj.setObjectName("PrimaryBtn")
         self.btn_new_proj.clicked.connect(self.create_new_project)
 
-        self.btn_browse_proj = QPushButton("📁 Browse...")
+        self.btn_browse_proj = QPushButton("Browse...")
         self.btn_browse_proj.clicked.connect(self.browse_project)
 
-        self.btn_open_proj = QPushButton("↗ Open Folder")
+        self.btn_open_proj = QPushButton("Open Folder")
         self.btn_open_proj.clicked.connect(self.open_project_folder)
         
         content_layout.addWidget(self.lbl_proj)
@@ -143,9 +143,9 @@ class ProjectConfigWidget(ModernStepCard):
         os.startfile(target_dir)
 
     def update_language(self, t):
-        self.setTitle(t.get("group_project", "Project Setup"), t.get("sub_project", "Select or create project workspace"))
-        self.lbl_proj.setText(t.get("lbl_project_dir", "Project Folder:"))
-        self.input_proj_dir.setPlaceholderText(t.get("placeholder_project", "Select or create project directory..."))
-        self.btn_new_proj.setText(t.get("btn_new_proj", "+ New Project"))
-        self.btn_browse_proj.setText(t.get("btn_browse_proj", "📁 Browse..."))
-        self.btn_open_proj.setText(t.get("btn_open_proj", "↗ Open Folder"))
+        self.setTitle(t.get("group_project", "Project Setup"), t.get("sub_project", "Set project workspace directory and automated pipeline folders"))
+        self.lbl_proj.setText(t.get("lbl_project_dir", "Project Directory:"))
+        self.input_proj_dir.setPlaceholderText(t.get("placeholder_project", "Select or enter project directory path..."))
+        self.btn_new_proj.setText(t.get("btn_new_proj", "New Project"))
+        self.btn_browse_proj.setText(t.get("btn_browse_proj", "Browse..."))
+        self.btn_open_proj.setText(t.get("btn_open_proj", "Open Folder"))

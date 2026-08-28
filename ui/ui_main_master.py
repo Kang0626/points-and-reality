@@ -52,9 +52,9 @@ class PointsAndRealityController(QMainWindow):
         header_card.setObjectName("headerCard")
         header_card.setStyleSheet("""
             QFrame#headerCard {
-                background-color: #1a1c22;
-                border: 1px solid #2d3139;
-                border-radius: 8px;
+                background-color: #15181f;
+                border: 1px solid #232732;
+                border-radius: 6px;
             }
         """)
         header_vlayout = QVBoxLayout(header_card)
@@ -71,11 +71,11 @@ class PointsAndRealityController(QMainWindow):
         title_box = QHBoxLayout()
         title_box.setSpacing(8)
         
-        lbl_logo = QLabel("✨ Points & Reality")
-        lbl_logo.setStyleSheet("color: #38bdf8; font-size: 15px; font-weight: 900; letter-spacing: 0.5px;")
+        lbl_logo = QLabel("POINTS & REALITY")
+        lbl_logo.setStyleSheet("color: #ffffff; font-size: 13.5px; font-weight: 800; letter-spacing: 0.8px;")
         
         lbl_ver = QLabel("3DGS Pipeline Controller")
-        lbl_ver.setStyleSheet("color: #94a3b8; font-size: 12px; font-weight: 600;")
+        lbl_ver.setStyleSheet("color: #64748b; font-size: 11.5px; font-weight: 500;")
         
         title_box.addWidget(lbl_logo)
         title_box.addWidget(lbl_ver)
@@ -87,27 +87,27 @@ class PointsAndRealityController(QMainWindow):
         controls_box.setSpacing(6)
 
         self.lbl_preset = QLabel("Preset:")
-        self.lbl_preset.setStyleSheet("color: #94a3b8; font-size: 11px; font-weight: bold;")
+        self.lbl_preset.setStyleSheet("color: #94a3b8; font-size: 11px; font-weight: 600;")
         
         self.combo_preset = QComboBox()
         self.combo_preset.setMinimumWidth(130)
         self.combo_preset.currentIndexChanged.connect(self.apply_preset)
 
-        self.btn_preset_browse = QPushButton("📂 폴더")
+        self.btn_preset_browse = QPushButton("Folder")
         self.btn_preset_browse.setToolTip("Set Preset Directory")
         self.btn_preset_browse.clicked.connect(self.browse_preset_dir)
 
-        self.btn_preset_save = QPushButton("💾 저장")
+        self.btn_preset_save = QPushButton("Save")
         self.btn_preset_save.setToolTip("Save Current Preset")
         self.btn_preset_save.clicked.connect(self.save_preset)
 
-        self.btn_preset_del = QPushButton("🗑 삭제")
+        self.btn_preset_del = QPushButton("Delete")
         self.btn_preset_del.setToolTip("Delete Selected Preset")
         self.btn_preset_del.clicked.connect(self.delete_preset)
 
-        self.btn_lang = QPushButton(f"🌐 {self.current_lang}")
+        self.btn_lang = QPushButton(self.current_lang)
         self.btn_lang.setCursor(Qt.PointingHandCursor)
-        self.btn_lang.setFixedWidth(68)
+        self.btn_lang.setFixedWidth(56)
         self.btn_lang.clicked.connect(self.toggle_language)
 
         controls_box.addWidget(self.lbl_preset)
@@ -125,7 +125,7 @@ class PointsAndRealityController(QMainWindow):
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
         sep.setFrameShadow(QFrame.Plain)
-        sep.setStyleSheet("color: #262930; background-color: #262930; height: 1px; border: none; margin: 0px;")
+        sep.setStyleSheet("color: #232732; background-color: #232732; height: 1px; border: none; margin: 0px;")
         sep.setFixedHeight(1)
         header_vlayout.addWidget(sep)
 
@@ -141,32 +141,32 @@ class PointsAndRealityController(QMainWindow):
         self.tab_bar.setDrawBase(False)
         self.tab_bar.setExpanding(False)
         self.tab_bar.setUsesScrollButtons(False)
-        self.tab_bar.addTab("캡처 & 인제스트")
-        self.tab_bar.addTab("스플랫 클린업")
-        self.tab_bar.addTab("WebGL 빌드")
+        self.tab_bar.addTab("Capture & Ingest")
+        self.tab_bar.addTab("Splat Cleanup")
+        self.tab_bar.addTab("WebGL Build")
         self.tab_bar.setStyleSheet("""
             QTabBar {
                 background-color: transparent;
             }
             QTabBar::tab { 
-                background-color: #14161a; 
+                background-color: #171920; 
                 color: #94a3b8; 
-                padding: 6px 16px; 
-                border: 1px solid #2d3139;
-                border-radius: 6px;
-                margin-right: 6px;
-                font-weight: bold;
+                padding: 5px 14px; 
+                border: 1px solid #232732;
+                border-radius: 4px;
+                margin-right: 4px;
+                font-weight: 600;
                 font-size: 11.5px;
             }
             QTabBar::tab:hover { 
-                background-color: #222630; 
+                background-color: #20242e; 
                 color: #f1f5f9; 
-                border-color: #38bdf8;
+                border-color: #3b4254;
             }
             QTabBar::tab:selected { 
-                background-color: #0284c7; 
+                background-color: #2563eb; 
                 color: #ffffff; 
-                border: 1px solid #38bdf8;
+                border: 1px solid #3b82f6;
             }
         """)
         tier2_layout.addWidget(self.tab_bar)
@@ -260,9 +260,9 @@ class PointsAndRealityController(QMainWindow):
         log_frame = QFrame()
         log_frame.setStyleSheet("""
             QFrame {
-                background-color: #15171b;
-                border: 1px solid #2d3139;
-                border-radius: 8px;
+                background-color: #15181f;
+                border: 1px solid #232732;
+                border-radius: 6px;
             }
         """)
         log_layout = QVBoxLayout(log_frame)
@@ -270,11 +270,11 @@ class PointsAndRealityController(QMainWindow):
         log_layout.setSpacing(6)
 
         log_header = QHBoxLayout()
-        self.lbl_log_title = QLabel("📟 Backend Console & Activity Log")
-        self.lbl_log_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #94a3b8;")
+        self.lbl_log_title = QLabel("Console & Activity Log")
+        self.lbl_log_title.setStyleSheet("font-size: 11.5px; font-weight: 600; color: #94a3b8;")
 
         self.btn_clear_log = QPushButton("Clear")
-        self.btn_clear_log.setStyleSheet("padding: 2px 8px; font-size: 10px;")
+        self.btn_clear_log.setStyleSheet("padding: 2px 8px; font-size: 10.5px;")
         self.btn_clear_log.clicked.connect(lambda: self.log_console.clear())
 
         log_header.addWidget(self.lbl_log_title)
@@ -286,9 +286,9 @@ class PointsAndRealityController(QMainWindow):
         self.log_console.setMinimumHeight(100)
         self.log_console.setStyleSheet("""
             QTextBrowser {
-                background-color: #0f1013;
-                border: 1px solid #24272e;
-                border-radius: 6px;
+                background-color: #0c0d11;
+                border: 1px solid #1e222c;
+                border-radius: 4px;
                 color: #e2e8f0;
                 font-family: Consolas, 'Cascadia Code', monospace;
                 font-size: 11px;
@@ -396,18 +396,18 @@ class PointsAndRealityController(QMainWindow):
 
     def apply_language(self, lang):
         t = TRANSLATIONS.get(lang, TRANSLATIONS["EN"])
-        self.btn_lang.setText(f"🌐 {lang}")
+        self.btn_lang.setText(lang)
         
         self.tab_bar.setTabText(0, t.get("tab_capture", "Capture && Ingest").replace("&", "&&") if "&&" not in t.get("tab_capture", "") else t.get("tab_capture"))
         self.tab_bar.setTabText(1, t.get("tab_cleanup", "Splat Cleanup").replace("&", "&&") if "&&" not in t.get("tab_cleanup", "") else t.get("tab_cleanup"))
         self.tab_bar.setTabText(2, t.get("tab_webgl", "WebGL Build").replace("&", "&&") if "&&" not in t.get("tab_webgl", "") else t.get("tab_webgl"))
         
-        self.lbl_log_title.setText(f"📟 {t.get('log_title', 'Backend Console & Activity Log')}")
+        self.lbl_log_title.setText(t.get('log_title', 'Console & Activity Log'))
         self.btn_clear_log.setText(t.get("btn_clear_log", "Clear"))
         self.lbl_preset.setText(t.get("lbl_preset", "Preset:"))
-        self.btn_preset_browse.setText(t.get("btn_preset_browse", "📂 폴더"))
-        self.btn_preset_save.setText(t.get("btn_preset_save", "💾 저장"))
-        self.btn_preset_del.setText(t.get("btn_preset_del", "🗑 삭제"))
+        self.btn_preset_browse.setText(t.get("btn_preset_browse", "Folder"))
+        self.btn_preset_save.setText(t.get("btn_preset_save", "Save"))
+        self.btn_preset_del.setText(t.get("btn_preset_del", "Delete"))
         
         if self.combo_preset.currentIndex() == 0:
             self.combo_preset.setItemText(0, t.get("preset_default", "--- Select Preset ---"))

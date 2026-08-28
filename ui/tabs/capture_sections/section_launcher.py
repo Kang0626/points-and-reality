@@ -27,20 +27,20 @@ class LauncherWidget(ModernStepCard):
         # --------------------------------------------------
         rc_card = QFrame()
         rc_card.setObjectName("rcCard")
-        rc_card.setStyleSheet("QFrame#rcCard { background-color: #141619; border: 1px solid #2d3139; border-radius: 6px; }")
+        rc_card.setStyleSheet("QFrame#rcCard { background-color: #15181f; border: 1px solid #232732; border-radius: 6px; }")
         rc_layout = QHBoxLayout(rc_card)
         rc_layout.setContentsMargins(10, 6, 10, 6)
         rc_layout.setSpacing(10)
 
-        self.btn_launch_rc = QPushButton("🚀 Launch RealityCapture")
+        self.btn_launch_rc = QPushButton("Launch RealityCapture")
         self.btn_launch_rc.setObjectName("PrimaryBtn")
         self.btn_launch_rc.setCursor(Qt.PointingHandCursor)
         self.btn_launch_rc.clicked.connect(self.launch_realitycapture)
 
         self.lbl_rc_desc = QLabel("Perform Camera Alignment & Export Dataset")
-        self.lbl_rc_desc.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        self.lbl_rc_desc.setStyleSheet("color: #64748b; font-size: 11.5px;")
 
-        self.btn_copy_frames_path = QPushButton("📋 Copy Extracted Frames Path")
+        self.btn_copy_frames_path = QPushButton("Copy Frames Path")
         self.btn_copy_frames_path.setCursor(Qt.PointingHandCursor)
         self.btn_copy_frames_path.clicked.connect(lambda: self.copy_to_clipboard("extracted_frames", "Extracted Frames", parent_dir="01_extracted_frames"))
 
@@ -55,7 +55,7 @@ class LauncherWidget(ModernStepCard):
         # --------------------------------------------------
         trainer_card = QFrame()
         trainer_card.setObjectName("trainerCard")
-        trainer_card.setStyleSheet("QFrame#trainerCard { background-color: #141619; border: 1px solid #2d3139; border-radius: 6px; }")
+        trainer_card.setStyleSheet("QFrame#trainerCard { background-color: #15181f; border: 1px solid #232732; border-radius: 6px; }")
         trainer_card_layout = QVBoxLayout(trainer_card)
         trainer_card_layout.setContentsMargins(10, 8, 10, 8)
         trainer_card_layout.setSpacing(8)
@@ -64,8 +64,8 @@ class LauncherWidget(ModernStepCard):
         top_row = QHBoxLayout()
         top_row.setSpacing(8)
 
-        self.lbl_target = QLabel("🎯 Target 3DGS Engine:")
-        self.lbl_target.setStyleSheet("font-weight: bold; color: #cbd5e1;")
+        self.lbl_target = QLabel("Target Trainer:")
+        self.lbl_target.setStyleSheet("font-weight: 600; color: #cbd5e1;")
         
         self.combo_trainer = QComboBox()
         self.combo_trainer.addItems(["Postshot (Jawset)", "Lichtfeld Studio"])
@@ -73,7 +73,7 @@ class LauncherWidget(ModernStepCard):
         self.combo_trainer.currentTextChanged.connect(self.on_trainer_changed)
         self.combo_trainer.setMinimumWidth(180)
 
-        self.btn_refresh = QPushButton("🔄 Refresh Status")
+        self.btn_refresh = QPushButton("Refresh")
         self.btn_refresh.setCursor(Qt.PointingHandCursor)
         self.btn_refresh.clicked.connect(self.refresh_status)
 
@@ -86,7 +86,7 @@ class LauncherWidget(ModernStepCard):
         # Dynamic Stacked Inspector
         self.stack = QStackedWidget()
         self.stack.setObjectName("trainerStack")
-        self.stack.setStyleSheet("QStackedWidget#trainerStack { background-color: #1a1c21; border: 1px solid #282b33; border-radius: 6px; }")
+        self.stack.setStyleSheet("QStackedWidget#trainerStack { background-color: #111318; border: 1px solid #1e222c; border-radius: 4px; }")
 
         # --- 1) Postshot Widget ---
         ps_widget = QWidget()
@@ -98,14 +98,14 @@ class LauncherWidget(ModernStepCard):
         ps_guide.setStyleSheet("color: #f59e0b; font-size: 11px;")
 
         ps_actions = QHBoxLayout()
-        self.btn_copy_ps_align = QPushButton("📋 Copy Alignment Path")
+        self.btn_copy_ps_align = QPushButton("Copy Alignment Path")
         self.btn_copy_ps_align.setCursor(Qt.PointingHandCursor)
         self.btn_copy_ps_align.clicked.connect(lambda: self.copy_to_clipboard("", "Alignment Folder"))
         
-        self.lbl_status_ps = QLabel("⚪ Waiting for Project...")
+        self.lbl_status_ps = QLabel("Waiting for Project...")
         self.lbl_status_ps.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 11px;")
 
-        self.btn_open_align = QPushButton("📂 Open Alignment Folder")
+        self.btn_open_align = QPushButton("Open Alignment Folder")
         self.btn_open_align.setCursor(Qt.PointingHandCursor)
         self.btn_open_align.clicked.connect(lambda: self.open_subfolder(""))
 
@@ -130,12 +130,12 @@ class LauncherWidget(ModernStepCard):
         lf_guide.setStyleSheet("color: #38bdf8; font-size: 11px;")
 
         lf_row1 = QHBoxLayout()
-        btn_copy_sparse = QPushButton("📋 Copy Sparse Path")
+        btn_copy_sparse = QPushButton("Copy Sparse Path")
         btn_copy_sparse.setCursor(Qt.PointingHandCursor)
         btn_copy_sparse.clicked.connect(lambda: self.copy_to_clipboard("colmap/sparse/0", "Sparse Data"))
-        self.lbl_status_lf_sparse = QLabel("⚪ Sparse: Waiting...")
+        self.lbl_status_lf_sparse = QLabel("Sparse: Waiting...")
         self.lbl_status_lf_sparse.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 11px;")
-        btn_open_sparse = QPushButton("📂 Open Sparse")
+        btn_open_sparse = QPushButton("Open Sparse")
         btn_open_sparse.setCursor(Qt.PointingHandCursor)
         btn_open_sparse.clicked.connect(lambda: self.open_subfolder("colmap/sparse/0"))
 
@@ -146,12 +146,12 @@ class LauncherWidget(ModernStepCard):
         lf_row1.addWidget(btn_open_sparse)
 
         lf_row2 = QHBoxLayout()
-        btn_copy_images = QPushButton("📋 Copy Images Path")
+        btn_copy_images = QPushButton("Copy Images Path")
         btn_copy_images.setCursor(Qt.PointingHandCursor)
         btn_copy_images.clicked.connect(lambda: self.copy_to_clipboard("colmap/images", "Images Data"))
-        self.lbl_status_lf_images = QLabel("⚪ Images: Waiting...")
+        self.lbl_status_lf_images = QLabel("Images: Waiting...")
         self.lbl_status_lf_images.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 11px;")
-        btn_open_images = QPushButton("📂 Open Images")
+        btn_open_images = QPushButton("Open Images")
         btn_open_images.setCursor(Qt.PointingHandCursor)
         btn_open_images.clicked.connect(lambda: self.open_subfolder("colmap/images"))
 
@@ -170,18 +170,18 @@ class LauncherWidget(ModernStepCard):
 
         # Launch Trainer Button Row
         bottom_launch_row = QHBoxLayout()
-        self.btn_launch_trainer = QPushButton("🚀 Auto-Load & Launch Trainer")
+        self.btn_launch_trainer = QPushButton("Auto-Load & Launch Trainer")
         self.btn_launch_trainer.setObjectName("SuccessBtn")
         self.btn_launch_trainer.setCursor(Qt.PointingHandCursor)
         self.btn_launch_trainer.clicked.connect(self.launch_selected_trainer)
 
-        self.btn_open_exports = QPushButton("📂 Open 03_splats_exports")
+        self.btn_open_exports = QPushButton("Open Exports Folder")
         self.btn_open_exports.setCursor(Qt.PointingHandCursor)
         self.btn_open_exports.setToolTip("Open folder where trained 3DGS splats (.ply/.sog) are saved")
         self.btn_open_exports.clicked.connect(self.open_exports_folder)
 
-        lbl_export_hint = QLabel("➔ Target Output: [ 03_splats_exports ]")
-        lbl_export_hint.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
+        lbl_export_hint = QLabel("➔ Target: [ 03_splats_exports ]")
+        lbl_export_hint.setStyleSheet("color: #64748b; font-weight: 500; font-size: 11px;")
 
         bottom_launch_row.addWidget(self.btn_launch_trainer)
         bottom_launch_row.addWidget(self.btn_open_exports)
@@ -327,15 +327,15 @@ class LauncherWidget(ModernStepCard):
         os.startfile(export_dir)
 
     def update_language(self, t):
-        self.setTitle(t.get("group_launcher", "Camera Alignment & Trainer Bridge"), t.get("sub_launcher", "Align cameras and launch 3DGS training engine"))
-        self.btn_launch_rc.setText(t.get("btn_launch_rc", "🚀 Launch RealityCapture"))
+        self.setTitle(t.get("group_launcher", "Camera Alignment & Trainer Bridge"), t.get("sub_launcher", "Align camera positions and bridge to 3DGS training engines"))
+        self.btn_launch_rc.setText(t.get("btn_launch_rc", "Launch RealityCapture"))
         self.lbl_rc_desc.setText(t.get("lbl_rc_desc", "Perform Camera Alignment & Export Dataset"))
-        self.btn_copy_frames_path.setText(t.get("btn_copy_frames_path", "📋 Copy Extracted Frames Path"))
-        self.lbl_target.setText(t.get("lbl_target", "🎯 Target 3DGS Engine:"))
-        self.btn_refresh.setText(t.get("btn_refresh", "🔄 Refresh Status"))
-        self.btn_launch_trainer.setText(t.get("btn_launch_trainer", "🚀 Auto-Load & Launch Trainer"))
+        self.btn_copy_frames_path.setText(t.get("btn_copy_frames_path", "Copy Frames Path"))
+        self.lbl_target.setText(t.get("lbl_target", "Target Trainer:"))
+        self.btn_refresh.setText(t.get("btn_refresh", "Refresh"))
+        self.btn_launch_trainer.setText(t.get("btn_launch_trainer", "Auto-Load & Launch Trainer"))
         if hasattr(self, 'btn_open_exports') and self.btn_open_exports is not None:
-            self.btn_open_exports.setText(t.get("btn_open_exports", "📂 Open 03_splats_exports"))
+            self.btn_open_exports.setText(t.get("btn_open_exports", "Open Exports (03_splats_exports)"))
 
     def get_preset_data(self):
         return {"trainer": self.combo_trainer.currentIndex()}
