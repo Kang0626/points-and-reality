@@ -5,6 +5,8 @@ import json
 import base64
 import socket
 import threading
+import time
+import subprocess
 import http.server
 import socketserver
 import webbrowser
@@ -15,6 +17,79 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QInputDialog, QMessageBox)
 from PyQt5.QtCore import Qt, pyqtSignal, QThread
 from ui.ui_components import ModernStepCard, StatusPill, ElideLeftDelegate
+
+class VercelUploadThread(QThread):
+    upload_progress = pyqtSignal(str)
+    upload_success = pyqtSignal(str)
+    upload_error = pyqtSignal(str)
+
+    def __init__(self, src_web_dir, repo_dir):
+        super().__init__()
+        self.src_web_dir = os.path.normpath(src_web_dir)
+        self.repo_dir = os.path.normpath(repo_dir)
+
+    def run(self):
+        try:
+            self.upload_progress.emit("Syncing 05_web_build assets to repository...")
+            target_web_dir = os.path.normpath(os.path.join(self.repo_dir, "05_web_build"))
+            os.makedirs(target_web_dir, exist_ok=True)
+            
+            # If source directory is different from repo's 05_web_build, copy/sync files
+            if os.path.abspath(self.src_web_dir) != os.path.abspath(target_web_dir):
+                for item in os.listdir(self.src_web_dir):
+                    s = os.path.join(self.src_web_dir, item)
+                    d = os.path.join(target_web_dir, item)
+                    if os.path.isdir(s):
+                        if os.path.exists(d):
+                            shutil.rmtree(d, ignore_errors=True)
+                        shutil.copytree(s, d)
+                    else:
+                        shutil.copy2(s, d)
+
+            # Generate/update models.json manifest in target_web_dir
+            html_files = [f for f in os.listdir(target_web_dir) if f.lower().endswith('.html')]
+            manifest = {
+                "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "total_models": len(html_files),
+                "models": []
+            }
+            for html_file in sorted(html_files):
+                base_name = os.path.splitext(html_file)[0]
+                manifest["models"].append({
+                    "title": base_name,
+                    "filename": html_file,
+                    "path": f"05_web_build/{html_file}",
+                    "is_index": (html_file.lower() == "index.html")
+                })
+            
+            manifest_path = os.path.join(target_web_dir, "models.json")
+            with open(manifest_path, 'w', encoding='utf-8') as mf:
+                json.dump(manifest, mf, indent=2)
+
+            self.upload_progress.emit(f"Prepared {len(html_files)} model(s). Staging Git files...")
+            
+            # Git add
+            subprocess.run(["git", "add", "."], cwd=self.repo_dir, capture_output=True, text=True, check=True)
+            
+            # Git commit
+            commit_res = subprocess.run(
+                ["git", "commit", "-m", f"deploy: Update 05_web_build models ({len(html_files)} items) for Vercel"],
+                cwd=self.repo_dir, capture_output=True, text=True
+            )
+            
+            # Git push
+            self.upload_progress.emit("Pushing to GitHub (origin/main)...")
+            push_res = subprocess.run(
+                ["git", "push", "origin", "main"],
+                cwd=self.repo_dir, capture_output=True, text=True, check=True
+            )
+            
+            self.upload_success.emit(f"Pushed {len(html_files)} WebGL model(s) to GitHub! Vercel is now building and deploying live.")
+        except subprocess.CalledProcessError as cpe:
+            err_msg = cpe.stderr.strip() if (cpe.stderr and cpe.stderr.strip()) else (cpe.stdout.strip() if cpe.stdout else str(cpe))
+            self.upload_error.emit(f"Git operation failed: {err_msg}")
+        except Exception as ex:
+            self.upload_error.emit(f"Upload error: {str(ex)}")
 
 class HTTPServerThread(QThread):
     server_started = pyqtSignal(int)
@@ -733,6 +808,12 @@ class WebGLTab(QWidget):
         self.btn_build_web.setCursor(Qt.PointingHandCursor)
         self.btn_build_web.clicked.connect(self.build_web_package)
 
+        self.btn_upload_web = QPushButton("🚀 Upload to Web (Vercel)")
+        self.btn_upload_web.setObjectName("PrimaryBtn")
+        self.btn_upload_web.setCursor(Qt.PointingHandCursor)
+        self.btn_upload_web.setStyleSheet("background-color: #0284c7; border: 1px solid #38bdf8; color: #ffffff; font-weight: bold; padding: 6px 14px;")
+        self.btn_upload_web.clicked.connect(self.upload_to_web)
+
         self.btn_toggle_server = QPushButton("🌐 Launch Web Server")
         self.btn_toggle_server.setObjectName("SuccessBtn")
         self.btn_toggle_server.setCursor(Qt.PointingHandCursor)
@@ -743,6 +824,7 @@ class WebGLTab(QWidget):
         self.btn_open_web.clicked.connect(self.open_web_folder)
 
         actions_layout.addWidget(self.btn_build_web)
+        actions_layout.addWidget(self.btn_upload_web)
         actions_layout.addWidget(self.btn_toggle_server)
         actions_layout.addWidget(self.btn_open_web)
         actions_layout.addStretch()
@@ -1688,7 +1770,81 @@ class WebGLTab(QWidget):
         size_kb = os.path.getsize(html_path) / 1024
         wm_tag = " [🛡️ Watermark]" if (enable_watermark and watermark_text) else ""
         self.log_signal.emit(f"Built 3DGS Viewer{wm_tag}: {html_filename} ({size_kb:.1f} KB) [Cam: {cam_pos}]", "info")
+        self._update_models_manifest(out_dir)
         return html_filename
+
+    def _update_models_manifest(self, out_dir):
+        """Automatically create/update models.json manifest in the output folder."""
+        try:
+            out_dir = os.path.normpath(out_dir)
+            if not os.path.exists(out_dir):
+                return
+            html_files = [f for f in os.listdir(out_dir) if f.lower().endswith('.html')]
+            manifest = {
+                "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "total_models": len(html_files),
+                "models": []
+            }
+            for h in sorted(html_files):
+                base = os.path.splitext(h)[0]
+                manifest["models"].append({
+                    "title": base,
+                    "filename": h,
+                    "path": f"05_web_build/{h}",
+                    "is_index": (h.lower() == "index.html")
+                })
+            manifest_file = os.path.join(out_dir, "models.json")
+            with open(manifest_file, 'w', encoding='utf-8') as mf:
+                json.dump(manifest, mf, indent=2)
+        except Exception:
+            pass
+
+    # ----------------------------------------------------------------------
+    # Vercel / GitHub Web Viewer Upload & Sync
+    # ----------------------------------------------------------------------
+    def upload_to_web(self):
+        t = getattr(self, 'current_translations', {})
+        out_dir = self.input_output_dir.text().strip()
+        if not out_dir and self.proj_dir:
+            out_dir = os.path.join(self.proj_dir, "05_web_build")
+
+        if not out_dir or not os.path.exists(out_dir):
+            self.log_signal.emit("[ERROR] No 05_web_build output directory found. Please specify output folder and build models first.", "error")
+            return
+
+        html_files = [f for f in os.listdir(out_dir) if f.lower().endswith('.html')]
+        if not html_files:
+            self.log_signal.emit("[WARNING] No HTML files in 05_web_build. Build a WebGL model first before uploading.", "warning")
+            return
+
+        # Find repo root (contains .git)
+        repo_dir = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        
+        self.btn_upload_web.setEnabled(False)
+        self.btn_upload_web.setText(t.get("tab3_btn_upload_web_running", "⏳ Uploading to Web..."))
+        self.pill_config.set_status("Uploading...", "running")
+        self.log_signal.emit(f"Starting upload of {len(html_files)} WebGL model(s) to GitHub / Vercel...", "info")
+
+        self.upload_thread = VercelUploadThread(out_dir, repo_dir)
+        self.upload_thread.upload_progress.connect(lambda msg: self.log_signal.emit(f"[SYNC] {msg}", "info"))
+        self.upload_thread.upload_success.connect(self._on_upload_success)
+        self.upload_thread.upload_error.connect(self._on_upload_error)
+        self.upload_thread.start()
+
+    def _on_upload_success(self, msg):
+        t = getattr(self, 'current_translations', {})
+        self.btn_upload_web.setEnabled(True)
+        self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
+        self.pill_config.set_status("Live (Vercel)", "success")
+        self.log_signal.emit(f"[SUCCESS] 🚀 {msg}", "success")
+        QMessageBox.information(self, "Vercel Web Viewer Upload Complete", f"✅ 3DGS WebGL models uploaded to GitHub!\n\nVercel will deploy the live web viewer in ~15 seconds.")
+
+    def _on_upload_error(self, err_msg):
+        t = getattr(self, 'current_translations', {})
+        self.btn_upload_web.setEnabled(True)
+        self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
+        self.pill_config.set_status("Upload Error", "error")
+        self.log_signal.emit(f"[ERROR] {err_msg}", "error")
 
     # ----------------------------------------------------------------------
     # Local Server Control
@@ -1796,6 +1952,8 @@ class WebGLTab(QWidget):
         if hasattr(self, 'input_watermark_text') and self.input_watermark_text is not None:
             self.input_watermark_text.setPlaceholderText(t.get("tab3_placeholder_watermark", "Watermark Text (default: Points & Reality)"))
         self.btn_build_web.setText(t.get("tab3_btn_build", "⚡ Build Selected Models WebGL"))
+        if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
+            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
         is_running = self.server_thread and self.server_thread.isRunning()
         self.btn_toggle_server.setText(
             t.get("tab3_btn_toggle_server_off", "■ Stop Web Server") if is_running else t.get("tab3_btn_toggle_server_on", "🌐 Launch Web Server")

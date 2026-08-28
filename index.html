@@ -184,6 +184,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
     }
 
     .btn-primary:hover {
@@ -205,6 +206,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
     }
 
     .btn-secondary:hover {
@@ -387,6 +389,56 @@
       line-height: 1.65;
     }
 
+    /* Dynamic Model Gallery */
+    .model-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      transition: var(--transition-smooth);
+    }
+
+    .model-card:hover {
+      border-color: var(--accent-steel);
+      background: var(--bg-surface-raised);
+      transform: translateY(-2px);
+    }
+
+    .model-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .model-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-steel);
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .model-card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 8px 0 4px;
+    }
+
+    .model-card-file {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
     /* Showcase Banner */
     .showcase-card {
       background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
@@ -497,7 +549,7 @@
         <span class="lang-arrow">▼</span>
       </div>
 
-      <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" data-i18n="btn_launch_viewer">
+      <a id="navViewerBtn" href="05_web_build/index.html" target="_blank" class="btn-primary" data-i18n="btn_launch_viewer">
         Launch Viewer
       </a>
     </div>
@@ -522,11 +574,11 @@
         </p>
 
         <div class="hero-buttons">
-          <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" data-i18n="hero_cta_primary">
+          <a id="heroViewerBtn" href="05_web_build/index.html" target="_blank" class="btn-primary" data-i18n="hero_cta_primary">
             Open WebGL 3D Viewer
           </a>
-          <a href="#services" class="btn-secondary" data-i18n="hero_cta_secondary">
-            Explore Capabilities
+          <a href="#showcase" class="btn-secondary" data-i18n="hero_cta_secondary">
+            Explore 3D Deliverables
           </a>
         </div>
       </div>
@@ -619,17 +671,29 @@
       </div>
     </section>
 
-    <!-- Interactive Showcase Banner -->
+    <!-- Interactive Showcase & Live 05_web_build Deliverables Section -->
     <section id="showcase">
+      <div class="section-header">
+        <div>
+          <div class="section-eyebrow" data-i18n="gallery_eyebrow">Live 3D Deliverables</div>
+          <h2 class="section-title" data-i18n="gallery_title">3DGS WebGL Deliverables & Showcase</h2>
+        </div>
+      </div>
+
+      <!-- Dynamic Model Grid populated from 05_web_build/models.json -->
+      <div id="modelsGrid" class="grid-3" style="margin-bottom: 30px;">
+        <!-- Dynamically injected via JavaScript -->
+      </div>
+
       <div class="showcase-card">
         <div class="showcase-content">
-          <h3 class="showcase-title" data-i18n="showcase_title">Experience the 3DGS Web Viewer</h3>
+          <h3 class="showcase-title" data-i18n="showcase_title">Interactive 3DGS Web Engine</h3>
           <p class="showcase-desc" data-i18n="showcase_desc">
-            Interact with Gaussian Splats directly in your browser. Fully optimized for high FPS navigation, customizable camera perspectives, and client review workflows.
+            Interact with 3D Gaussian Splats directly in your web browser. Fully optimized for 60+ FPS navigation, customized camera perspectives, and client review workflows.
           </p>
         </div>
         <div>
-          <a href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" style="padding: 12px 24px; font-size: 14px;" data-i18n="showcase_btn">
+          <a id="showcaseMainBtn" href="05_web_build/index.html" target="_blank" class="btn-primary" style="padding: 12px 24px; font-size: 14px;" data-i18n="showcase_btn">
             Open Interactive Viewer
           </a>
         </div>
@@ -649,7 +713,7 @@
     </div>
   </footer>
 
-  <!-- Multilingual Engine Script -->
+  <!-- Multilingual & Dynamic Model Detection Engine -->
   <script>
     const translations = {
       en: {
@@ -662,7 +726,7 @@
         hero_title: "High-Fidelity 3D Gaussian Splatting & Reality Capture.",
         hero_desc: "We reconstruct real-world automotive, architectural, and spatial environments into sub-millimeter accurate, photo-realistic 3DGS WebGL experiences with zero-latency browser rendering.",
         hero_cta_primary: "Open WebGL 3D Viewer",
-        hero_cta_secondary: "Explore Capabilities",
+        hero_cta_secondary: "Explore 3D Deliverables",
         metric_1: "Browser WebGL Frame Rate",
         metric_2: "Point Precision & Calibration",
         metric_3: "Standalone Client Bundles",
@@ -682,9 +746,12 @@
         pipe_2_desc: "GPU-accelerated Gaussian Splatting synthesis with bounding-box trims and density optimizations for minimal bundle sizes.",
         pipe_3_title: "Packaging & Vercel Delivery",
         pipe_3_desc: "Pre-configured Three.js and GaussianSplats3D bundles deployed globally via Vercel edge networks for instant client presentation.",
-        showcase_title: "Experience the 3DGS Web Viewer",
-        showcase_desc: "Interact with Gaussian Splats directly in your browser. Fully optimized for high FPS navigation, customizable camera perspectives, and client review workflows.",
+        gallery_eyebrow: "Live 3D Deliverables",
+        gallery_title: "3DGS WebGL Deliverables & Showcase",
+        showcase_title: "Interactive 3DGS Web Engine",
+        showcase_desc: "Interact with 3D Gaussian Splats directly in your web browser. Fully optimized for 60+ FPS navigation, customized camera perspectives, and client review workflows.",
         showcase_btn: "Open Interactive Viewer",
+        btn_view_model: "View 3D Model →",
         footer_rights: "All rights reserved.",
         footer_base: "Aotearoa New Zealand"
       },
@@ -698,7 +765,7 @@
         hero_title: "초정밀 3D 가우시안 스플래팅 & 리얼리티 캡처.",
         hero_desc: "실제 자동차, 건축 공간 및 환경을 서브 밀리미터 단위의 정밀도로 재구성하여 웹 브라우저에서 딜레이 없이 실시간 구동되는 실사급 3DGS WebGL 경험을 제공합니다.",
         hero_cta_primary: "WebGL 3D 뷰어 열기",
-        hero_cta_secondary: "프로덕션 기능 살펴보기",
+        hero_cta_secondary: "3D 결과물 살펴보기",
         metric_1: "브라우저 WebGL 프레임 레이트",
         metric_2: "포인트 정밀도 및 캘리브레이션",
         metric_3: "독립 실행형 오프라인 번들",
@@ -718,9 +785,12 @@
         pipe_2_desc: "GPU 가속 가우시안 스플래팅 학습과 바운딩 박스 크롭, 밀도 최적화로 번들 용량을 대폭 경량화합니다.",
         pipe_3_title: "패키징 및 Vercel 배포",
         pipe_3_desc: "사전 구성된 Three.js 및 GaussianSplats3D 번들을 Vercel 글로벌 엣지 네트워크를 통해 전 세계 고객에게 즉시 전달합니다.",
-        showcase_title: "3DGS 인터랙티브 웹 뷰어 체험",
+        gallery_eyebrow: "실시간 3D 산출물",
+        gallery_title: "3DGS WebGL 모델 갤러리 및 쇼케이스",
+        showcase_title: "3DGS 인터랙티브 웹 엔진 체험",
         showcase_desc: "브라우저에서 바로 실시간 3D 가우시안 스플랫을 조작해 보세요. 초당 60FPS 이상의 부드러운 내비게이션과 시점 조정을 지원합니다.",
         showcase_btn: "인터랙티브 뷰어 열기",
+        btn_view_model: "3D 모델 보기 →",
         footer_rights: "모든 권리 보유.",
         footer_base: "뉴질랜드 아오테아로아"
       },
@@ -734,7 +804,7 @@
         hero_title: "高精度 3D 高斯泼溅 (3DGS) 与实景三维捕捉。",
         hero_desc: "我们将现实世界中的车辆、建筑与复杂空间环境，高保真重构为毫米级精度、照片级真实的 WebGL 3DGS 网页体验，无需任何插件即可流畅浏览。",
         hero_cta_primary: "打开 WebGL 3D 浏览器",
-        hero_cta_secondary: "了解制作能力",
+        hero_cta_secondary: "浏览 3D 交付成果",
         metric_1: "网页端 WebGL 渲染帧率",
         metric_2: "点云精度与相机标定",
         metric_3: "独立离线交付模块",
@@ -754,9 +824,12 @@
         pipe_2_desc: "GPU 加速的高斯泼溅训练，配合空间包围盒裁剪与密度优化，实现极小体积传输。",
         pipe_3_title: "模块打包与 Vercel 分发",
         pipe_3_desc: "预集成 Three.js 与 GaussianSplats3D 渲染引擎，通过 Vercel 全球网络实现秒级极速访问。",
-        showcase_title: "体验 3DGS 交互式网页浏览器",
+        gallery_eyebrow: "实时 3D 成果",
+        gallery_title: "3DGS WebGL 模型画廊与展示",
+        showcase_title: "体验 3DGS 交互式网页引擎",
         showcase_desc: "直接在浏览器中操控 3D 高斯点云模型，体验流畅的 60FPS 视角浏览与客户审阅流。",
         showcase_btn: "打开交互式浏览器",
+        btn_view_model: "浏览 3D 模型 →",
         footer_rights: "保留所有权利。",
         footer_base: "新西兰 (Aotearoa)"
       },
@@ -770,7 +843,7 @@
         hero_title: "Te Rongoā 3D Gaussian Splatting me te Whakaaturanga Tuturu.",
         hero_desc: "Ka hangaia anō e mātou ngā waka, ngā hoahoanga whare, me ngā ta taiao hei wheako 3DGS WebGL tino pono mō te tirotiro tere i runga ipurangi.",
         hero_cta_primary: "Whakatuwheratia te 3D WebGL",
-        hero_cta_secondary: "Tirohia ngā Rawa",
+        hero_cta_secondary: "Tirohia ngā Rawa 3D",
         metric_1: "Tere Whakaatu WebGL",
         metric_2: "Tika Whakarite Piro",
         metric_3: "Pukapuka Motuhake",
@@ -790,9 +863,12 @@
         pipe_2_desc: "Whakangungu GPU mō te hanga āhua 3D māmā te rahi.",
         pipe_3_title: "Tuku ki Vercel",
         pipe_3_desc: "Tukuna ki te ao katoa mā te kōtuitui Vercel.",
+        gallery_eyebrow: "Whakaaturanga 3D",
+        gallery_title: "Whakaaturanga 3DGS WebGL",
         showcase_title: "Tirohia te 3DGS i te Ipurangi",
         showcase_desc: "Whakamātauria te tirohanga 3D i tō pūtirotiro ipurangi ināianei.",
         showcase_btn: "Tīmatahia te Tirotiro",
+        btn_view_model: "Tirohia te 3D →",
         footer_rights: "Pūmau te mana.",
         footer_base: "Aotearoa New Zealand"
       }
@@ -818,6 +894,66 @@
     langSelect.addEventListener('change', (e) => {
       applyLanguage(e.target.value);
     });
+
+    // Auto-discover models from 05_web_build/models.json
+    async function loadWebBuildModels() {
+      const grid = document.getElementById('modelsGrid');
+      const navBtn = document.getElementById('navViewerBtn');
+      const heroBtn = document.getElementById('heroViewerBtn');
+      const mainBtn = document.getElementById('showcaseMainBtn');
+
+      try {
+        const res = await fetch('05_web_build/models.json?v=' + Date.now());
+        if (!res.ok) throw new Error('No models manifest');
+        const data = await res.json();
+        
+        if (data.models && data.models.length > 0) {
+          grid.innerHTML = '';
+          const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
+          const t = translations[currentLang] || translations.en;
+          
+          // Set primary target to first model or index
+          const primaryModel = data.models.find(m => m.is_index) || data.models[0];
+          const primaryUrl = primaryModel.path;
+          navBtn.href = primaryUrl;
+          heroBtn.href = primaryUrl;
+          mainBtn.href = primaryUrl;
+
+          data.models.forEach(model => {
+            const card = document.createElement('div');
+            card.className = 'model-card';
+            card.innerHTML = `
+              <div>
+                <div class="model-card-header">
+                  <span class="model-badge">3DGS WebGL</span>
+                  <span style="font-size: 11px; color: var(--text-muted);">Ready</span>
+                </div>
+                <h3 class="model-card-title">${model.title}</h3>
+                <div class="model-card-file">${model.filename}</div>
+              </div>
+              <div>
+                <a href="${model.path}" target="_blank" class="btn-primary" style="width: 100%; justify-content: center;">
+                  ${t.btn_view_model || 'View 3D Model →'}
+                </a>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+        } else {
+          grid.style.display = 'none';
+          navBtn.href = 'ui/templates/supersplat_template.html';
+          heroBtn.href = 'ui/templates/supersplat_template.html';
+          mainBtn.href = 'ui/templates/supersplat_template.html';
+        }
+      } catch (err) {
+        grid.style.display = 'none';
+        navBtn.href = 'ui/templates/supersplat_template.html';
+        heroBtn.href = 'ui/templates/supersplat_template.html';
+        mainBtn.href = 'ui/templates/supersplat_template.html';
+      }
+    }
+
+    loadWebBuildModels();
   </script>
 </body>
 </html>
