@@ -291,14 +291,29 @@ class WebPublishManagerDialog(QDialog):
 
         # Upload Action Bottom Row
         u_bottom = QHBoxLayout()
-        self.btn_start_upload = QPushButton(self.t.get("dialog_btn_start_upload", "🚀 Upload Selected to Vercel"))
+        u_bottom.addStretch()
+        self.btn_start_upload = QPushButton(self.t.get("dialog_btn_start_upload", "▼ 쇼룸으로 업로드"))
         self.btn_start_upload.setObjectName("SuccessBtn")
         self.btn_start_upload.setCursor(Qt.PointingHandCursor)
-        self.btn_start_upload.setStyleSheet("padding: 6px 18px; font-weight: 600; font-size: 12px;")
+        self.btn_start_upload.setStyleSheet("""
+            QPushButton#SuccessBtn {
+                background-color: #10b981;
+                border: 1px solid #34d399;
+                border-radius: 6px;
+                color: #ffffff;
+                font-size: 12.5px;
+                font-weight: 700;
+                padding: 7px 28px;
+                min-width: 160px;
+            }
+            QPushButton#SuccessBtn:hover {
+                background-color: #059669;
+                border-color: #6ee7b7;
+            }
+        """)
         self.btn_start_upload.clicked.connect(self.start_selective_upload)
-
-        u_bottom.addStretch()
         u_bottom.addWidget(self.btn_start_upload)
+        u_bottom.addStretch()
         u_layout.addLayout(u_bottom)
 
         self.tabs.addTab(tab_upload, self.t.get("dialog_tab_upload", "📤 Selective Upload to Cloud"))

@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.237)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.238)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -72,7 +72,7 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ### 🔹 Tab 4. 클라우드 쇼룸 (`4. Cloud Showroom`)
 * **STEP 1. 로컬 패키지 배포 및 선택적 업로드 (Selective Local Deployer)**:
   * 로컬 `05_web_build`에 빌드된 패키지 중 원하는 모델만 체크박스로 선별.
-  * 실시간 선택 용량 계산 및 `🚀 Upload Selected Packages to Vercel` 클릭으로 백그라운드 안전 업로드.
+  * 실시간 선택 용량 계산 및 하단 중앙의 **`▼ 쇼룸으로 업로드`** 버튼 클릭으로 백그라운드 안전 업로드.
 * **STEP 2. 실시간 웹 쇼룸 및 Vercel 배포 자산 관리 (Live Cloud Showroom & Resources)**:
   * 현재 Vercel 웹에 배포된 실시간 3DGS 모델 목록 및 용량 실시간 스캔.
   * 각 모델별 라이브 URL 접속 버튼(`🌐 Open`) 및 원클릭 URL 복사(`📋 URL`).
@@ -159,10 +159,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.237`
+* **Current Version**: `v2.238`
 * **주요 변경 요약**:
+  * **Cloud Showroom 탭 배포 버튼 텍스트 간소화('▼ 쇼룸으로 업로드') 및 중앙 정렬 배치 (`v2.238`)**: 기존의 긴 업로드 문구를 하향 화살표와 함께 간결한 **`"▼ 쇼룸으로 업로드"`** (영문: `"▼ Upload to Showroom"`)로 개편하고, 로컬 카드와 클라우드 카드 사이 중앙에 배치하여 직관적인 데이터 이동 흐름 완성.
   * **워터마크 활성화 시 'Review_' 파일명 접두사 자동 연동 (`v2.237`)**: `Client Review Watermark` 체크 시 WebGL 모델 목록의 `Output HTML File` 컬럼 및 빌드 출력 파일명에 `'Review_'` 접두사(예: `FordEscape.html` ➔ `Review_FordEscape.html`, `index.html` ➔ `Review_index.html`)가 자동으로 적용 및 연동되며, 체크 해제 시 원래 파일명으로 안전하게 원복.
   * **Cloud Showroom 탭 상하 카드 위치 스왑 및 액션 버튼(Open/URL) 텍스트 잘림 해결 (`v2.236`)**: 상단에 Card 1(로컬 패키지 배포 및 선택적 업로드), 하단에 Card 2(실시간 클라우드 쇼룸 및 자산 관리)를 배치하여 자연스러운 빌드➔배포 워크플로우를 구성하고, 액션 테이블 행 높이를 `36px` 및 너비 `160px Fixed`로 최적화하여 `🌐 Open` 및 `📋 URL` 버튼이 잘림 없이 렌더링되도록 수정.
-  * **워터마크 글자 크기 및 오퍼시티 조절 컨트롤 도입 & Tab 3 중복 Upload 버튼 정리 (`v2.235`)**: `Client Review Watermark` 옵션에 `Size (40~300 px, 기본: 140px)` 및 `Opacity (1~100 %, 기본: 6%)` 스핀박스를 추가하여 실시간 정밀 조절 기능을 제공하고, 클라우드 쇼룸 탭 신설에 따라 Tab 3 하단 액션바에서 중복되던 `Upload & Cloud Showroom` 버튼을 제거하여 빌드 중심의 간결한 UI로 최적화.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**

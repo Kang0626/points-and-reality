@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.237 (Current)
+### 🔹 v2.238 (Current)
+* **Cloud Showroom 탭 배포 버튼 텍스트 간소화('▼ 쇼룸으로 업로드') 및 중앙 정렬 배치 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **버튼 텍스트 간소화 및 직관적 방향 아이콘**: 기존의 길었던 `"🚀 Upload Selected Packages to Vercel"` 문구를 하향 화살표와 간결한 문구인 **`"▼ 쇼룸으로 업로드"`** (영문: `"▼ Upload to Showroom"`)로 개편하여 시각적 전달력 극대화.
+  * **하단 중앙 정렬 배치**: 우측 치우침에서 벗어나 상단 로컬 패키지 카드(Card 1)와 하단 클라우드 쇼룸 카드(Card 2)의 정중앙에 배치하여, 로컬 모델이 하단 클라우드 쇼룸으로 내려가는 흐름을 명확히 시각화.
+
+### 🔹 v2.237
 * **Client Review Watermark 활성화 시 'Review_' 파일명 접두사 자동 연동 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **워터마크 활성화 시 `Review_` 프리픽스 자동 부여**: `Client Review Watermark` 체크 시 WebGL 모델 목록의 `Output HTML File` 컬럼 및 단일/일괄 빌드 출력 파일명에 자동으로 `'Review_'` 접두사(예: `FordEscape.html` ➔ `Review_FordEscape.html`, `index.html` ➔ `Review_index.html`)가 부여되도록 연동.
   * **체크 해제 시 원복**: 워터마크 체크박스를 해제하면 즉시 원래 파일명으로 안전하게 원복되며, 빌드 시에도 정품 릴리즈 파일명으로 생성.

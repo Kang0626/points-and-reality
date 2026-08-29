@@ -1,4 +1,4 @@
-APP_VERSION = "v2.237"
+APP_VERSION = "v2.238"
 
 # Points & Reality 표준 프로젝트 서브폴더 구조
 PROJECT_SUBFOLDERS = [

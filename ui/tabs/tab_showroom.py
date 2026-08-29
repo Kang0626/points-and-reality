@@ -269,16 +269,35 @@ class ShowroomTab(QWidget):
         self.progress_upload.setTextVisible(True)
         c1_layout.addWidget(self.progress_upload)
 
-        # Upload Action Bottom Row
+        # Upload Action Bottom Row (Centered Downward Deployment Action)
         u_bottom = QHBoxLayout()
-        self.btn_start_upload = QPushButton("🚀 Upload Selected Packages to Vercel")
+        u_bottom.setContentsMargins(0, 6, 0, 4)
+        u_bottom.addStretch()
+        self.btn_start_upload = QPushButton("▼ 쇼룸으로 업로드")
         self.btn_start_upload.setObjectName("SuccessBtn")
         self.btn_start_upload.setCursor(Qt.PointingHandCursor)
-        self.btn_start_upload.setStyleSheet("padding: 8px 22px; font-weight: 600; font-size: 12.5px;")
+        self.btn_start_upload.setStyleSheet("""
+            QPushButton#SuccessBtn {
+                background-color: #10b981;
+                border: 1px solid #34d399;
+                border-radius: 6px;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 700;
+                padding: 8px 36px;
+                min-width: 180px;
+            }
+            QPushButton#SuccessBtn:hover {
+                background-color: #059669;
+                border-color: #6ee7b7;
+            }
+            QPushButton#SuccessBtn:pressed {
+                background-color: #047857;
+            }
+        """)
         self.btn_start_upload.clicked.connect(self.start_selective_upload)
-
-        u_bottom.addStretch()
         u_bottom.addWidget(self.btn_start_upload)
+        u_bottom.addStretch()
         c1_layout.addLayout(u_bottom)
 
         self.card_upload.setContentLayout(c1_layout)
@@ -674,15 +693,15 @@ class ShowroomTab(QWidget):
 
     def update_language(self, t):
         self.current_translations = t
-        if hasattr(self, 'card_cloud'):
-            self.card_cloud.setTitle(
-                t.get("tab4_card1_title", "Live Cloud Showroom & Vercel Resources"),
-                t.get("tab4_card1_sub", "Manage published 3DGS models, open live browser view, and purge remote models")
-            )
         if hasattr(self, 'card_upload'):
             self.card_upload.setTitle(
-                t.get("tab4_card2_title", "Local Package Deployment & Selective Upload"),
-                t.get("tab4_card2_sub", "Select built WebGL packages from 05_web_build and publish to Vercel")
+                t.get("tab4_card1_title", "Local Package Deployment & Selective Upload"),
+                t.get("tab4_card1_sub", "Select built WebGL packages from 05_web_build and publish to Vercel")
+            )
+        if hasattr(self, 'card_cloud'):
+            self.card_cloud.setTitle(
+                t.get("tab4_card2_title", "Live Cloud Showroom & Vercel Resources"),
+                t.get("tab4_card2_sub", "Manage published 3DGS models, open live browser view, and purge remote models")
             )
         if hasattr(self, 'btn_header_open_showroom'):
             self.btn_header_open_showroom.setText(t.get("tab4_btn_open_showroom", "🌐 Open Showroom"))
@@ -693,4 +712,4 @@ class ShowroomTab(QWidget):
         if hasattr(self, 'btn_refresh_local'):
             self.btn_refresh_local.setText(t.get("tab4_btn_refresh_local", "🔄 Refresh Local"))
         if hasattr(self, 'btn_start_upload'):
-            self.btn_start_upload.setText(t.get("tab4_btn_start_upload", "🚀 Upload Selected Packages to Vercel"))
+            self.btn_start_upload.setText(t.get("tab4_btn_start_upload", "▼ 쇼룸으로 업로드"))
