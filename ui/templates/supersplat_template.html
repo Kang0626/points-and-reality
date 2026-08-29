@@ -129,6 +129,18 @@
               opacity: 1 !important;
               pointer-events: none !important;
             }
+            #points-reality-brand-header.points-reality-hud.faded-in {
+              opacity: 1 !important;
+              pointer-events: auto !important;
+            }
+            #points-reality-engine-credit.points-reality-hud.faded-out,
+            #points-reality-controls-hint.points-reality-hud.faded-out,
+            #points-reality-brand-header.points-reality-hud.faded-out {
+              opacity: 0 !important;
+              visibility: hidden !important;
+              pointer-events: none !important;
+              transform: translateY(-4px) !important;
+            }
             #controlsWrap > #timelineContainer {
               height: 30px;
               cursor: pointer;
