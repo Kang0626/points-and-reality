@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.246 (Current)
+### 🔹 v2.247 (Current)
+* **Tab 3 WebGL 모듈 QDoubleSpinBox 임포트 누락 핫픽스 (`v2.247`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **PyQt5 QDoubleSpinBox 임포트 추가**: Tab 3 카메라 거리 제약(Min/Max Distance) 위젯에 사용된 `QDoubleSpinBox`가 모듈 상단 `PyQt5.QtWidgets` import 목록에서 누락되어 앱 시작 시 발생하던 `NameError: name 'QDoubleSpinBox' is not defined` 런타임 오류 즉시 해결.
+  * **초기화 및 탭 전환 전수 검증 통과**: 앱 부팅, 탭 스택 전환, 언어 전환(KO/EN), 위젯 세팅 변경 전 과정 무결성 검증 완료.
+
+### 🔹 v2.246
 * **Tab 3 WebGL 뷰어 지면 하단 회전 방지(Ground Lock) 및 최소/최대 접근 거리 제한 기능 추가 (`v2.246`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **지면 하단 회전 방지 (`🛡️ Ground Lock`)**: 마우스 드래그 시 카메라가 바닥(지평선) 아래로 파고들거나 밑에서 위를 올려다보는 왜곡을 방지하도록 고도각(Pitch)을 `-89° ~ 0°` (수평 지면)로 안전하게 고정(SuperSplat `pitchRange` 및 GaussianSplats3D `maxPolarAngle = Math.PI / 2` 100% 동시 적용).
   * **최소 접근 거리 제약 (`🔍 Min Distance`, 기본값: `0.8m`)**: 마우스 휠 줌인 시 피사체 내부로 뚫고 들어가지 않도록 최소 궤도 반경을 고정하여 자연스러운 외관 감상 유지(SuperSplat `zoomRange` 및 GaussianSplats3D `minDistance` 동시 적용).

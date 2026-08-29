@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QPushButton, QComboBox, QLineEdit, QFileDialog, QFrame, 
                              QProgressBar, QApplication, QTableWidget, QTableWidgetItem, 
                              QHeaderView, QAbstractItemView, QCheckBox, QScrollArea,
-                             QInputDialog, QMessageBox, QSpinBox)
+                             QInputDialog, QMessageBox, QSpinBox, QDoubleSpinBox)
 from PyQt5.QtCore import Qt, pyqtSignal, QThread
 from ui.ui_components import ModernStepCard, StatusPill, ElideLeftDelegate
 from ui.tabs.dialog_web_publish import WebPublishManagerDialog
