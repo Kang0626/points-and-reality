@@ -211,7 +211,81 @@ class ShowroomTab(QWidget):
         main_layout.setSpacing(10)
 
         # ----------------------------------------------------
-        # Card 1: Live Cloud Showroom & Remote Vercel Manager
+        # Card 1: Selective Local Package Sync & Web Deployer
+        # ----------------------------------------------------
+        self.card_upload = ModernStepCard(
+            step_num="", 
+            title="Local Package Deployment & Selective Upload", 
+            subtitle="Select built WebGL packages from 05_web_build and publish to Vercel"
+        )
+        self.pill_upload = StatusPill("Ready", "ready")
+        self.card_upload.add_header_action(self.pill_upload)
+
+        c1_layout = QVBoxLayout()
+        c1_layout.setSpacing(10)
+
+        # Upload Action Toolbar
+        u_toolbar = QHBoxLayout()
+        self.btn_refresh_local = QPushButton("🔄 Refresh Local")
+        self.btn_refresh_local.setCursor(Qt.PointingHandCursor)
+        self.btn_refresh_local.clicked.connect(self.refresh_local_files)
+
+        self.btn_select_all_upload = QPushButton("Select All")
+        self.btn_select_all_upload.setCursor(Qt.PointingHandCursor)
+        self.btn_select_all_upload.clicked.connect(lambda: self._set_upload_selection(True))
+
+        self.btn_clear_upload = QPushButton("Deselect All")
+        self.btn_clear_upload.setCursor(Qt.PointingHandCursor)
+        self.btn_clear_upload.clicked.connect(lambda: self._set_upload_selection(False))
+
+        self.lbl_selected_summary = QLabel("Selected: 0 files (0 MB)")
+        self.lbl_selected_summary.setStyleSheet("color: #38bdf8; font-weight: 600; font-size: 11.5px;")
+
+        u_toolbar.addWidget(self.btn_refresh_local)
+        u_toolbar.addWidget(self.btn_select_all_upload)
+        u_toolbar.addWidget(self.btn_clear_upload)
+        u_toolbar.addStretch()
+        u_toolbar.addWidget(self.lbl_selected_summary)
+        c1_layout.addLayout(u_toolbar)
+
+        # Local Files Table
+        self.table_local = QTableWidget(0, 5)
+        self.table_local.setHorizontalHeaderLabels([
+            "Select", "HTML Package", "3DGS Model Asset", "Total Size", "Last Modified"
+        ])
+        self.table_local.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.table_local.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.table_local.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.table_local.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.table_local.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.table_local.verticalHeader().setVisible(False)
+        self.table_local.verticalHeader().setDefaultSectionSize(32)
+        self.table_local.setSelectionBehavior(QAbstractItemView.SelectRows)
+        c1_layout.addWidget(self.table_local)
+
+        # Upload Progress Bar
+        self.progress_upload = QProgressBar()
+        self.progress_upload.setVisible(False)
+        self.progress_upload.setTextVisible(True)
+        c1_layout.addWidget(self.progress_upload)
+
+        # Upload Action Bottom Row
+        u_bottom = QHBoxLayout()
+        self.btn_start_upload = QPushButton("🚀 Upload Selected Packages to Vercel")
+        self.btn_start_upload.setObjectName("SuccessBtn")
+        self.btn_start_upload.setCursor(Qt.PointingHandCursor)
+        self.btn_start_upload.setStyleSheet("padding: 8px 22px; font-weight: 600; font-size: 12.5px;")
+        self.btn_start_upload.clicked.connect(self.start_selective_upload)
+
+        u_bottom.addStretch()
+        u_bottom.addWidget(self.btn_start_upload)
+        c1_layout.addLayout(u_bottom)
+
+        self.card_upload.setContentLayout(c1_layout)
+        main_layout.addWidget(self.card_upload)
+
+        # ----------------------------------------------------
+        # Card 2: Live Cloud Showroom & Remote Vercel Manager
         # ----------------------------------------------------
         self.card_cloud = ModernStepCard(
             step_num="", 
@@ -239,8 +313,8 @@ class ShowroomTab(QWidget):
         self.btn_header_open_showroom.clicked.connect(self.open_live_showroom)
         self.card_cloud.add_header_action(self.btn_header_open_showroom)
 
-        c1_layout = QVBoxLayout()
-        c1_layout.setSpacing(10)
+        c2_layout = QVBoxLayout()
+        c2_layout.setSpacing(10)
 
         # Cloud Toolbar
         c_toolbar = QHBoxLayout()
@@ -266,7 +340,7 @@ class ShowroomTab(QWidget):
         c_toolbar.addWidget(self.btn_clear_cloud)
         c_toolbar.addStretch()
         c_toolbar.addWidget(self.btn_delete_cloud)
-        c1_layout.addLayout(c_toolbar)
+        c2_layout.addLayout(c_toolbar)
 
         # Cloud Files Table
         self.table_cloud = QTableWidget(0, 5)
@@ -277,95 +351,22 @@ class ShowroomTab(QWidget):
         self.table_cloud.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.table_cloud.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.table_cloud.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        self.table_cloud.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.table_cloud.horizontalHeader().setSectionResizeMode(4, QHeaderView.Fixed)
+        self.table_cloud.setColumnWidth(4, 160)
         self.table_cloud.verticalHeader().setVisible(False)
-        self.table_cloud.verticalHeader().setDefaultSectionSize(28)
+        self.table_cloud.verticalHeader().setDefaultSectionSize(36)
         self.table_cloud.setSelectionBehavior(QAbstractItemView.SelectRows)
-        c1_layout.addWidget(self.table_cloud)
+        c2_layout.addWidget(self.table_cloud)
 
-        self.card_cloud.setContentLayout(c1_layout)
+        self.card_cloud.setContentLayout(c2_layout)
         main_layout.addWidget(self.card_cloud)
-
-        # ----------------------------------------------------
-        # Card 2: Selective Local Package Sync & Web Deployer
-        # ----------------------------------------------------
-        self.card_upload = ModernStepCard(
-            step_num="", 
-            title="Local Package Deployment & Selective Upload", 
-            subtitle="Select built WebGL packages from 05_web_build and publish to Vercel"
-        )
-        self.pill_upload = StatusPill("Ready", "ready")
-        self.card_upload.add_header_action(self.pill_upload)
-
-        c2_layout = QVBoxLayout()
-        c2_layout.setSpacing(10)
-
-        # Upload Action Toolbar
-        u_toolbar = QHBoxLayout()
-        self.btn_refresh_local = QPushButton("🔄 Refresh Local")
-        self.btn_refresh_local.setCursor(Qt.PointingHandCursor)
-        self.btn_refresh_local.clicked.connect(self.refresh_local_files)
-
-        self.btn_select_all_upload = QPushButton("Select All")
-        self.btn_select_all_upload.setCursor(Qt.PointingHandCursor)
-        self.btn_select_all_upload.clicked.connect(lambda: self._set_upload_selection(True))
-
-        self.btn_clear_upload = QPushButton("Deselect All")
-        self.btn_clear_upload.setCursor(Qt.PointingHandCursor)
-        self.btn_clear_upload.clicked.connect(lambda: self._set_upload_selection(False))
-
-        self.lbl_selected_summary = QLabel("Selected: 0 files (0 MB)")
-        self.lbl_selected_summary.setStyleSheet("color: #38bdf8; font-weight: 600; font-size: 11.5px;")
-
-        u_toolbar.addWidget(self.btn_refresh_local)
-        u_toolbar.addWidget(self.btn_select_all_upload)
-        u_toolbar.addWidget(self.btn_clear_upload)
-        u_toolbar.addStretch()
-        u_toolbar.addWidget(self.lbl_selected_summary)
-        c2_layout.addLayout(u_toolbar)
-
-        # Local Files Table
-        self.table_local = QTableWidget(0, 5)
-        self.table_local.setHorizontalHeaderLabels([
-            "Select", "HTML Package", "3DGS Model Asset", "Total Size", "Last Modified"
-        ])
-        self.table_local.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.table_local.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.table_local.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.table_local.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        self.table_local.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.table_local.verticalHeader().setVisible(False)
-        self.table_local.verticalHeader().setDefaultSectionSize(28)
-        self.table_local.setSelectionBehavior(QAbstractItemView.SelectRows)
-        c2_layout.addWidget(self.table_local)
-
-        # Upload Progress Bar
-        self.progress_upload = QProgressBar()
-        self.progress_upload.setVisible(False)
-        self.progress_upload.setTextVisible(True)
-        c2_layout.addWidget(self.progress_upload)
-
-        # Upload Action Bottom Row
-        u_bottom = QHBoxLayout()
-        self.btn_start_upload = QPushButton("🚀 Upload Selected Packages to Vercel")
-        self.btn_start_upload.setObjectName("SuccessBtn")
-        self.btn_start_upload.setCursor(Qt.PointingHandCursor)
-        self.btn_start_upload.setStyleSheet("padding: 8px 22px; font-weight: 600; font-size: 12.5px;")
-        self.btn_start_upload.clicked.connect(self.start_selective_upload)
-
-        u_bottom.addStretch()
-        u_bottom.addWidget(self.btn_start_upload)
-        c2_layout.addLayout(u_bottom)
-
-        self.card_upload.setContentLayout(c2_layout)
-        main_layout.addWidget(self.card_upload)
         main_layout.addStretch()
 
         scroll_area.setWidget(scroll_content)
         tab_layout.addWidget(scroll_area)
 
-        self.refresh_cloud_files()
         self.refresh_local_files()
+        self.refresh_cloud_files()
 
     # ----------------------------------------------------------------------
     # Cloud Showroom Actions
@@ -427,19 +428,45 @@ class ShowroomTab(QWidget):
             # Col 4: Action (Open Live URL button)
             action_widget = QWidget()
             a_layout = QHBoxLayout(action_widget)
-            a_layout.setContentsMargins(4, 2, 4, 2)
+            a_layout.setContentsMargins(4, 3, 4, 3)
             a_layout.setSpacing(6)
             a_layout.setAlignment(Qt.AlignCenter)
 
             btn_open = QPushButton("🌐 Open")
             btn_open.setCursor(Qt.PointingHandCursor)
-            btn_open.setStyleSheet("background-color: #0284c7; color: white; border: 1px solid #38bdf8; border-radius: 3px; font-size: 10.5px; padding: 2px 8px;")
+            btn_open.setStyleSheet("""
+                QPushButton {
+                    background-color: #0284c7;
+                    color: #ffffff;
+                    border: 1px solid #38bdf8;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 24px;
+                    max-height: 24px;
+                    padding: 1px 8px;
+                }
+                QPushButton:hover { background-color: #0369a1; }
+            """)
             target_url = f"{self.vercel_base_url}/{h}"
             btn_open.clicked.connect(lambda _, u=target_url: webbrowser.open(u))
 
             btn_copy = QPushButton("📋 URL")
             btn_copy.setCursor(Qt.PointingHandCursor)
-            btn_copy.setStyleSheet("background-color: #1e293b; color: #cbd5e1; border: 1px solid #334155; border-radius: 3px; font-size: 10.5px; padding: 2px 6px;")
+            btn_copy.setStyleSheet("""
+                QPushButton {
+                    background-color: #1e293b;
+                    color: #cbd5e1;
+                    border: 1px solid #334155;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 24px;
+                    max-height: 24px;
+                    padding: 1px 8px;
+                }
+                QPushButton:hover { background-color: #334155; color: #ffffff; }
+            """)
             def _copy_url(url=target_url, b=btn_copy):
                 QApplication.clipboard().setText(url)
                 b.setText("✅ Copied")

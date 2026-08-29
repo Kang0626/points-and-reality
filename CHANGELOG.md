@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.235 (Current)
+### 🔹 v2.236 (Current)
+* **Cloud Showroom 탭 상하 카드 위치 스왑 및 액션 버튼(Open/URL) 텍스트 잘림 해결 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **상하 카드 위치 재배치 (자연스러운 빌드➔배포 워크플로우)**: 상단에 **Card 1: `Local Package Deployment & Selective Upload` (로컬 패키지 배포 및 선택적 업로드)**를 배치하고, 하단에 **Card 2: `Live Cloud Showroom & Vercel Resources` (실시간 클라우드 쇼룸 및 자산 관리)**를 배치하여 빌드 후 배포, 배포 후 라이브 확인으로 이어지는 자연스러운 시각적 흐름 완성.
+  * **Actions 컬럼 버튼 잘림 원천 해결**: 행 높이를 `36px`로 확장하고 Actions 컬럼 너비를 `160px Fixed`로 고정하여 `🌐 Open` 및 `📋 URL` 버튼이 어떤 DPI나 창 크기에서도 잘림 없이 깨끗하게 렌더링되도록 최적화.
+
+### 🔹 v2.235
 * **Client Review Watermark 글자 크기 및 오퍼시티 조절 컨트롤 도입 & Tab 3 중복 Upload 버튼 정리 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **워터마크 크기(Size) 및 불투명도(Opacity) 실시간 설정**: 고객 컨펌용 워터마크 입력란 옆에 `Size (40~300 px, 기본: 140px)` 및 `Opacity (1~100 %, 기본: 6%)` 스핀박스 컨트롤을 배치하고, SuperSplat 및 PLY WebGL 뷰어 생성 시 선택한 크기/불투명도가 정밀하게 반영되도록 파이프라인 연동.
   * **Tab 3 액션바 간소화**: 클라우드 쇼룸 기능이 전용 4번째 탭(`Cloud Showroom`)으로 정식 이전됨에 따라, Tab 3 하단 액션바에서 중복되던 `Upload & Cloud Showroom` 버튼을 제거하여 빌드/폴더 열기 중심의 깔끔한 워크플로우로 최적화.

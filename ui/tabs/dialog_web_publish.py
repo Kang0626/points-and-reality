@@ -349,9 +349,10 @@ class WebPublishManagerDialog(QDialog):
         self.table_cloud.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.table_cloud.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.table_cloud.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        self.table_cloud.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.table_cloud.horizontalHeader().setSectionResizeMode(4, QHeaderView.Fixed)
+        self.table_cloud.setColumnWidth(4, 160)
         self.table_cloud.verticalHeader().setVisible(False)
-        self.table_cloud.verticalHeader().setDefaultSectionSize(28)
+        self.table_cloud.verticalHeader().setDefaultSectionSize(36)
         self.table_cloud.setSelectionBehavior(QAbstractItemView.SelectRows)
         c_layout.addWidget(self.table_cloud)
 
@@ -570,19 +571,56 @@ class WebPublishManagerDialog(QDialog):
             item_size.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             self.table_cloud.setItem(row, 3, item_size)
 
-            # Col 4: Action (Open Live URL button)
-            live_btn_widget = QWidget()
-            lb_layout = QHBoxLayout(live_btn_widget)
-            lb_layout.setContentsMargins(4, 2, 4, 2)
-            lb_layout.setAlignment(Qt.AlignCenter)
-            btn_open_live = QPushButton("🌐 Open Live")
+            # Col 4: Action (Open Live URL button & Copy URL button)
+            action_widget = QWidget()
+            a_layout = QHBoxLayout(action_widget)
+            a_layout.setContentsMargins(4, 3, 4, 3)
+            a_layout.setSpacing(6)
+            a_layout.setAlignment(Qt.AlignCenter)
+
+            btn_open_live = QPushButton("🌐 Open")
             btn_open_live.setCursor(Qt.PointingHandCursor)
-            btn_open_live.setStyleSheet("background-color: #0284c7; color: white; border: 1px solid #38bdf8; border-radius: 3px; font-size: 10.5px; padding: 2px 8px;")
-            
+            btn_open_live.setStyleSheet("""
+                QPushButton {
+                    background-color: #0284c7;
+                    color: #ffffff;
+                    border: 1px solid #38bdf8;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 24px;
+                    max-height: 24px;
+                    padding: 1px 8px;
+                }
+                QPushButton:hover { background-color: #0369a1; }
+            """)
             target_url = f"{self.vercel_base_url}/{h}"
             btn_open_live.clicked.connect(lambda _, u=target_url: webbrowser.open(u))
-            lb_layout.addWidget(btn_open_live)
-            self.table_cloud.setCellWidget(row, 4, live_btn_widget)
+
+            btn_copy = QPushButton("📋 URL")
+            btn_copy.setCursor(Qt.PointingHandCursor)
+            btn_copy.setStyleSheet("""
+                QPushButton {
+                    background-color: #1e293b;
+                    color: #cbd5e1;
+                    border: 1px solid #334155;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 24px;
+                    max-height: 24px;
+                    padding: 1px 8px;
+                }
+                QPushButton:hover { background-color: #334155; color: #ffffff; }
+            """)
+            def _copy_url(url=target_url, b=btn_copy):
+                QApplication.clipboard().setText(url)
+                b.setText("✅ Copied")
+            btn_copy.clicked.connect(lambda _, u=target_url, b=btn_copy: _copy_url(u, b))
+
+            a_layout.addWidget(btn_open_live)
+            a_layout.addWidget(btn_copy)
+            self.table_cloud.setCellWidget(row, 4, action_widget)
 
         self.log(f"Synced {len(html_files)} deployed model(s) from cloud repository.", "info")
 
