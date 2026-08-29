@@ -101702,26 +101702,26 @@ class CameraManager {
             }
             return null;
         };
-        // object experience starts outside the bounding box
-        const isObjectExperience = !bbox.containsPoint(resetCamera.position);
-        const animTrack = getAnimTrack(settings.hasStartPose ? resetCamera : frameCamera, isObjectExperience);
+        // Object experience always starts in Orbit mode
+        const animTrack = getAnimTrack(settings.hasStartPose ? resetCamera : frameCamera, true);
         const controllers = {
             orbit: new OrbitController(),
-            fly: new FlyController(),
+            fly: new OrbitController(), // Map fly directly to Orbit to strictly forbid Fly mode
             anim: animTrack ? new AnimController(animTrack) : null
         };
         const getController = (cameraMode) => {
-            return controllers[cameraMode];
+            if (cameraMode === 'fly') return controllers.orbit;
+            return controllers[cameraMode] || controllers.orbit;
         };
         // set the global animation flag
         state.hasAnimation = !!controllers.anim;
         state.animationDuration = controllers.anim ? controllers.anim.animState.cursor.duration : 0;
-        // initialize camera mode and initial camera position
-        state.cameraMode = state.hasAnimation ? 'anim' : (isObjectExperience ? 'orbit' : 'fly');
+        // initialize camera mode and initial camera position: ALWAYS ORBIT
+        state.cameraMode = state.hasAnimation ? 'anim' : 'orbit';
         this.camera.copy(resetCamera);
         const target = new Camera(this.camera); // the active controller updates this
         const from = new Camera(this.camera); // stores the previous camera state during transition
-        let fromMode = isObjectExperience ? 'orbit' : 'fly';
+        let fromMode = 'orbit';
         // enter the initial controller
         getController(state.cameraMode).onEnter(this.camera);
         // transition time between cameras
@@ -102049,14 +102049,12 @@ class InputController {
         }
         this._state.shift += key[keyCode.SHIFT];
         this._state.ctrl += key[keyCode.CTRL];
-        if (state.cameraMode !== 'fly' && this._state.axis.length() > 0) {
-            state.cameraMode = 'fly';
-        }
-        const orbit = +(state.cameraMode === 'orbit');
-        const fly = +(state.cameraMode === 'fly');
+        state.cameraMode = 'orbit';
+        const orbit = 1;
+        const fly = 0;
         const double = +(this._state.touches > 1);
         const pan = this._state.mouse[2] || +(button[2] === -1) || double;
-        const orbitFactor = fly ? camera.fov / 120 : 1;
+        const orbitFactor = 1;
         const { deltas } = this.frame;
         // desktop move
         const v = tmpV1.set(0, 0, 0);

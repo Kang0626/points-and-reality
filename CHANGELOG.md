@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.239 (Current)
+### 🔹 v2.240 (Current)
+* **SuperSplat Orbit 카메라 모드 완전 잠금(Fly 모드 영구 비활성화) 및 시각적 방해 뱃지 완전 제거 ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **Orbit 카메라 모드 절대 고정 & Fly 모드 영구 차단**: 바운딩 박스 위치 계산, 키보드 축 입력(WASD/방향키), 이벤트 전환 등 모든 경로에서 Fly 모드로 전환되는 동작을 원천 봉쇄하고, `FlyController`를 `OrbitController`로 강제 매핑하여 100% 영구적인 Orbit 조작 환경을 보장.
+  * **화면 하단 플로팅 뱃지 완전 삭제**: 시야를 가리고 시각적으로 도드라져 보였던 화면 중앙 하단의 `Powered by PlayCanvas & SuperSplat` 플로팅 뱃지를 뷰포트에서 완전히 제거하여 깨끗하고 탁 트인 3DGS 렌더링 뷰 완성 (MIT 라이선스 고지는 소스 코드 내에 안전하게 보존).
+
+### 🔹 v2.239
 * **SuperSplat 뷰어 Orbit 기본 모드 고정, 디바이스별(마우스/터치) 조작 가이드 자동 감지 및 툴바 간소화 & MIT 라이선스 공식 표기 ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **기본 궤도(Orbit) 카메라 고정 및 디바이스 자동 감지**: 뷰어 실행 시 Orbit 카메라 모드로 자동 시작되며, 사용자의 디바이스 환경(PC/마우스 vs 모바일/태블릿 터치)을 런타임에 자동 감지하여 상단 조작 안내(`🖱️ Left/Right/Wheel` ↔ `👆 1-Finger/✌️ 2-Finger`)를 동적으로 전환.
   * **하단 우측 툴바 불필요 아이콘 숨김 및 전체화면 버튼만 보존**: 불필요한 Orbit/Fly 전환, Info, Settings 아이콘을 숨기고, 사용자가 가장 필요로 하는 **`⛶ 전체화면(Fullscreen)`** 버튼만 우측 하단에 단독 유지하여 압도적인 시각적 몰입감 제공.
