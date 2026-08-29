@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.245)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.246)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -56,10 +56,12 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
   * **출력 파일명 테이블 직접 편집 (✏️)**: 각 행의 `Output HTML File` 컬럼을 더블클릭하여 `index.html`, `MyCar.html` 등 원하는 이름을 개별 지정 가능.
   * **원클릭 단축 버튼**: `🏷️ 첫 번째 모델을 index.html로 설정` 클릭 시 첫 번째 파일을 대표 `index.html`로 즉시 지정.
   * **행별 `🌐 Preview` 즉시 미리보기**: 특정 모델의 행에서 버튼 클릭 시 해당 모델만 즉시 빌드 및 브라우저 오픈.
-* **STEP 2. 선택 모델 초기 카메라 시점 설정 (2단계 직관적 워크플로우)**:
-  * Step 1에서 선택한 모델(`Target Model: FordEscape01.ply ➔ index.html`)의 시점을 독립 설정.
+* **STEP 2. 선택 모델 초기 카메라 시점 & 인터랙션 제약 설정 (카메라 프로필 관리)**:
+  * Step 1에서 선택한 모델의 시점(`Position`, `Target`, `FOV`)을 독립 설정.
   * **`🌐 1. 브라우저에서 시점 맞추기 (Open Viewer to Adjust)`**: 브라우저 뷰어를 바로 띄워 자유롭게 마우스로 앵글을 잡을 수 있음.
   * **`📋 2. 복사한 시점 적용하기 (Paste Copied View)`**: 브라우저에서 복사한 좌표를 1클릭으로 해당 모델 프로필에 영구 저장.
+  * **🛡️ 지면 하단 회전 방지 (Ground Lock)**: 카메라가 지평선(바닥) 아래로 파고들지 못하도록 Pitch 고도각을 지면 수평(`-89° ~ 0°`)으로 안전 제한.
+  * **🔍 최소/최대 접근 거리 제약 (Min/Max Distance)**: 줌인 시 피사체 내부를 뚫고 들어가지 않도록 최소 줌 거리(기본 `0.8m`) 및 최대 후퇴 거리를 개별 모델 프로필로 고정.
   * **퀵 프리셋 지원**: `🎯 Front View`, `📐 Quarter (3/4)`, `🚗 Side View`, `🚁 Top-Down`.
 * **STEP 3. 출력 디렉토리 및 일괄 패키징**:
   * **출력 폴더 지정**: 기본 `05_web_build` 외에 자유롭게 변경 가능.

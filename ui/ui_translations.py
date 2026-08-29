@@ -94,6 +94,9 @@ TRANSLATIONS = {
         "tab3_lbl_cam_pos": "Position (X,Y,Z):",
         "tab3_lbl_cam_tgt": "Target:",
         "tab3_lbl_cam_fov": "FOV:",
+        "tab3_chk_ground_lock": "Ground Lock (Prevent dipping under floor)",
+        "tab3_lbl_min_dist": "Min Distance:",
+        "tab3_lbl_max_dist": "Max Distance:",
         
         "tab3_card3_title": "Output Destination & Web Publishing",
         "tab3_card3_sub": "Specify destination directory, build WebGL packages, and upload to cloud",
@@ -241,6 +244,9 @@ TRANSLATIONS = {
         "tab3_lbl_cam_pos": "카메라 위치 (X,Y,Z):",
         "tab3_lbl_cam_tgt": "시선 타겟:",
         "tab3_lbl_cam_fov": "화각 (FOV):",
+        "tab3_chk_ground_lock": "지면 하단 회전 방지 (Ground Lock)",
+        "tab3_lbl_min_dist": "최소 거리:",
+        "tab3_lbl_max_dist": "최대 거리:",
         
         "tab3_card3_title": "출력 디렉토리 및 웹 배포",
         "tab3_card3_sub": "출력 폴더를 지정하고 선택된 모델을 WebGL로 패키징 및 배포합니다",

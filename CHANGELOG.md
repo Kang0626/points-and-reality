@@ -7,7 +7,14 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.245 (Current)
+### 🔹 v2.246 (Current)
+* **Tab 3 WebGL 뷰어 지면 하단 회전 방지(Ground Lock) 및 최소/최대 접근 거리 제한 기능 추가 (`v2.246`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **지면 하단 회전 방지 (`🛡️ Ground Lock`)**: 마우스 드래그 시 카메라가 바닥(지평선) 아래로 파고들거나 밑에서 위를 올려다보는 왜곡을 방지하도록 고도각(Pitch)을 `-89° ~ 0°` (수평 지면)로 안전하게 고정(SuperSplat `pitchRange` 및 GaussianSplats3D `maxPolarAngle = Math.PI / 2` 100% 동시 적용).
+  * **최소 접근 거리 제약 (`🔍 Min Distance`, 기본값: `0.8m`)**: 마우스 휠 줌인 시 피사체 내부로 뚫고 들어가지 않도록 최소 궤도 반경을 고정하여 자연스러운 외관 감상 유지(SuperSplat `zoomRange` 및 GaussianSplats3D `minDistance` 동시 적용).
+  * **최대 후퇴 거리 제약 (`🔭 Max Distance`, 기본값: `50.0m`)**: 휠 줌아웃 시 피사체가 화면 밖으로 과도하게 멀어지는 것을 차단.
+  * **Tab 3 Card 2 UI 2-Tier 정밀 레이아웃 & 다국어 완비**: 좌표/FOV 입력줄 하단에 `Ground Lock` 체크박스와 `Min/Max Distance` 스핀박스를 2열로 배치하고, 모델별 카메라 프로필 저장/로드 및 다국어(KO/EN) 1:1 동기화 완료.
+
+### 🔹 v2.245
 * **쇼룸 배포 테이블 최신 파일 우선 정렬 (`v2.245`) ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **Local Package 및 Live Cloud 테이블 정렬 기준 변경**: 기존 알파벳순(`sorted(files)`) → 파일 수정시간 내림차순(`os.path.getmtime`, `reverse=True`)으로 전환하여 가장 최근 빌드/배포 파일이 항상 테이블 최상단에 위치.
 

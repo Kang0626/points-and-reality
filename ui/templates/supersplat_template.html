@@ -100383,7 +100383,10 @@ const migrateV2 = (v1) => {
                 initial: {
                     position: (v1.camera.position || [0, 0, 5]),
                     target: (v1.camera.target || [0, 0, 0]),
-                    fov: v1.camera.fov || 65
+                    fov: v1.camera.fov || 65,
+                    groundLock: v1.camera.groundLock,
+                    minDistance: v1.camera.minDistance,
+                    maxDistance: v1.camera.maxDistance
                 }
             }],
         annotations: [],
@@ -101716,10 +101719,10 @@ class FlyController {
 const p = new Pose();
 class OrbitController {
     controller;
-    constructor() {
+    constructor(pitchRange, zoomRange) {
         this.controller = new OrbitController$1();
-        this.controller.zoomRange = new Vec2(0.01, Infinity);
-        this.controller.pitchRange = new Vec2(-90, 90);
+        this.controller.zoomRange = zoomRange || new Vec2(0.8, 200);
+        this.controller.pitchRange = pitchRange || new Vec2(-89, 89);
         this.controller.rotateDamping = 0.97;
         this.controller.moveDamping = 0.97;
         this.controller.zoomDamping = 0.97;
@@ -101778,9 +101781,17 @@ class CameraManager {
         };
         // Object experience always starts in Orbit mode
         const animTrack = getAnimTrack(settings.hasStartPose ? resetCamera : frameCamera, true);
+
+        // Ground Lock: prevent dipping below horizontal ground plane (Pitch: -89 deg to 0 deg)
+        const isGroundLocked = camera0.groundLock !== false;
+        const pitchRange = isGroundLocked ? new Vec2(-89, 0) : new Vec2(-89, 89);
+        const minDistance = (camera0.minDistance !== undefined && camera0.minDistance > 0) ? camera0.minDistance : 0.8;
+        const maxDistance = camera0.maxDistance || 200.0;
+        const zoomRange = new Vec2(minDistance, maxDistance);
+
         const controllers = {
-            orbit: new OrbitController(),
-            fly: new OrbitController(), // Map fly directly to Orbit to strictly forbid Fly mode
+            orbit: new OrbitController(pitchRange, zoomRange),
+            fly: new OrbitController(pitchRange, zoomRange), // Map fly directly to Orbit to strictly forbid Fly mode
             anim: animTrack ? new AnimController(animTrack) : null
         };
         const getController = (cameraMode) => {

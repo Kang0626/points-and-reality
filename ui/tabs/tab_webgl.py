@@ -196,8 +196,8 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     </div>'''
 
 
-def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6):
-    """Generate a complete 100% offline 3DGS PLY viewer HTML with custom initial camera view."""
+def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6, ground_lock=True, min_dist=0.8, max_dist=50.0):
+    """Generate a complete 100% offline 3DGS PLY viewer HTML with custom initial camera view and constraints."""
     copy_cam_btn_html = '<button class="hud-btn" id="btn-copy-cam">📷 현재 시점 복사 (Copy View)</button>' if is_preview else ''
     copy_cam_js = f'''
             const btnCopyCam = document.getElementById('btn-copy-cam');
@@ -397,6 +397,15 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
 
             loading.classList.add('done');
             viewer.start();
+
+            // Apply camera navigation constraints (Ground Lock & Min/Max Distance)
+            if (viewer.controls) {{
+                viewer.controls.minDistance = {min_dist};
+                viewer.controls.maxDistance = {max_dist};
+                if ({str(ground_lock).lower()}) {{
+                    viewer.controls.maxPolarAngle = Math.PI / 2; // Ground clamp (90 deg)
+                }}
+            }}
 
             {copy_cam_js}
 
@@ -707,39 +716,92 @@ class WebGLTab(QWidget):
         c2_layout.addLayout(preset_row)
 
         # Coordinate Inputs Frame
+        # Coordinate Inputs & Constraint Settings Frame
         cam_frame = QFrame()
         cam_frame.setObjectName("camFrame")
         cam_frame.setStyleSheet("QFrame#camFrame { background-color: #15181f; border: 1px solid #232732; border-radius: 6px; }")
-        cam_inputs_layout = QHBoxLayout(cam_frame)
-        cam_inputs_layout.setSpacing(12)
+        cam_frame_layout = QVBoxLayout(cam_frame)
+        cam_frame_layout.setContentsMargins(12, 10, 12, 10)
+        cam_frame_layout.setSpacing(10)
 
-        # Position (X, Y, Z)
+        # Row 1: Position (X,Y,Z), Target (X,Y,Z), FOV
+        row1_layout = QHBoxLayout()
+        row1_layout.setSpacing(12)
+
         self.lbl_cam_pos_title = QLabel("Position (X,Y,Z):")
         self.lbl_cam_pos_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
-        cam_inputs_layout.addWidget(self.lbl_cam_pos_title)
+        row1_layout.addWidget(self.lbl_cam_pos_title)
         self.input_cam_pos = QLineEdit("0.0, 1.2, 3.8")
         self.input_cam_pos.setToolTip("Camera starting position coordinates [X, Y, Z]")
         self.input_cam_pos.textChanged.connect(self._on_cam_inputs_edited)
-        cam_inputs_layout.addWidget(self.input_cam_pos, 2)
+        row1_layout.addWidget(self.input_cam_pos, 2)
 
-        # Target (X, Y, Z)
         self.lbl_cam_tgt_title = QLabel("Target:")
         self.lbl_cam_tgt_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
-        cam_inputs_layout.addWidget(self.lbl_cam_tgt_title)
+        row1_layout.addWidget(self.lbl_cam_tgt_title)
         self.input_cam_target = QLineEdit("0.0, 0.0, 0.0")
         self.input_cam_target.setToolTip("Camera focal center point [X, Y, Z]")
         self.input_cam_target.textChanged.connect(self._on_cam_inputs_edited)
-        cam_inputs_layout.addWidget(self.input_cam_target, 2)
+        row1_layout.addWidget(self.input_cam_target, 2)
 
-        # FOV
         self.lbl_cam_fov_title = QLabel("FOV:")
         self.lbl_cam_fov_title.setStyleSheet("font-weight: 600; color: #94a3b8;")
-        cam_inputs_layout.addWidget(self.lbl_cam_fov_title)
+        row1_layout.addWidget(self.lbl_cam_fov_title)
         self.input_cam_fov = QLineEdit("50")
         self.input_cam_fov.setMaximumWidth(45)
         self.input_cam_fov.setToolTip("Camera Field of View in degrees (default: 50)")
         self.input_cam_fov.textChanged.connect(self._on_cam_inputs_edited)
-        cam_inputs_layout.addWidget(self.input_cam_fov)
+        row1_layout.addWidget(self.input_cam_fov)
+
+        cam_frame_layout.addLayout(row1_layout)
+
+        # Row 2: Camera Navigation Constraints (Ground Lock & Min/Max Distance)
+        row2_layout = QHBoxLayout()
+        row2_layout.setSpacing(14)
+
+        self.chk_ground_lock = QCheckBox("Ground Lock (Prevent dipping under floor)")
+        self.chk_ground_lock.setChecked(True)
+        self.chk_ground_lock.setStyleSheet("color: #38bdf8; font-weight: 600; font-size: 11px;")
+        self.chk_ground_lock.setToolTip("Prevent camera from rotating underneath the ground/floor plane (Pitch clamp: -89° to 0°)")
+        self.chk_ground_lock.stateChanged.connect(self._on_cam_inputs_edited)
+        row2_layout.addWidget(self.chk_ground_lock)
+
+        row2_layout.addSpacing(6)
+
+        self.lbl_min_dist_title = QLabel("Min Distance:")
+        self.lbl_min_dist_title.setStyleSheet("font-weight: 600; color: #94a3b8; font-size: 11px;")
+        row2_layout.addWidget(self.lbl_min_dist_title)
+
+        self.spin_min_dist = QDoubleSpinBox()
+        self.spin_min_dist.setRange(0.1, 20.0)
+        self.spin_min_dist.setSingleStep(0.1)
+        self.spin_min_dist.setValue(0.8)
+        self.spin_min_dist.setDecimals(1)
+        self.spin_min_dist.setSuffix(" m")
+        self.spin_min_dist.setFixedWidth(78)
+        self.spin_min_dist.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 3px 6px; color: #cbd5e1; font-weight: 600;")
+        self.spin_min_dist.setToolTip("Minimum zoom distance to prevent penetrating inside the model (default: 0.8m)")
+        self.spin_min_dist.valueChanged.connect(self._on_cam_inputs_edited)
+        row2_layout.addWidget(self.spin_min_dist)
+
+        self.lbl_max_dist_title = QLabel("Max Distance:")
+        self.lbl_max_dist_title.setStyleSheet("font-weight: 600; color: #94a3b8; font-size: 11px;")
+        row2_layout.addWidget(self.lbl_max_dist_title)
+
+        self.spin_max_dist = QDoubleSpinBox()
+        self.spin_max_dist.setRange(1.0, 200.0)
+        self.spin_max_dist.setSingleStep(1.0)
+        self.spin_max_dist.setValue(50.0)
+        self.spin_max_dist.setDecimals(0)
+        self.spin_max_dist.setSuffix(" m")
+        self.spin_max_dist.setFixedWidth(78)
+        self.spin_max_dist.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 3px 6px; color: #cbd5e1; font-weight: 600;")
+        self.spin_max_dist.setToolTip("Maximum camera orbit distance (default: 50m)")
+        self.spin_max_dist.valueChanged.connect(self._on_cam_inputs_edited)
+        row2_layout.addWidget(self.spin_max_dist)
+
+        row2_layout.addStretch()
+        cam_frame_layout.addLayout(row2_layout)
 
         c2_layout.addWidget(cam_frame)
         self.card_camera.setContentLayout(c2_layout)
@@ -1219,26 +1281,41 @@ class WebGLTab(QWidget):
             "pos": [0.0, 1.2, 3.8], 
             "target": [0.0, 0.0, 0.0], 
             "fov": 50, 
+            "ground_lock": True,
+            "min_dist": 0.8,
+            "max_dist": 50.0,
             "label": "Front View"
         })
         p = profile.get("pos", [0.0, 1.2, 3.8])
         t_pos = profile.get("target", [0.0, 0.0, 0.0])
         fov = profile.get("fov", 50)
+        ground_lock = profile.get("ground_lock", True)
+        min_dist = profile.get("min_dist", 0.8)
+        max_dist = profile.get("max_dist", 50.0)
         label = profile.get("label", "Front View")
 
         self.input_cam_pos.blockSignals(True)
         self.input_cam_target.blockSignals(True)
         self.input_cam_fov.blockSignals(True)
+        if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.blockSignals(True)
+        if hasattr(self, 'spin_min_dist'): self.spin_min_dist.blockSignals(True)
+        if hasattr(self, 'spin_max_dist'): self.spin_max_dist.blockSignals(True)
 
         self.input_cam_pos.setText(f"{p[0]}, {p[1]}, {p[2]}")
         self.input_cam_target.setText(f"{t_pos[0]}, {t_pos[1]}, {t_pos[2]}")
         self.input_cam_fov.setText(str(fov))
+        if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.setChecked(ground_lock)
+        if hasattr(self, 'spin_min_dist'): self.spin_min_dist.setValue(min_dist)
+        if hasattr(self, 'spin_max_dist'): self.spin_max_dist.setValue(max_dist)
         self.pill_camera.set_status(label, "ready")
         self._update_cam_preset_styles(label)
 
         self.input_cam_pos.blockSignals(False)
         self.input_cam_target.blockSignals(False)
         self.input_cam_fov.blockSignals(False)
+        if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.blockSignals(False)
+        if hasattr(self, 'spin_min_dist'): self.spin_min_dist.blockSignals(False)
+        if hasattr(self, 'spin_max_dist'): self.spin_max_dist.blockSignals(False)
 
     def _update_cam_preset_styles(self, active_label=None):
         if not hasattr(self, 'btn_cam_front') or not hasattr(self, 'btn_cam_quarter') or not hasattr(self, 'btn_cam_side') or not hasattr(self, 'btn_cam_top'):
@@ -1295,6 +1372,9 @@ class WebGLTab(QWidget):
         r = self.table_models.currentRow()
 
         pos, target, fov = self._get_camera_coords()
+        ground_lock = self.chk_ground_lock.isChecked() if hasattr(self, 'chk_ground_lock') else True
+        min_dist = self.spin_min_dist.value() if hasattr(self, 'spin_min_dist') else 0.8
+        max_dist = self.spin_max_dist.value() if hasattr(self, 'spin_max_dist') else 50.0
         html_name = self.table_models.item(r, 2).text().strip() if self.table_models.item(r, 2) else f"{os.path.basename(file_path)}.html"
 
         self.model_configs[file_path] = {
@@ -1302,6 +1382,9 @@ class WebGLTab(QWidget):
             "pos": pos,
             "target": target,
             "fov": fov,
+            "ground_lock": ground_lock,
+            "min_dist": min_dist,
+            "max_dist": max_dist,
             "label": label
         }
 
@@ -1689,6 +1772,9 @@ class WebGLTab(QWidget):
         cam_pos = config.get("pos", [0.0, 1.2, 3.8])
         cam_target = config.get("target", [0.0, 0.0, 0.0])
         cam_fov = config.get("fov", 50)
+        ground_lock = config.get("ground_lock", True)
+        min_dist = config.get("min_dist", 0.8)
+        max_dist = config.get("max_dist", 50.0)
 
         # Link or copy model file into output directory
         dst_model = os.path.normpath(os.path.join(out_dir, src_name))
@@ -1714,7 +1800,10 @@ class WebGLTab(QWidget):
                     "fov": cam_fov,
                     "position": cam_pos,
                     "target": cam_target,
-                    "startAnim": "none"
+                    "startAnim": "none",
+                    "groundLock": ground_lock,
+                    "minDistance": min_dist,
+                    "maxDistance": max_dist
                 },
                 "background": {"color": [0, 0, 0]},
                 "animTracks": []
@@ -1904,7 +1993,8 @@ class WebGLTab(QWidget):
         html_content = _generate_ply_viewer_html(
             display_title, src_name, cam_pos, cam_target, cam_fov, 
             is_preview=is_preview, enable_watermark=enable_watermark, watermark_text=watermark_text,
-            watermark_size=watermark_size, watermark_opacity=watermark_opacity
+            watermark_size=watermark_size, watermark_opacity=watermark_opacity,
+            ground_lock=ground_lock, min_dist=min_dist, max_dist=max_dist
         )
         html_path = os.path.normpath(os.path.join(out_dir, html_filename))
         with open(html_path, 'w', encoding='utf-8') as f:
@@ -2136,6 +2226,12 @@ class WebGLTab(QWidget):
         self.lbl_cam_pos_title.setText(t.get('tab3_lbl_cam_pos', 'Position (X,Y,Z):'))
         self.lbl_cam_tgt_title.setText(t.get('tab3_lbl_cam_tgt', 'Target:'))
         self.lbl_cam_fov_title.setText(t.get('tab3_lbl_cam_fov', 'FOV:'))
+        if hasattr(self, 'chk_ground_lock') and self.chk_ground_lock is not None:
+            self.chk_ground_lock.setText(t.get("tab3_chk_ground_lock", "Ground Lock (Prevent dipping under floor)"))
+        if hasattr(self, 'lbl_min_dist_title') and self.lbl_min_dist_title is not None:
+            self.lbl_min_dist_title.setText(t.get("tab3_lbl_min_dist", "Min Distance:"))
+        if hasattr(self, 'lbl_max_dist_title') and self.lbl_max_dist_title is not None:
+            self.lbl_max_dist_title.setText(t.get("tab3_lbl_max_dist", "Max Distance:"))
 
         # Step 3 Widgets
         self.lbl_dest_title.setText(t.get("tab3_lbl_output_folder", "Output Folder:"))
