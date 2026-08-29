@@ -10,7 +10,7 @@ class LauncherWidget(ModernStepCard):
     log_signal = pyqtSignal(str, str)
 
     def __init__(self):
-        super().__init__(step_num="", title="Camera Alignment & Trainer Bridge", subtitle="Align cameras and launch 3DGS training engine")
+        super().__init__(step_num="", title="Camera Alignment & Trainer Bridge", subtitle="Align cameras and bridge to 3DGS training engines")
         self.settings = QSettings("PointsAndReality", "3DGSController")
         self.proj_dir = ""
         self.init_ui()
@@ -51,7 +51,7 @@ class LauncherWidget(ModernStepCard):
         main_layout.addWidget(rc_card)
 
         # --------------------------------------------------
-        # Part 2: Trainer Selection & Inspector
+        # Part 2: Trainer Selection & Streamlined Action Bar
         # --------------------------------------------------
         trainer_card = QFrame()
         trainer_card.setObjectName("trainerCard")
@@ -60,7 +60,7 @@ class LauncherWidget(ModernStepCard):
         trainer_card_layout.setContentsMargins(10, 8, 10, 8)
         trainer_card_layout.setSpacing(8)
 
-        # Trainer selector & action top row
+        # Trainer selector & Action Bar (Row 1)
         top_row = QHBoxLayout()
         top_row.setSpacing(8)
 
@@ -73,7 +73,7 @@ class LauncherWidget(ModernStepCard):
         self.combo_trainer.currentTextChanged.connect(self.on_trainer_changed)
         self.combo_trainer.setMinimumWidth(160)
 
-        self.btn_launch_trainer = QPushButton("Auto-Load && Launch Trainer")
+        self.btn_launch_trainer = QPushButton("Launch Trainer")
         self.btn_launch_trainer.setObjectName("SuccessBtn")
         self.btn_launch_trainer.setCursor(Qt.PointingHandCursor)
         self.btn_launch_trainer.clicked.connect(self.launch_selected_trainer)
@@ -95,7 +95,7 @@ class LauncherWidget(ModernStepCard):
         top_row.addWidget(self.btn_refresh)
         trainer_card_layout.addLayout(top_row)
 
-        # Dynamic Stacked Inspector
+        # Dynamic Stacked Inspector (Row 2)
         self.stack = QStackedWidget()
         self.stack.setObjectName("trainerStack")
         self.stack.setStyleSheet("QStackedWidget#trainerStack { background-color: #111318; border: 1px solid #1e222c; border-radius: 4px; }")
@@ -324,8 +324,7 @@ class LauncherWidget(ModernStepCard):
         self.btn_copy_frames_path.setText(t.get("btn_copy_frames_path", "Copy Frames Path"))
         self.lbl_target.setText(t.get("lbl_target", "Target Trainer:"))
         self.btn_refresh.setText(t.get("btn_refresh", "Refresh"))
-        t_trainer = t.get("btn_launch_trainer", "Auto-Load & Launch Trainer")
-        self.btn_launch_trainer.setText(t_trainer.replace("&", "&&") if "&&" not in t_trainer else t_trainer)
+        self.btn_launch_trainer.setText(t.get("btn_launch_trainer", "Launch Trainer"))
         if hasattr(self, 'btn_open_exports') and self.btn_open_exports is not None:
             self.btn_open_exports.setText(t.get("btn_open_exports", "Open Exports (03_splats_exports)"))
 

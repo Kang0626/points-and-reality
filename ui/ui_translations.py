@@ -39,7 +39,7 @@ TRANSLATIONS = {
         "btn_copy_frames_path": "Copy Frames Path",
         "lbl_target": "Target Trainer:",
         "btn_refresh": "Refresh",
-        "btn_launch_trainer": "Auto-Load & Launch Trainer",
+        "btn_launch_trainer": "Launch Trainer",
         "btn_open_exports": "Open Exports (03_splats_exports)",
         
         "tab2_card1_title": "Target Splat Models",
@@ -158,8 +158,8 @@ TRANSLATIONS = {
         "btn_copy_frames_path": "추출 프레임 경로 복사",
         "lbl_target": "타겟 트레이너:",
         "btn_refresh": "새로고침",
-        "btn_launch_trainer": "트레이너 자동 로드 & 실행",
-        "btn_open_exports": "학습 출력 폴더 열기 (03_splats_exports)",
+        "btn_launch_trainer": "트레이너 실행",
+        "btn_open_exports": "출력 폴더 열기 (03_splats_exports)",
         
         "tab2_card1_title": "클린업 대상 스플랫 모델",
         "tab2_card1_sub": "익스포트된 3DGS .ply 또는 .splat 파일을 관리합니다",

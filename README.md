@@ -130,11 +130,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.222`
+* **Current Version**: `v2.231`
 * **주요 변경 요약**:
-  * **정식 비즈니스 브랜드 명칭 "Points & Reality" 전면 일괄 통일 및 디렉토리 개편 (`v2.222`)**: 기존 임시 명칭(SPLATIAL / Postshot_Pipeline)을 정식 비즈니스 브랜드 명칭인 **Points & Reality**로 전체 코드베이스, 윈도우 타이틀, 최상단 헤더 로고(`✨ Points & Reality`), 번역 사전, 기본 워터마크, HTML 뷰어 오버레이, 런처 스크립트(`Run_Points_Reality_Pipeline.bat`), 상위 디렉토리(`D:\Points & Reality\Points & Reality Pipeline`)까지 완벽하게 통일.
-  * **부모 컨테이너 프레임의 하위 스타일 오염 방지(ID 스코핑) 및 롤오버 호버 색상 전환 100% 정상화 (`v2.221`)**: 부모 `QFrame`에 무선택자로 지정되었던 배경 스타일이 하위 자식 버튼들에 전파되어 버튼의 글로벌 호버 색상 변화를 덮어쓰던 문제를 `QFrame#rcCard`, `QFrame#trainerCard` 등 ID 스코핑으로 완전 격리하여 마우스 오버 시 `PrimaryBtn`(`🚀 RealityCapture 실행` 등)은 `#0ea5e9`(스카이블루), `SuccessBtn`(`🚀 자동 로드 & 트레이너 실행` 등)은 `#10b981`(에메랄드 그린)으로 선명하게 색상이 즉각 전환되도록 수정.
-  * **전체 액션 버튼 마우스 롤오버(Hover) 비주얼 이펙트 강화 및 포인팅 커서 일괄 적용 (`v2.220`)**: `PrimaryBtn`, `SuccessBtn`, `DangerBtn` 및 일반 액션 버튼에 마우스 오버 시 생동감 있는 네온 발광 테두리와 하이라이트 배경 롤오버 효과 및 손가락 포인팅 커서(`PointingHandCursor`) 완벽 적용.
-  * **UI 전체 불필요한 넘버링 & STEP 배지 완전 제거 및 테이블 수직 헤더(행 번호) 일괄 통일 (`v2.219`)**: WebGL 모델 테이블(`table_models`)에 남아있던 행 번호(1, 2, 3...) 열을 숨김 처리(`verticalHeader().setVisible(False)`)하여 모든 탭의 테이블을 깔끔하게 통일하고, 카드 헤더의 `STEP` 배지 및 탭/버튼의 불필요한 번호 접두사를 완전히 제거하여 세련된 모던 UI 완성.
+  * **3DGS 트레이너 런처 버튼 재배치 및 'Launch Trainer' 간소화 (`v2.231`)**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측으로 이동 배치하여 드롭다운 선택 즉시 1클릭 실행 가능한 동선 최적화 및 텍스트 간소화 완료.
+  * **상단 메인 탭바 폰트 잘림 근본적 영구 해결 및 High-DPI 완벽 대응 (`v2.228~v2.229`)**: 네이티브 `QTabBar`를 세그먼트 버튼 그룹(`QButtonGroup` + `QPushButton`)으로 전면 교체하고 가중치를 `font-weight: 600`으로 고정하여 어떤 해상도/배율에서도 폰트 잘림 없는 깨끗한 렌더링 보장.
+  * **프로젝트 디렉토리 최근 5개 히스토리 드롭다운 및 스튜디오 저채도 테마 개편 (`v2.225`)**: 작업 폴더 최근 목록 선택 기능 및 눈의 피로를 덜어주는 슬레이트 네이비/세이지 올리브 전문 스튜디오 테마 적용.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**

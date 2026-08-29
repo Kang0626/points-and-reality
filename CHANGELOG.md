@@ -7,10 +7,11 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.230 (Current)
-* **3DGS 트레이너 런처 버튼 및 내보내기 폴더 UX/레이아웃 직관적 재배치 ([`section_launcher.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_launcher.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
-  * **원클릭 연속 액션 워크플로우 구현**: 하단에 고립되어 있어 시선 이동이 어색하던 `Auto-Load & Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 드롭다운의 바로 우측으로 이동 배치하여, 트레이너 엔진 선택 즉시 1클릭으로 실행할 수 있도록 UX 대폭 개선.
-  * **불필요한 하단 중복 행 제거**: 런처 버튼이 상단 액션바로 통합됨에 따라 하단 여백을 정돈하고, 카드 레이아웃의 컴팩트함과 가독성 대폭 향상.
+### 🔹 v2.231 (Current)
+* **3DGS 트레이너 런처 버튼 재배치 실반영 및 버튼 텍스트 'Launch Trainer' 간소화 ([`section_launcher.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_launcher.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **트레이너 드롭다운 우측 일렬 액션바 실반영**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측(`top_row`)으로 완전히 재배치하고 하단 중복 행을 제거하여 즉시 1클릭 실행 가능한 직관적 UX 구축.
+  * **버튼 텍스트 간소화**: 다국어 사전(EN/KO) 및 위젯 텍스트를 직관적인 `Launch Trainer`(트레이너 실행)로 간소화.
+  * **3단계 품질 검증 게이트 통과**: 누락 검증(기존 시그널/슬롯/메서드 100% 보존), 생명주기 검증(가드 배치), 정공법 검증(표준 Qt 레이아웃 엔진) 완료.
 
 ### 🔹 v2.229
 * **선택(Checked) 탭 폰트 가중치(Font-weight) 일치화 및 앰퍼샌드(&) 이스케이프 수정 ([`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
