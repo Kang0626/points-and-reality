@@ -162,18 +162,22 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     raw_text = (text.strip() if text else "") or "Points & Reality"
     opacity_val = max(0.01, min(1.0, float(opacity_pct) / 100.0))
     font_size_str = f"clamp({int(font_size_px * 0.75)}px, {font_size_px / 10:.1f}vw, {int(font_size_px * 1.35)}px)"
-    gap_str = f"{int(font_size_px * 0.65)}px"
-    row_gap_str = f"{int(font_size_px * 0.55)}px"
-    offset_px = int(font_size_px * 1.1)
+    
+    # Horizontal spacing (자간/어간) and Vertical line spacing (행간 = 자간의 2배)
+    word_gap_px = max(16, int(font_size_px * 0.28))
+    row_gap_px = int(word_gap_px * 2)  # 행간 = 자간의 2배
+    gap_str = f"{word_gap_px}px"
+    row_gap_str = f"{row_gap_px}px"
+    offset_px = int(font_size_px * 0.85)
 
     rows_html = []
-    # 12 staggered repeating rows spanning a 340vw x 340vh canvas centered on screen
-    for i in range(12):
+    # 18 staggered repeating rows spanning a 340vw x 340vh canvas centered on screen
+    for i in range(18):
         offset = f"transform: translateX({offset_px}px);" if (i % 2 == 1) else ""
         row = (
             f'<div style="display:flex; justify-content:center; gap:{gap_str}; color:#ffffff; '
-            f'font-size:{font_size_str}; font-weight:900; font-family:\'Arial Black\', \'Impact\', \'Montserrat\', -apple-system, sans-serif; '
-            f'letter-spacing:-4px; text-transform:uppercase; white-space:nowrap; {offset}">'
+            f'font-size:{font_size_str}; line-height:0.95; font-weight:900; font-family:\'Arial Black\', \'Impact\', \'Montserrat\', -apple-system, sans-serif; '
+            f'letter-spacing:-2px; text-transform:uppercase; white-space:nowrap; {offset}">'
             f'<span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span>'
             f'</div>'
         )
@@ -298,7 +302,7 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
     </div>
 
     <!-- Engine Attribution (MIT License Compliance - Subtle Bottom-Right) -->
-    <div id="points-reality-engine-credit" style="position:fixed; bottom:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:22px; right:20px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
         <span style="opacity:0.7;">Powered by</span>
         <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">Three.js</a>
         <span style="opacity:0.3;">&</span>
@@ -1814,8 +1818,8 @@ class WebGLTab(QWidget):
         🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom
     </div>
 
-    <!-- Engine Attribution (MIT License Compliance - Subtle Bottom-Right) -->
-    <div id="points-reality-engine-credit" style="position:fixed; bottom:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
+    <!-- Engine Attribution (MIT License Compliance - Left of Fullscreen Button) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:22px; right:66px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
         <span style="opacity:0.7;">Powered by</span>
         <a href="https://playcanvas.com" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">PlayCanvas</a>
         <span style="opacity:0.3;">&</span>
