@@ -2,17 +2,17 @@
   "D:\\SPLATIAL\\Works\\MyScan_02\\03_postshot_exports\\FordEscape01.ply": {
     "html_name": "FordEscape01.html",
     "pos": [
-      0.0,
-      6.0,
-      0.1
+      -0.56,
+      8.427,
+      41.183
     ],
     "target": [
-      0.0,
-      0.0,
-      0.0
+      -0.653,
+      8.084,
+      37.214
     ],
-    "fov": 55.0,
-    "label": "Top-Down"
+    "fov": 50.0,
+    "label": "FordEscape_RearRight"
   },
   "D:\\SPLATIAL\\Works\\MyScan_02\\03_postshot_exports\\FordEscape02.ply": {
     "html_name": "FordEscape02.html",
@@ -45,7 +45,7 @@
     "label": "Front View"
   },
   "D:\\SPLATIAL\\Works\\MyScan_02\\02_tracking_alignment\\fordEscape01.sog": {
-    "html_name": "index_review_ver01.html",
+    "html_name": "fordEscape01.html",
     "pos": [
       -0.56,
       8.427,
@@ -58,5 +58,20 @@
     ],
     "fov": 50.0,
     "label": "FordEscape_RearRight"
+  },
+  "D:\\Points & Reality\\Works\\MyScan_01\\03_splats_exports\\FordEscape_new_LF_01.sog": {
+    "html_name": "FordEscape_new_LF_01.html",
+    "pos": [
+      16.252,
+      8.524,
+      -40.247
+    ],
+    "target": [
+      0.965,
+      6.649,
+      -5.193
+    ],
+    "fov": 50.0,
+    "label": "FordFront"
   }
 }
