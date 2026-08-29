@@ -1,38 +1,26 @@
 {
-  "updated_at": "2026-08-29 21:15:43",
-  "total_models": 4,
+  "updated_at": "2026-08-29 21:25:44",
+  "total_models": 2,
   "models": [
     {
-      "title": "Review_FordEscape_new_LF_09",
+      "title": "FordEscape_new_LF_09",
+      "raw_title": "Review_FordEscape_new_LF_09",
       "filename": "Review_FordEscape_new_LF_09.html",
       "path": "05_web_build/Review_FordEscape_new_LF_09.html",
       "is_index": false,
-      "mtime": 1787994937.6355662,
-      "date": "2026-08-29 21:15"
+      "is_review": true,
+      "mtime": 1787995544.8926375,
+      "date": "2026-08-29 21:25"
     },
     {
-      "title": "Review_FordEscape_new_LF_08",
+      "title": "FordEscape_new_LF_08",
+      "raw_title": "Review_FordEscape_new_LF_08",
       "filename": "Review_FordEscape_new_LF_08.html",
       "path": "05_web_build/Review_FordEscape_new_LF_08.html",
       "is_index": false,
+      "is_review": true,
       "mtime": 1787994482.3262923,
       "date": "2026-08-29 21:08"
-    },
-    {
-      "title": "Review_FordEscape_new_LF_06",
-      "filename": "Review_FordEscape_new_LF_06.html",
-      "path": "05_web_build/Review_FordEscape_new_LF_06.html",
-      "is_index": false,
-      "mtime": 1787994480.8146994,
-      "date": "2026-08-29 21:08"
-    },
-    {
-      "title": "Review_FordEscape_new_LF_07",
-      "filename": "Review_FordEscape_new_LF_07.html",
-      "path": "05_web_build/Review_FordEscape_new_LF_07.html",
-      "is_index": false,
-      "mtime": 1787994479.0850668,
-      "date": "2026-08-29 21:07"
     }
   ]
 }
