@@ -1,6 +1,6 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.233)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.234)
 
-Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
+Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
 ---
 
@@ -64,7 +64,19 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 * **STEP 3. 출력 디렉토리 및 일괄 패키징**:
   * **출력 폴더 지정**: 기본 `05_web_build` 외에 자유롭게 변경 가능.
   * **`⚡ 선택된 모델 WebGL 일괄 빌드`**: 체크된 모든 모델을 각자의 파일명과 카메라 세팅으로 일괄 패키징.
-  * **`🌐 로컬 웹 서버 실행 / 중지`**: 포트 충돌 없이 백그라운드 HTTP 서버 토글.
+  * **`🟢 로컬 웹 서버 상태 인디케이터`**: Card 3 상단 헤더의 컴팩트 원형 뱃지(`🟢 8080` / `⚪ Off`)로 즉시 토글.
+
+---
+
+### 🔹 Tab 4. 클라우드 쇼룸 (`4. Cloud Showroom`)
+* **STEP 1. 실시간 웹 쇼룸 및 Vercel 배포 자산 관리 (Live Cloud Showroom & Resources)**:
+  * 현재 Vercel 웹에 배포된 실시간 3DGS 모델 목록 및 용량 실시간 스캔.
+  * 각 모델별 라이브 URL 접속 버튼(`🌐 Open`) 및 원클릭 URL 복사(`📋 URL`).
+  * 통합 웹 쇼룸(`showroom.html`) 원클릭 브라우저 실행.
+  * 불필요한 모델 선택 후 `🗑️ Delete Selected from Cloud` 클릭 시 GitHub 및 Vercel에서 즉시 영구 삭제(Purge).
+* **STEP 2. 로컬 패키지 배포 및 선택적 업로드 (Selective Local Deployer)**:
+  * 로컬 `05_web_build`에 빌드된 패키지 중 원하는 모델만 체크박스로 선별.
+  * 실시간 선택 용량 계산 및 `🚀 Upload Selected Packages to Vercel` 클릭으로 백그라운드 안전 업로드.
 
 ---
 
@@ -73,6 +85,19 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ```text
 Points & Reality Pipeline/
 ├── main.pyw                         # 애플리케이션 진입점 (High DPI 지원)
+├── ui/
+│   ├── ui_main_master.py            # 메인 윈도우 컨트롤러, 프리셋 관리, 통합 로그
+│   ├── ui_components.py            # ModernStepCard, StatusPill 커스텀 위젯
+│   ├── ui_translations.py          # 한국어(KO) / 영어(EN) 완전 다국어 사전
+│   ├── tabs/
+│   │   ├── capture_sections/       # Tab 1 세부 섹션 (프로젝트, 인제스트, 런처)
+│   │   ├── tab_cleanup.py          # Tab 2 스플랫 클린업 컨트롤러
+│   │   ├── tab_webgl.py            # Tab 3 WebGL 빌더 & 로컬 서버
+│   │   └── tab_showroom.py         # Tab 4 클라우드 쇼룸 & Vercel 리소스 관리자
+│   └── templates/
+│       ├── supersplat_template.html # SuperSplat 독립 실행 엔진 템플릿
+│       └── libs/                   # Three.js (0.164.0), GaussianSplats3D (0.4.5) 오프라인 모듈
+```
 ├── Run_Points_Reality_Pipeline.bat  # 원클릭 백그라운드 GUI 실행 배치 스크립트
 ├── config.py                        # 앱 버전(APP_VERSION = v2.222), 다크 테마 QSS, 폴더 상수
 ├── utils.py                         # FFmpeg 추출 스레드, 폴더 감시 스레드
@@ -133,11 +158,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.233`
+* **Current Version**: `v2.234`
 * **주요 변경 요약**:
+  * **상단 네비게이션 4번째 전용 탭 'Cloud Showroom' 신설 및 로컬 서버 토글 크래시 수정 (`v2.234`)**: WebGL Build 탭 옆에 4번째 독립 탭(`Cloud Showroom` / `클라우드 쇼룸`)을 신설하여 실시간 클라우드 배포 현황 확인, 라이브 쇼룸 접속, 선택적 로컬 패키지 배포 및 원격 모델 삭제를 한곳에서 영구 관리하고, 로컬 서버 토글 시 `_start_server_sync` 누락으로 인한 앱 종료 버그를 완벽 해결.
   * **웹 배포 및 클라우드 쇼룸 관리자 모달 도입 및 로컬 서버 원형 인디케이터 최적화 (`v2.233`)**: 하단 액션바의 거대한 로컬 서버 버튼을 Card 3 상단 헤더의 작고 세련된 **원형 상태 인디케이터 버튼(`🟢 8080` / `⚪ Off`)**으로 전환하고, `Upload & Cloud Showroom` 클릭 시 선택적 웹 업로드(Selective Upload) 및 실시간 웹 배포/삭제 관리자(Live Cloud Manager & Purge) 전용 모달 대화상자 구현.
   * **3단계 검증 체크리스트(Quality Gate) 실시간 프로세스 기반 전면 개편 (`v2.232`)**: 디스크 실반영 2중 검증, 폰트 가중치 일관성(High-DPI 텍스트 잘림 방지), 앰퍼샌드 Mnemonic 이스케이프 및 스레드 생명주기 안전 규칙을 공식 가이드라인으로 수립.
-  * **3DGS 트레이너 런처 버튼 재배치 및 'Launch Trainer' 간소화 (`v2.231`)**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측으로 이동 배치하여 드롭다운 선택 즉시 1클릭 실행 가능한 동선 최적화 및 텍스트 간소화 완료.
-  * **상단 메인 탭바 폰트 잘림 근본적 영구 해결 및 High-DPI 완벽 대응 (`v2.228~v2.229`)**: 네이티브 `QTabBar`를 세그먼트 버튼 그룹(`QButtonGroup` + `QPushButton`)으로 전면 교체하고 가중치를 `font-weight: 600`으로 고정하여 어떤 해상도/배율에서도 폰트 잘림 없는 깨끗한 렌더링 보장.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**

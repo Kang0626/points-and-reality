@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.233 (Current)
+### 🔹 v2.234 (Current)
+* **상단 네비게이션 4번째 전용 탭 'Cloud Showroom' 정식 신설 및 로컬 서버 토글 크래시 버그 완벽 수정 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **전용 탭 4 'Cloud Showroom' 신설**: WebGL Build 탭 옆에 4번째 독립 탭(`Cloud Showroom` / `클라우드 쇼룸`)을 신설하여, 실시간 클라우드 배포 현황 확인, 라이브 쇼룸 접속, 선택적 로컬 패키지 배포 및 원격 모델 삭제를 한곳에서 영구 관리.
+  * **로컬 서버 토글 버튼 크래시 수정**: `WebGLTab.toggle_preview_server` 실행 시 누락되었던 `_start_server_sync` 메서드를 표준 스레드 생명주기 안전 패턴(`try-except`, `pyqtSignal`)으로 구현하여 "Off" 버튼 클릭 시 앱이 비정상 종료되던 버그를 완전 해결.
+  * **3단계 품질 검증 게이트 통과**: 누락 검증, 생명주기 안전성 검증, 정공법 렌더링 검증 완료.
+
+### 🔹 v2.233
 * **웹 배포 및 클라우드 쇼룸 관리자 모달(선택적 업로드 & 실시간 웹 뷰어/삭제) 도입 및 로컬 서버 원형 인디케이터 최적화 ([`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **로컬 서버 제어 버튼 최적화**: 하단 액션바를 차지하던 거대한 `Stop Local Server` 버튼을 제거하고, Card 3 상단 헤더에 작고 세련된 **원형/컴팩트 상태 인디케이터 버튼(`🟢 8080` / `⚪ Off`)**으로 전환하여 공간 활용도 극대화.
   * **선택적 웹 업로드(Selective Upload to Vercel)**: `Upload & Cloud Showroom` 클릭 시 전용 대화상자에서 로컬 `05_web_build`의 파일(HTML, 3DGS 스플랫 모델, 용량, 수정일)을 목록으로 확인하고 원하는 모델만 선별하여 GitHub/Vercel로 안전하게 업로드.

@@ -1821,43 +1821,60 @@ class WebGLTab(QWidget):
     # Local Server Control
     # ----------------------------------------------------------------------
     def toggle_preview_server(self):
-        out_dir = self.input_output_dir.text().strip()
-        if not out_dir and self.proj_dir:
-            out_dir = os.path.join(self.proj_dir, "05_web_build")
-        if not out_dir:
-            repo_root = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-            out_dir = os.path.join(repo_root, "05_web_build")
+        try:
+            out_dir = self.input_output_dir.text().strip()
+            if not out_dir and self.proj_dir:
+                out_dir = os.path.join(self.proj_dir, "05_web_build")
+            if not out_dir:
+                repo_root = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                out_dir = os.path.join(repo_root, "05_web_build")
 
-        out_dir = os.path.normpath(out_dir)
-        os.makedirs(out_dir, exist_ok=True)
+            out_dir = os.path.normpath(out_dir)
+            os.makedirs(out_dir, exist_ok=True)
 
-        if self.server_thread and self.server_thread.isRunning():
-            self.server_thread.stop()
-            if hasattr(self, 'btn_server_circle') and self.btn_server_circle is not None:
-                self.btn_server_circle.setText("⚪ Off")
-                self.btn_server_circle.setStyleSheet("""
-                    QPushButton {
-                        background-color: #171922;
-                        border: 1px solid #282d3c;
-                        border-radius: 11px;
-                        color: #94a3b8;
-                        font-size: 11px;
-                        font-weight: 600;
-                        min-height: 22px;
-                        max-height: 22px;
-                        padding: 1px 10px;
-                    }
-                    QPushButton:hover {
-                        background-color: #202636;
-                        border-color: #3b465c;
-                        color: #ffffff;
-                    }
-                """)
-            self.pill_config.set_status("Server Stopped", "idle")
-            self.log_signal.emit("Local Web Server stopped.", "info")
-            return
+            if self.server_thread and self.server_thread.isRunning():
+                self.server_thread.stop()
+                if hasattr(self, 'btn_server_circle') and self.btn_server_circle is not None:
+                    self.btn_server_circle.setText("⚪ Off")
+                    self.btn_server_circle.setStyleSheet("""
+                        QPushButton {
+                            background-color: #171922;
+                            border: 1px solid #282d3c;
+                            border-radius: 11px;
+                            color: #94a3b8;
+                            font-size: 11px;
+                            font-weight: 600;
+                            min-height: 22px;
+                            max-height: 22px;
+                            padding: 1px 10px;
+                        }
+                        QPushButton:hover {
+                            background-color: #202636;
+                            border-color: #3b465c;
+                            color: #ffffff;
+                        }
+                    """)
+                self.pill_config.set_status("Server Stopped", "idle")
+                self.log_signal.emit("Local Web Server stopped.", "info")
+                return
 
-        self._start_server_sync(out_dir)
+            self._start_server_sync(out_dir)
+        except Exception as ex:
+            self.log_signal.emit(f"[ERROR] Server toggle error: {str(ex)}", "error")
+
+    def _start_server_sync(self, out_dir):
+        try:
+            out_dir = os.path.normpath(out_dir)
+            os.makedirs(out_dir, exist_ok=True)
+            if self.server_thread and self.server_thread.isRunning():
+                return
+            self.server_thread = HTTPServerThread(out_dir, preferred_port=8080)
+            self.server_thread.server_started.connect(self._on_server_started)
+            self.server_thread.server_stopped.connect(self._on_server_stopped)
+            self.server_thread.server_error.connect(lambda err: self.log_signal.emit(f"[SERVER ERROR] {err}", "error"))
+            self.server_thread.start()
+        except Exception as ex:
+            self.log_signal.emit(f"[ERROR] Failed to start local server: {str(ex)}", "error")
 
     def _on_server_started(self, port):
         self.server_port = port

@@ -16,6 +16,7 @@ from ui.tabs.capture_sections.section_ingest import IngestWidget
 from ui.tabs.capture_sections.section_launcher import LauncherWidget
 from ui.tabs.tab_cleanup import CleanupTab
 from ui.tabs.tab_webgl import WebGLTab
+from ui.tabs.tab_showroom import ShowroomTab
 
 class PointsAndRealityController(QMainWindow):
     def __init__(self):
@@ -152,7 +153,11 @@ class PointsAndRealityController(QMainWindow):
         self.btn_tab_webgl.setCheckable(True)
         self.btn_tab_webgl.setCursor(Qt.PointingHandCursor)
 
-        self.tab_buttons = [self.btn_tab_capture, self.btn_tab_cleanup, self.btn_tab_webgl]
+        self.btn_tab_showroom = QPushButton("Cloud Showroom")
+        self.btn_tab_showroom.setCheckable(True)
+        self.btn_tab_showroom.setCursor(Qt.PointingHandCursor)
+
+        self.tab_buttons = [self.btn_tab_capture, self.btn_tab_cleanup, self.btn_tab_webgl, self.btn_tab_showroom]
 
         nav_tab_css = """
             QPushButton {
@@ -252,20 +257,25 @@ class PointsAndRealityController(QMainWindow):
         scroll_area.setWidget(scroll_content)
         tab1_layout.addWidget(scroll_area)
 
-        # Tab 2 & 3 instances
+        # Tab 2, 3 & 4 instances
         self.tab_cleanup = CleanupTab()
         self.tab_cleanup.log_signal.connect(self.log)
         
         self.tab_webgl = WebGLTab()
         self.tab_webgl.log_signal.connect(self.log)
+
+        self.tab_showroom = ShowroomTab()
+        self.tab_showroom.log_signal.connect(self.log)
         
         self.sec_proj.proj_dir_changed.connect(self.tab_cleanup.set_proj_dir)
         self.sec_proj.proj_dir_changed.connect(self.tab_webgl.set_proj_dir)
+        self.sec_proj.proj_dir_changed.connect(self.tab_showroom.set_proj_dir)
 
         # Add to stack
         self.stacked_widget.addWidget(tab1_widget)
         self.stacked_widget.addWidget(self.tab_cleanup)
         self.stacked_widget.addWidget(self.tab_webgl)
+        self.stacked_widget.addWidget(self.tab_showroom)
         
         self.main_splitter.addWidget(self.stacked_widget)
 
@@ -416,10 +426,12 @@ class PointsAndRealityController(QMainWindow):
         t_capture = t.get("tab_capture", "Capture & Ingest")
         t_cleanup = t.get("tab_cleanup", "Splat Cleanup")
         t_webgl = t.get("tab_webgl", "WebGL Build")
+        t_showroom = t.get("tab_showroom", "Cloud Showroom")
         
         self.btn_tab_capture.setText(t_capture.replace("&", "&&") if "&&" not in t_capture else t_capture)
         self.btn_tab_cleanup.setText(t_cleanup.replace("&", "&&") if "&&" not in t_cleanup else t_cleanup)
         self.btn_tab_webgl.setText(t_webgl.replace("&", "&&") if "&&" not in t_webgl else t_webgl)
+        self.btn_tab_showroom.setText(t_showroom.replace("&", "&&") if "&&" not in t_showroom else t_showroom)
         
         self.lbl_log_title.setText(t.get('log_title', 'Console & Activity Log'))
         self.btn_clear_log.setText(t.get("btn_clear_log", "Clear"))
@@ -438,6 +450,8 @@ class PointsAndRealityController(QMainWindow):
             self.tab_cleanup.update_language(t)
         if hasattr(self, 'tab_webgl'):
             self.tab_webgl.update_language(t)
+        if hasattr(self, 'tab_showroom'):
+            self.tab_showroom.update_language(t)
 
     def _on_tab_changed(self, index):
         self.stacked_widget.setCurrentIndex(index)
