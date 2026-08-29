@@ -7,14 +7,15 @@
   <meta name="description" content="Turn optical video or multi-angle photos into ultra-realistic, interactive 3D Gaussian Splatting digital twins in ~1 hour. Capture, Create, Convert." />
   <meta name="keywords" content="3D Gaussian Splatting, 3DGS, Reality Capture, Digital Twin, WebGL, Ecommerce 3D, Automotive 3D, Spatial Computing" />
 
-  <!-- Fonts: Bricolage Grotesque, Plus Jakarta Sans, JetBrains Mono -->
+  <!-- High-End Futuristic & Precision Typography: Space Grotesk, Inter, JetBrains Mono, Pretendard -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 
   <style>
     /* ==========================================================================
-       01. VOXELO-GRADE DESIGN SYSTEM & CSS TOKENS
+       01. HIGH-PRECISION SPATIAL DESIGN SYSTEM & CSS TOKENS
        ========================================================================== */
     :root {
       --bg-base: #08090e;
@@ -33,8 +34,8 @@
       --fg-lime: #d4f870;
       --fg-emerald: #10b981;
       
-      --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      --font-sans: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
       --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
@@ -133,15 +134,16 @@
       font-family: var(--font-display);
       font-size: clamp(42px, 7vw, 92px);
       font-weight: 800;
-      line-height: 0.96;
+      line-height: 0.98;
       letter-spacing: -0.04em;
       color: var(--fg-primary);
     }
 
     .hero-title em {
-      font-style: italic;
+      font-style: normal;
       color: var(--fg-lime);
       font-weight: 800;
+      letter-spacing: -0.04em;
     }
 
     .section-title {
@@ -149,18 +151,20 @@
       font-size: clamp(32px, 4.5vw, 56px);
       font-weight: 700;
       line-height: 1.05;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.035em;
     }
 
     .section-title em {
-      font-style: italic;
+      font-style: normal;
       color: var(--fg-lime);
+      font-weight: 700;
     }
 
     .section-desc {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--fg-secondary);
-      line-height: 1.65;
+      line-height: 1.7;
+      letter-spacing: -0.01em;
       max-width: 620px;
     }
 
