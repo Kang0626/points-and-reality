@@ -122,16 +122,24 @@
               transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
             #points-reality-engine-credit.points-reality-hud.faded-in {
-              opacity: 0.4 !important;
+              opacity: 0.35 !important;
               pointer-events: none !important;
             }
             #points-reality-controls-hint.points-reality-hud.faded-in {
-              opacity: 1 !important;
-              pointer-events: none !important;
+              opacity: 0.45 !important;
+              pointer-events: auto !important;
+              transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+            #points-reality-controls-hint.points-reality-hud.faded-in:hover {
+              opacity: 0.9 !important;
             }
             #points-reality-brand-header.points-reality-hud.faded-in {
-              opacity: 1 !important;
+              opacity: 0.85 !important;
               pointer-events: auto !important;
+              transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+            #points-reality-brand-header.points-reality-hud.faded-in:hover {
+              opacity: 1 !important;
             }
             #points-reality-engine-credit.points-reality-hud.faded-out,
             #points-reality-controls-hint.points-reality-hud.faded-out,
