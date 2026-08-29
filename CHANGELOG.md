@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.232 (Current)
+### 🔹 v2.233 (Current)
+* **웹 배포 및 클라우드 쇼룸 관리자 모달(선택적 업로드 & 실시간 웹 뷰어/삭제) 도입 및 로컬 서버 원형 인디케이터 최적화 ([`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **로컬 서버 제어 버튼 최적화**: 하단 액션바를 차지하던 거대한 `Stop Local Server` 버튼을 제거하고, Card 3 상단 헤더에 작고 세련된 **원형/컴팩트 상태 인디케이터 버튼(`🟢 8080` / `⚪ Off`)**으로 전환하여 공간 활용도 극대화.
+  * **선택적 웹 업로드(Selective Upload to Vercel)**: `Upload & Cloud Showroom` 클릭 시 전용 대화상자에서 로컬 `05_web_build`의 파일(HTML, 3DGS 스플랫 모델, 용량, 수정일)을 목록으로 확인하고 원하는 모델만 선별하여 GitHub/Vercel로 안전하게 업로드.
+  * **실시간 웹 배포 뷰어 및 클라우드 삭제 관리자**: GitHub/Vercel에 배포된 실시간 모델 목록과 라이브 접속 URL 확인, 원클릭 브라우저 열기, 선택 모델 클라우드 영구 삭제(Purge from Cloud) 및 Git 자동 동기화 기능 구현.
+
+### 🔹 v2.232
 * **3단계 검증 체크리스트(Quality Gate) 현재 프로세스 기반 전면 고도화 ([`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
   * **디스크 실반영 2중 검증 체계화**: 코드 누락 검증 외에도 수정 툴의 덮어쓰기 누락을 방어하기 위한 `view_file`/`git diff` 실반영 확인 절차 명문화.
   * **High-DPI 텍스트 래스터라이징 무왜곡 원칙 수립**: 폰트 가중치(`font-weight: 600`) 일관성 유지 및 앰퍼샌드(`&&`) 이스케이프 강제 규칙 추가.

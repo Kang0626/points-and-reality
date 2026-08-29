@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QInputDialog, QMessageBox)
 from PyQt5.QtCore import Qt, pyqtSignal, QThread
 from ui.ui_components import ModernStepCard, StatusPill, ElideLeftDelegate
+from ui.tabs.dialog_web_publish import WebPublishManagerDialog
 
 class VercelUploadThread(QThread):
     upload_progress = pyqtSignal(str)
@@ -698,6 +699,31 @@ class WebGLTab(QWidget):
         self.pill_config = StatusPill("Ready", "ready")
         self.card_config.add_header_action(self.pill_config)
 
+        # Compact Circular Local Server Indicator & Toggle Button in Header
+        self.btn_server_circle = QPushButton("⚪ Off")
+        self.btn_server_circle.setCursor(Qt.PointingHandCursor)
+        self.btn_server_circle.setToolTip("Local HTTP Server (Port 8080) - Click to Toggle")
+        self.btn_server_circle.setStyleSheet("""
+            QPushButton {
+                background-color: #171922;
+                border: 1px solid #282d3c;
+                border-radius: 11px;
+                color: #94a3b8;
+                font-size: 11px;
+                font-weight: 600;
+                min-height: 22px;
+                max-height: 22px;
+                padding: 1px 10px;
+            }
+            QPushButton:hover {
+                background-color: #202636;
+                border-color: #3b465c;
+                color: #ffffff;
+            }
+        """)
+        self.btn_server_circle.clicked.connect(self.toggle_preview_server)
+        self.card_config.add_header_action(self.btn_server_circle)
+
         c3_layout = QVBoxLayout()
         c3_layout.setSpacing(10)
 
@@ -750,15 +776,10 @@ class WebGLTab(QWidget):
         self.btn_build_web.setCursor(Qt.PointingHandCursor)
         self.btn_build_web.clicked.connect(self.build_web_package)
 
-        self.btn_upload_web = QPushButton("Upload to Web (Vercel)")
-        self.btn_upload_web.setObjectName("PrimaryBtn")
+        self.btn_upload_web = QPushButton("Upload & Cloud Showroom (Vercel)")
+        self.btn_upload_web.setObjectName("SuccessBtn")
         self.btn_upload_web.setCursor(Qt.PointingHandCursor)
         self.btn_upload_web.clicked.connect(self.upload_to_web)
-
-        self.btn_toggle_server = QPushButton("Start Local Server")
-        self.btn_toggle_server.setObjectName("SuccessBtn")
-        self.btn_toggle_server.setCursor(Qt.PointingHandCursor)
-        self.btn_toggle_server.clicked.connect(self.toggle_preview_server)
 
         self.btn_open_web = QPushButton("Open Web Build Folder")
         self.btn_open_web.setCursor(Qt.PointingHandCursor)
@@ -766,7 +787,6 @@ class WebGLTab(QWidget):
 
         actions_layout.addWidget(self.btn_build_web)
         actions_layout.addWidget(self.btn_upload_web)
-        actions_layout.addWidget(self.btn_toggle_server)
         actions_layout.addWidget(self.btn_open_web)
         actions_layout.addStretch()
         c3_layout.addLayout(actions_layout)
@@ -1767,49 +1787,33 @@ class WebGLTab(QWidget):
             pass
 
     # ----------------------------------------------------------------------
-    # Vercel / GitHub Web Viewer Upload & Sync
+    # Vercel / GitHub Web Viewer Upload & Sync Dialog
     # ----------------------------------------------------------------------
     def upload_to_web(self):
-        t = getattr(self, 'current_translations', {})
         out_dir = self.input_output_dir.text().strip()
         if not out_dir and self.proj_dir:
             out_dir = os.path.join(self.proj_dir, "05_web_build")
+        if not out_dir:
+            repo_root = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+            out_dir = os.path.join(repo_root, "05_web_build")
 
-        if not out_dir or not os.path.exists(out_dir):
-            self.log_signal.emit("[ERROR] No 05_web_build output directory found. Please specify output folder and build models first.", "error")
-            return
-
-        html_files = [f for f in os.listdir(out_dir) if f.lower().endswith('.html')]
-        if not html_files:
-            self.log_signal.emit("[WARNING] No HTML files in 05_web_build. Build a WebGL model first before uploading.", "warning")
-            return
-
-        # Find repo root (contains .git)
-        repo_dir = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        
-        self.btn_upload_web.setEnabled(False)
-        self.btn_upload_web.setText(t.get("tab3_btn_upload_web_running", "⏳ Uploading to Web..."))
-        self.pill_config.set_status("Uploading...", "running")
-        self.log_signal.emit(f"Starting upload of {len(html_files)} WebGL model(s) to GitHub / Vercel...", "info")
-
-        self.upload_thread = VercelUploadThread(out_dir, repo_dir)
-        self.upload_thread.upload_progress.connect(lambda msg: self.log_signal.emit(f"[SYNC] {msg}", "info"))
-        self.upload_thread.upload_success.connect(self._on_upload_success)
-        self.upload_thread.upload_error.connect(self._on_upload_error)
-        self.upload_thread.start()
+        os.makedirs(out_dir, exist_ok=True)
+        dlg = WebPublishManagerDialog(out_dir, self, getattr(self, 'current_translations', {}))
+        dlg.exec_()
 
     def _on_upload_success(self, msg):
         t = getattr(self, 'current_translations', {})
-        self.btn_upload_web.setEnabled(True)
-        self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
+        if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
+            self.btn_upload_web.setEnabled(True)
+            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload & Cloud Showroom (Vercel)"))
         self.pill_config.set_status("Live (Vercel)", "success")
         self.log_signal.emit(f"[SUCCESS] 🚀 {msg}", "success")
-        QMessageBox.information(self, "Vercel Web Viewer Upload Complete", f"✅ 3DGS WebGL models uploaded to GitHub!\n\nVercel will deploy the live web viewer in ~15 seconds.")
 
     def _on_upload_error(self, err_msg):
         t = getattr(self, 'current_translations', {})
-        self.btn_upload_web.setEnabled(True)
-        self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "🚀 Upload to Web (Vercel)"))
+        if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
+            self.btn_upload_web.setEnabled(True)
+            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload & Cloud Showroom (Vercel)"))
         self.pill_config.set_status("Upload Error", "error")
         self.log_signal.emit(f"[ERROR] {err_msg}", "error")
 
@@ -1818,19 +1822,37 @@ class WebGLTab(QWidget):
     # ----------------------------------------------------------------------
     def toggle_preview_server(self):
         out_dir = self.input_output_dir.text().strip()
+        if not out_dir and self.proj_dir:
+            out_dir = os.path.join(self.proj_dir, "05_web_build")
         if not out_dir:
-            self.log_signal.emit("[ERROR] Output folder not set.", "error")
-            return
+            repo_root = os.path.normpath(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+            out_dir = os.path.join(repo_root, "05_web_build")
 
         out_dir = os.path.normpath(out_dir)
         os.makedirs(out_dir, exist_ok=True)
 
         if self.server_thread and self.server_thread.isRunning():
             self.server_thread.stop()
-            t = self.current_translations
-            self.btn_toggle_server.setText(t.get("tab3_btn_toggle_server_on", "🌐 Launch Web Server"))
-            self.btn_toggle_server.setObjectName("SuccessBtn")
-            self.btn_toggle_server.setStyleSheet("padding: 9px 18px; font-weight: bold; font-size: 12px;")
+            if hasattr(self, 'btn_server_circle') and self.btn_server_circle is not None:
+                self.btn_server_circle.setText("⚪ Off")
+                self.btn_server_circle.setStyleSheet("""
+                    QPushButton {
+                        background-color: #171922;
+                        border: 1px solid #282d3c;
+                        border-radius: 11px;
+                        color: #94a3b8;
+                        font-size: 11px;
+                        font-weight: 600;
+                        min-height: 22px;
+                        max-height: 22px;
+                        padding: 1px 10px;
+                    }
+                    QPushButton:hover {
+                        background-color: #202636;
+                        border-color: #3b465c;
+                        color: #ffffff;
+                    }
+                """)
             self.pill_config.set_status("Server Stopped", "idle")
             self.log_signal.emit("Local Web Server stopped.", "info")
             return
@@ -1840,18 +1862,49 @@ class WebGLTab(QWidget):
     def _on_server_started(self, port):
         self.server_port = port
         url = f"http://127.0.0.1:{port}/"
-        t = self.current_translations
-        self.btn_toggle_server.setText(t.get("tab3_btn_toggle_server_off", "■ Stop Web Server"))
-        self.btn_toggle_server.setObjectName("DangerBtn")
-        self.btn_toggle_server.setStyleSheet("background-color: #dc2626; color: white; padding: 9px 18px; font-weight: bold; font-size: 12px;")
+        if hasattr(self, 'btn_server_circle') and self.btn_server_circle is not None:
+            self.btn_server_circle.setText(f"🟢 {port}")
+            self.btn_server_circle.setStyleSheet("""
+                QPushButton {
+                    background-color: #14281e;
+                    border: 1px solid #235438;
+                    border-radius: 11px;
+                    color: #4ade80;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 22px;
+                    max-height: 22px;
+                    padding: 1px 10px;
+                }
+                QPushButton:hover {
+                    background-color: #1a3829;
+                    border-color: #34d399;
+                }
+            """)
         self.pill_config.set_status(f"Live (Port {port})", "running")
         self.log_signal.emit(f"[SUCCESS] WebGL Server running:\n➔ {url}", "success")
 
     def _on_server_stopped(self):
-        t = self.current_translations
-        self.btn_toggle_server.setText(t.get("tab3_btn_toggle_server_on", "🌐 Launch Web Server"))
-        self.btn_toggle_server.setObjectName("SuccessBtn")
-        self.btn_toggle_server.setStyleSheet("padding: 9px 18px; font-weight: bold; font-size: 12px;")
+        if hasattr(self, 'btn_server_circle') and self.btn_server_circle is not None:
+            self.btn_server_circle.setText("⚪ Off")
+            self.btn_server_circle.setStyleSheet("""
+                QPushButton {
+                    background-color: #171922;
+                    border: 1px solid #282d3c;
+                    border-radius: 11px;
+                    color: #94a3b8;
+                    font-size: 11px;
+                    font-weight: 600;
+                    min-height: 22px;
+                    max-height: 22px;
+                    padding: 1px 10px;
+                }
+                QPushButton:hover {
+                    background-color: #202636;
+                    border-color: #3b465c;
+                    color: #ffffff;
+                }
+            """)
         self.pill_config.set_status("Server Stopped", "idle")
 
     def update_language(self, t):
@@ -1920,11 +1973,12 @@ class WebGLTab(QWidget):
             self.input_watermark_text.setPlaceholderText(t.get("tab3_placeholder_watermark", "Watermark Text (e.g. Points & Reality)"))
         self.btn_build_web.setText(t.get("tab3_btn_build", "Build Selected WebGL Packages"))
         if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
-            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload to Web (Vercel)"))
-        is_running = self.server_thread and self.server_thread.isRunning()
-        self.btn_toggle_server.setText(
-            t.get("tab3_btn_toggle_server_off", "Stop Local Server") if is_running else t.get("tab3_btn_toggle_server_on", "Start Local Server")
-        )
+            self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload & Cloud Showroom (Vercel)"))
+        if hasattr(self, 'btn_toggle_server') and self.btn_toggle_server is not None:
+            is_running = self.server_thread and self.server_thread.isRunning()
+            self.btn_toggle_server.setText(
+                t.get("tab3_btn_toggle_server_off", "Stop Local Server") if is_running else t.get("tab3_btn_toggle_server_on", "Start Local Server")
+            )
         self.btn_open_web.setText(t.get("tab3_btn_open_folder", "Open Web Build Folder"))
 
         # Row Action buttons in table

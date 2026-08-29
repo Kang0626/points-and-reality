@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.222)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.233)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -133,11 +133,11 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.232`
+* **Current Version**: `v2.233`
 * **주요 변경 요약**:
+  * **웹 배포 및 클라우드 쇼룸 관리자 모달 도입 및 로컬 서버 원형 인디케이터 최적화 (`v2.233`)**: 하단 액션바의 거대한 로컬 서버 버튼을 Card 3 상단 헤더의 작고 세련된 **원형 상태 인디케이터 버튼(`🟢 8080` / `⚪ Off`)**으로 전환하고, `Upload & Cloud Showroom` 클릭 시 선택적 웹 업로드(Selective Upload) 및 실시간 웹 배포/삭제 관리자(Live Cloud Manager & Purge) 전용 모달 대화상자 구현.
   * **3단계 검증 체크리스트(Quality Gate) 실시간 프로세스 기반 전면 개편 (`v2.232`)**: 디스크 실반영 2중 검증, 폰트 가중치 일관성(High-DPI 텍스트 잘림 방지), 앰퍼샌드 Mnemonic 이스케이프 및 스레드 생명주기 안전 규칙을 공식 가이드라인으로 수립.
   * **3DGS 트레이너 런처 버튼 재배치 및 'Launch Trainer' 간소화 (`v2.231`)**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측으로 이동 배치하여 드롭다운 선택 즉시 1클릭 실행 가능한 동선 최적화 및 텍스트 간소화 완료.
   * **상단 메인 탭바 폰트 잘림 근본적 영구 해결 및 High-DPI 완벽 대응 (`v2.228~v2.229`)**: 네이티브 `QTabBar`를 세그먼트 버튼 그룹(`QButtonGroup` + `QPushButton`)으로 전면 교체하고 가중치를 `font-weight: 600`으로 고정하여 어떤 해상도/배율에서도 폰트 잘림 없는 깨끗한 렌더링 보장.
-  * **프로젝트 디렉토리 최근 5개 히스토리 드롭다운 및 스튜디오 저채도 테마 개편 (`v2.225`)**: 작업 폴더 최근 목록 선택 기능 및 눈의 피로를 덜어주는 슬레이트 네이비/세이지 올리브 전문 스튜디오 테마 적용.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**
