@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" class="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -1334,7 +1334,7 @@
         <div class="nav-actions">
           <div class="lang-switcher">
             <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
-            <button class="lang-btn active" onclick="setLanguage('ko')" id="btn-ko">KO</button>
+            <button class="lang-btn" onclick="setLanguage('ko')" id="btn-ko">KO</button>
             <button class="lang-btn" onclick="setLanguage('zh')" id="btn-zh">ZH</button>
             <button class="lang-btn" onclick="setLanguage('mi')" id="btn-mi">MI</button>
           </div>
@@ -1362,7 +1362,7 @@
               <span class="gradient-text">Render In Neural 3D.</span>
             </h1>
             <p class="section-desc" style="margin-top: 20px;" data-i18n="hero_desc">
-              단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.
+              Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.
             </p>
 
             <div class="hero-cta-group">
@@ -1373,10 +1373,10 @@
 
           <!-- Quick Enterprise Metric Panel -->
           <div class="has-crosshair glow-border-card reveal-on-scroll stagger-2" style="padding: 32px;">
-            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--brand-cyan); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;">[ ENTERPRISE PERFORMANCE SPEC ]</div>
-            <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="hero_val_title">e커머스 & 자동차 산업용 차세대 3D 솔루션</h3>
+            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--brand-cyan); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;" data-i18n="hero_val_tag">[ ENTERPRISE PERFORMANCE SPEC ]</div>
+            <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="hero_val_title">Next-Gen 3D Solution for Ecommerce & Automotive</h3>
             <p style="font-size: 14px; color: var(--fg-secondary); line-height: 1.65;" data-i18n="hero_val_desc">
-              기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.
+              Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.
             </p>
           </div>
         </div>
@@ -1406,25 +1406,25 @@
 
             <!-- Floating Viewport HUD Chips -->
             <div class="stage-hud-controls">
-              <span class="hud-chip active" onclick="toggleHotspots(this)">🏷️ Hotspots (Pins)</span>
-              <span class="hud-chip" onclick="setStageEnv('studio', this)">💡 Studio Light</span>
-              <span class="hud-chip" onclick="setStageEnv('cyber', this)">⚡ Cyber Neon</span>
-              <span class="hud-chip" onclick="openARModal()">⛶ 1:1 Scale AR</span>
+              <span class="hud-chip active" onclick="toggleHotspots(this)" data-i18n="stage_hud_hotspots">🏷️ Hotspots (Pins)</span>
+              <span class="hud-chip" onclick="setStageEnv('studio', this)" data-i18n="stage_hud_studio">💡 Studio Light</span>
+              <span class="hud-chip" onclick="setStageEnv('cyber', this)" data-i18n="stage_hud_cyber">⚡ Cyber Neon</span>
+              <span class="hud-chip" onclick="openARModal()" data-i18n="stage_hud_ar">⛶ 1:1 Scale AR</span>
             </div>
 
             <!-- Simulated 3D Interactive Hotspot Pins -->
             <div class="hotspot-layer" id="hotspot-layer">
-              <div class="hotspot-pin" style="top: 35%; left: 25%;" onclick="showHotspotInfo('Aerodynamic Carbon Hood', '초경량 탄소섬유 보닛과 에어로다이내믹 덕트 라인 설계.')">
+              <div class="hotspot-pin" style="top: 35%; left: 25%;" onclick="showHotspotInfo(0)">
                 <span class="pin-dot"></span>
-                <span>Carbon Hood</span>
+                <span id="pin-label-0">Carbon Hood</span>
               </div>
-              <div class="hotspot-pin" style="top: 60%; left: 70%;" onclick="showHotspotInfo('19-inch Machined Aero Wheels', '다이아몬드 커팅 알로이 휠 및 고성능 브레이크 캘리퍼.')">
+              <div class="hotspot-pin" style="top: 60%; left: 70%;" onclick="showHotspotInfo(1)">
                 <span class="pin-dot"></span>
-                <span>19\" Aero Wheel</span>
+                <span id="pin-label-1">19\" Aero Wheel</span>
               </div>
-              <div class="hotspot-pin" style="top: 40%; left: 55%;" onclick="showHotspotInfo('Panoramic Tinted Glass', '자외선 99.9% 차단 파노라믹 틴티드 글래스.')">
+              <div class="hotspot-pin" style="top: 40%; left: 55%;" onclick="showHotspotInfo(2)">
                 <span class="pin-dot"></span>
-                <span>Panoramic Roof</span>
+                <span id="pin-label-2">Panoramic Roof</span>
               </div>
             </div>
           </div>
@@ -1477,7 +1477,7 @@
           </div>
           <h2 class="section-title" data-i18n="bento_title">Silicon Valley Grade<br /><em>Spatial AI Platform</em></h2>
           <p class="section-desc" style="margin-top: 16px;" data-i18n="bento_desc">
-            Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.
+            Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.
           </p>
         </div>
 
@@ -1486,26 +1486,26 @@
           <!-- Bento 1: Trajectory Simulator (Span 8) -->
           <div class="bento-card bento-col-8 glow-border-card has-crosshair reveal-on-scroll stagger-1">
             <div>
-              <div class="bento-tag">01 // OPTICAL TRAJECTORY ENGINE</div>
-              <h3 class="bento-title" data-i18n="b1_title">360° 다각도 나선형 궤적 복원</h3>
+              <div class="bento-tag" data-i18n="b1_tag">01 // OPTICAL TRAJECTORY ENGINE</div>
+              <h3 class="bento-title" data-i18n="b1_title">360° Multi-Angle Helical Trajectory Engine</h3>
               <p class="bento-desc" data-i18n="b1_desc">
-                단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.
+                Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.
               </p>
             </div>
             <canvas id="trajectory-canvas"></canvas>
             <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-top: 12px; display: flex; justify-content: space-between;">
-              <span>● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong></span>
-              <span style="color: var(--brand-cyan);">SFM OPTIMIZATION ACTIVE</span>
+              <span data-i18n="b1_footer_k">● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong></span>
+              <span style="color: var(--brand-cyan);" data-i18n="b1_footer_v">SFM OPTIMIZATION ACTIVE</span>
             </div>
           </div>
 
           <!-- Bento 2: Extreme SOG Compression (Span 4) -->
           <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
             <div>
-              <div class="bento-tag">02 // PAYLOAD COMPRESSION</div>
-              <h3 class="bento-title" data-i18n="b2_title">초경량 SOG 압축 기술</h3>
+              <div class="bento-tag" data-i18n="b2_tag">02 // PAYLOAD COMPRESSION</div>
+              <h3 class="bento-title" data-i18n="b2_title">Ultra-Light SOG Compression</h3>
               <p class="bento-desc" data-i18n="b2_desc">
-                수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.
+                Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.
               </p>
             </div>
             <div class="compression-box">
@@ -1514,7 +1514,7 @@
                 <span style="color: var(--brand-cyan); font-weight: 700;">SOG PACK: <span id="comp-val">12.4 MB</span></span>
               </div>
               <input type="range" min="4" max="60" value="12" class="comp-slider-bar" id="comp-slider" oninput="updateCompDisplay(this.value)" />
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); text-align: center;">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); text-align: center;" data-i18n="b2_reduction">
                 Payload Reduction: <strong style="color: var(--brand-emerald);">98.9%</strong>
               </div>
             </div>
@@ -1523,14 +1523,14 @@
           <!-- Bento 3: 1:1 Scale Spatial AR (Span 4) -->
           <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-1">
             <div>
-              <div class="bento-tag">03 // SPATIAL AR READY</div>
-              <h3 class="bento-title" data-i18n="b3_title">1:1 실물 크기 증강현실 (AR)</h3>
+              <div class="bento-tag" data-i18n="b3_tag">03 // SPATIAL AR READY</div>
+              <h3 class="bento-title" data-i18n="b3_title">1:1 Real-Scale Spatial AR</h3>
               <p class="bento-desc" data-i18n="b3_desc">
-                iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.
+                Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.
               </p>
             </div>
             <div style="margin-top: 24px; text-align: center; padding: 20px; background: #06080e; border-radius: 6px; border: 1px solid var(--border-subtle);">
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan); margin-bottom: 8px;">[ SCAN QR ON MOBILE ]</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan); margin-bottom: 8px;" data-i18n="b3_scan_qr">[ SCAN QR ON MOBILE ]</div>
               <div style="display: inline-block; padding: 8px; background: #FFF; border-radius: 4px;">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://points-and-reality.vercel.app/showroom.html" alt="AR QR Code" style="display: block; width: 90px; height: 90px;" />
               </div>
@@ -1540,30 +1540,30 @@
           <!-- Bento 4: Sub-Millimeter Radiance Fidelity (Span 4) -->
           <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
             <div>
-              <div class="bento-tag">04 // NEURAL RADIANCE</div>
-              <h3 class="bento-title" data-i18n="b4_title">실시간 반사광 & 질감 보존</h3>
+              <div class="bento-tag" data-i18n="b4_tag">04 // NEURAL RADIANCE</div>
+              <h3 class="bento-title" data-i18n="b4_title">Sub-Millimeter Neural Radiance</h3>
               <p class="bento-desc" data-i18n="b4_desc">
-                금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.
+                Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.
               </p>
             </div>
             <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; border-left: 3px solid var(--brand-blue);">
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan);">PHYSICALLY ACCURATE SHADING</div>
-              <div style="font-size: 13px; color: var(--fg-secondary); margin-top: 6px;">Zero polygonal artifacts or flat baked textures.</div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan);" data-i18n="b4_box_k">PHYSICALLY ACCURATE SHADING</div>
+              <div style="font-size: 13px; color: var(--fg-secondary); margin-top: 6px;" data-i18n="b4_box_v">Zero polygonal artifacts or flat baked textures.</div>
             </div>
           </div>
 
           <!-- Bento 5: Enterprise Global CDN (Span 4) -->
           <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-3">
             <div>
-              <div class="bento-tag">05 // GLOBAL EDGE CDN</div>
-              <h3 class="bento-title" data-i18n="b5_title">전 세계 180+ 엣지 즉시 배포</h3>
+              <div class="bento-tag" data-i18n="b5_tag">05 // GLOBAL EDGE CDN</div>
+              <h3 class="bento-title" data-i18n="b5_title">Global Low-Latency Edge Delivery</h3>
               <p class="bento-desc" data-i18n="b5_desc">
-                단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.
+                Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.
               </p>
             </div>
             <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; display: flex; justify-content: space-around; font-family: var(--font-mono); font-size: 12px;">
-              <div>LATENCY: <strong style="color: var(--brand-emerald);">&lt;45ms</strong></div>
-              <div>UPTIME: <strong style="color: var(--brand-cyan);">99.99%</strong></div>
+              <div>LATENCY: <strong style="color: var(--brand-emerald);" data-i18n="b5_latency">&lt;45ms</strong></div>
+              <div>UPTIME: <strong style="color: var(--brand-cyan);" data-i18n="b5_uptime">99.99%</strong></div>
             </div>
           </div>
 
@@ -1583,9 +1583,9 @@
             <span class="pulse-dot"></span>
             <span data-i18n="proto_eyebrow">OPERATIONAL PROTOCOL</span>
           </div>
-          <h2 class="section-title" data-i18n="proto_title">완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em></h2>
+          <h2 class="section-title" data-i18n="proto_title">Six Steps to a Perfect<br /><em>3D Capture Protocol</em></h2>
           <p class="section-desc" style="margin-top: 16px;" data-i18n="proto_desc">
-            스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.
+            Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.
           </p>
         </div>
 
@@ -1594,27 +1594,27 @@
           <div class="protocol-nav">
             <button class="protocol-tab-btn active" onclick="switchProtocolStep(0, this)">
               <span class="num">01</span>
-              <span class="title" data-i18n="pr_t1">피사체 배치 (Setup)</span>
+              <span class="title" data-i18n="pr_t1">01 Setup</span>
             </button>
             <button class="protocol-tab-btn" onclick="switchProtocolStep(1, this)">
               <span class="num">02</span>
-              <span class="title" data-i18n="pr_t2">확산광 조명 (Lighting)</span>
+              <span class="title" data-i18n="pr_t2">02 Lighting</span>
             </button>
             <button class="protocol-tab-btn" onclick="switchProtocolStep(2, this)">
               <span class="num">03</span>
-              <span class="title" data-i18n="pr_t3">카메라 설정 (Camera)</span>
+              <span class="title" data-i18n="pr_t3">03 Camera</span>
             </button>
             <button class="protocol-tab-btn" onclick="switchProtocolStep(3, this)">
               <span class="num">04</span>
-              <span class="title" data-i18n="pr_t4">안정적 보행 (Movement)</span>
+              <span class="title" data-i18n="pr_t4">04 Movement</span>
             </button>
             <button class="protocol-tab-btn" onclick="switchProtocolStep(4, this)">
               <span class="num">05</span>
-              <span class="title" data-i18n="pr_t5">다각도 궤적 (Multi-Loop)</span>
+              <span class="title" data-i18n="pr_t5">05 Multi-Loop</span>
             </button>
             <button class="protocol-tab-btn" onclick="switchProtocolStep(5, this)">
               <span class="num">06</span>
-              <span class="title" data-i18n="pr_t6">파이프라인 업로드 (Upload)</span>
+              <span class="title" data-i18n="pr_t6">06 Pipeline Upload</span>
             </button>
           </div>
 
@@ -1622,9 +1622,9 @@
           <div class="protocol-content-card glow-border-card has-crosshair">
             <div>
               <div style="font-family: var(--font-mono); font-size: 12px; color: var(--brand-cyan); font-weight: 700;" id="proto-step-num">STEP 01 // OBJECT SETUP</div>
-              <h3 style="font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin: 12px 0 16px;" id="proto-step-heading">피사체 배치 및 주변 공간 확보</h3>
+              <h3 style="font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin: 12px 0 16px;" id="proto-step-heading">Object Setup & Clearance</h3>
               <p style="font-size: 16px; color: var(--fg-secondary); line-height: 1.7;" id="proto-step-body">
-                피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.
+                Place your subject in a clear space allowing 360-degree walkable clearance. Ensure the subject remains completely stationary throughout the capture.
               </p>
             </div>
 
@@ -1659,9 +1659,9 @@
             <span class="pulse-dot"></span>
             <span data-i18n="calc_eyebrow">REVENUE & CONVERSION IMPACT</span>
           </div>
-          <h2 class="section-title" data-i18n="calc_title">인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em></h2>
+          <h2 class="section-title" data-i18n="calc_title">Interactive 3DGS<br /><em>Business ROI Calculator</em></h2>
           <p class="section-desc" style="margin-top: 16px;" data-i18n="calc_desc">
-            쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.
+            Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.
           </p>
         </div>
 
@@ -1670,15 +1670,15 @@
           <div class="calc-slider-group">
             <div class="calc-control">
               <div class="calc-label-row">
-                <span data-i18n="calc_l1">월간 순 방문자 수 (Monthly Visitors)</span>
-                <span class="calc-val-badge" id="lbl-traffic">50,000 명</span>
+                <span data-i18n="calc_l1">Monthly Store Visitors</span>
+                <span class="calc-val-badge" id="lbl-traffic">50,000</span>
               </div>
               <input type="range" min="5000" max="500000" step="5000" value="50000" class="calc-slider" id="slider-traffic" oninput="calculateROI()" />
             </div>
 
             <div class="calc-control">
               <div class="calc-label-row">
-                <span data-i18n="calc_l2">평균 주문 금액 (Average Order Value)</span>
+                <span data-i18n="calc_l2">Average Order Value (AOV)</span>
                 <span class="calc-val-badge" id="lbl-aov">$120</span>
               </div>
               <input type="range" min="20" max="1000" step="10" value="120" class="calc-slider" id="slider-aov" oninput="calculateROI()" />
@@ -1686,7 +1686,7 @@
 
             <div class="calc-control">
               <div class="calc-label-row">
-                <span data-i18n="calc_l3">현재 상품 반품률 (Current Return Rate)</span>
+                <span data-i18n="calc_l3">Current Product Return Rate</span>
                 <span class="calc-val-badge" id="lbl-return">18%</span>
               </div>
               <input type="range" min="5" max="40" step="1" value="18" class="calc-slider" id="slider-return" oninput="calculateROI()" />
@@ -1697,18 +1697,18 @@
           <div class="calc-result-panel">
             <div class="calc-result-box">
               <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-cyan);" data-i18n="calc_r1_lbl">
-                🚀 예상 연간 추가 매출 (Annual Revenue Uplift)
+                🚀 Projected Annual Revenue Uplift
               </div>
               <div class="calc-result-number" id="calc-uplift-rev">+$576,000</div>
-              <div style="font-size: 13px; color: var(--fg-secondary);">기준 전환율 2.0% ➔ 3DGS 인터랙션 시 +40% 상승 적용</div>
+              <div style="font-size: 13px; color: var(--fg-secondary);" data-i18n="calc_r1_note">Based on 2.0% baseline with +40% 3D interactive uplift</div>
             </div>
 
             <div class="calc-result-box">
               <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-emerald);" data-i18n="calc_r2_lbl">
-                📉 예상 연간 반품 절감액 (Saved Return Costs)
+                📉 Projected Annual Saved Return Costs
               </div>
               <div class="calc-result-number" style="color: var(--brand-emerald);" id="calc-saved-returns">+$207,360</div>
-              <div style="font-size: 13px; color: var(--fg-secondary);">치수 및 100% 실물 질감 사전 확인을 통한 단순 변심 -16% 절감</div>
+              <div style="font-size: 13px; color: var(--fg-secondary);" data-i18n="calc_r2_note">Saved return logistics from scale & material verification</div>
             </div>
           </div>
         </div>
@@ -1727,9 +1727,9 @@
             <span class="pulse-dot"></span>
             <span data-i18n="embed_eyebrow">ONE-LINE INTEGRATION</span>
           </div>
-          <h2 class="section-title" data-i18n="embed_title">코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em></h2>
+          <h2 class="section-title" data-i18n="embed_title">Embed Anywhere With<br /><em>A Single Line of Code</em></h2>
           <p class="section-desc" style="margin-top: 16px;" data-i18n="embed_desc">
-            Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.
+            Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.
           </p>
         </div>
 
@@ -1741,7 +1741,7 @@
               <button class="embed-tab" onclick="switchEmbedCode('shopify', this)">SHOPIFY LIQUID</button>
               <button class="embed-tab" onclick="switchEmbedCode('webflow', this)">WEBFLOW</button>
             </div>
-            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 11px;" onclick="copyEmbedCode()" id="btn-copy-code">
+            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 11px;" onclick="copyEmbedCode()" id="btn-copy-code" data-i18n="embed_btn_copy">
               [ COPY CODE 📋 ]
             </button>
           </div>
@@ -1771,9 +1771,9 @@
               <span class="pulse-dot"></span>
               <span data-i18n="arch_eyebrow">LIVE 3D REEL</span>
             </div>
-            <h2 class="section-title" data-i18n="arch_title">최근 제작된 3D 산출물 릴</h2>
+            <h2 class="section-title" data-i18n="arch_title">Curated 3D Deliverables Reel</h2>
           </div>
-          <a href="showroom.html" class="btn btn-primary" data-i18n="arch_btn_all">전체 3D 쇼룸 열기 ↗</a>
+          <a href="showroom.html" class="btn btn-primary" data-i18n="arch_btn_all">Launch 3D Showroom ↗</a>
         </div>
 
         <div class="archive-grid" id="deliverables-grid">
@@ -1819,49 +1819,49 @@
         <div class="reveal-on-scroll">
           <div class="eyebrow">
             <span class="pulse-dot"></span>
-            <span>FREQUENTLY ASKED QUESTIONS</span>
+            <span data-i18n="faq_eyebrow">FREQUENTLY ASKED QUESTIONS</span>
           </div>
-          <h2 class="section-title">자주 묻는 질문</h2>
+          <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
         </div>
 
         <div class="faq-accordion reveal-on-scroll stagger-1">
           <div class="faq-item open">
             <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text">3D Gaussian Splatting은 기존 3D 메시(Mesh)와 무엇이 다른가요?</span>
+              <span class="faq-q-text" data-i18n="faq_q1">How does 3D Gaussian Splatting differ from traditional 3D polygon meshes?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer">
-              기존 3D 메시는 삼각형 폴리곤 위에 텍스처를 씌우는 방식으로 모서리가 각지고 미세 반사광이나 투명도 표현이 어렵습니다. 반면 3DGS는 수백만 개의 미세 타원체 가우시안으로 실제 광학 필드를 재구성하므로 실물과 100% 동일한 광택, 굴절, 서브밀리미터 디테일을 실시간으로 완벽하게 표현합니다.
+            <div class="faq-answer" data-i18n="faq_a1">
+              Traditional 3D meshes wrap 2D textures onto geometric polygon vertices, struggling with reflections, transparency, and organic curves. 3D Gaussian Splatting reconstructs optical radiance using millions of 3D Gaussian ellipsoids, capturing true specular highlights, glass refractions, and sub-millimeter precision in real-time.
             </div>
           </div>
 
           <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text">고객이 볼 때 별도의 앱이나 플러그인 설치가 필요한가요?</span>
+              <span class="faq-q-text" data-i18n="faq_q2">Do website visitors need to install any apps or plugins?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer">
-              전혀 필요하지 않습니다. Points & Reality 파이프라인은 표준 순수 WebGL 셰이더 기반으로 컴파일되어 Safari, Chrome, Edge, 모바일 브라우저 어디서나 링크 클릭 즉시 60+ FPS로 부드럽게 구동됩니다.
+            <div class="faq-answer" data-i18n="faq_a2">
+              No plugins or apps are required. The Points & Reality viewer is compiled into pure WebGL shaders that run smoothly at 60+ FPS in Safari, Chrome, Edge, and iOS/Android mobile browsers upon clicking the link.
             </div>
           </div>
 
           <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text">촬영 및 모델 복원에 소요되는 시간은 얼마나 걸리나요?</span>
+              <span class="faq-q-text" data-i18n="faq_q3">How long does optical capture and 3D reconstruction take?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer">
-              스마트폰 카메라로 제품 주위를 약 3분간 동영상으로 촬영한 뒤 파이프라인에 업로드하면, AI 뉴럴 복원 엔진이 약 1시간 만에 프로덕션 배포 가능한 3D 디지털 트윈을 자동 생성합니다.
+            <div class="faq-answer" data-i18n="faq_a3">
+              Capture takes approximately 3 minutes using any standard smartphone camera. Once footage is uploaded to our neural pipeline, the production-ready 3D digital twin is reconstructed in approximately 1 hour.
             </div>
           </div>
 
           <div class="faq-item">
             <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text">자사 쇼핑몰(Shopify, 카페24, 자체 웹)에 어떻게 연동하나요?</span>
+              <span class="faq-q-text" data-i18n="faq_q4">How do I integrate this into Shopify or a custom website?</span>
               <span class="faq-icon">+</span>
             </div>
-            <div class="faq-answer">
-              단 1줄의 HTML iframe 또는 React/Liquid 컴포넌트 코드를 원하는 위치에 붙여넣기만 하면 즉시 연동됩니다. 모바일 최적화 반응형 레이아웃을 기본 지원합니다.
+            <div class="faq-answer" data-i18n="faq_a4">
+              Simply paste a single line of HTML iframe or React/Liquid component code into your product page template. Responsive mobile layouts and touch gestures are supported out of the box.
             </div>
           </div>
         </div>
@@ -1879,17 +1879,17 @@
       
       <div class="footer-cta-box has-crosshair glow-border-card reveal-on-scroll">
         <div class="footer-cta-text">
-          <h2 data-i18n="fcta_title">첫 번째 3D 디지털 트윈을 제작해보세요</h2>
-          <p data-i18n="fcta_desc">3분 분량의 제품 동영상을 업로드하면 약 1시간 만에 완성도 높은 3DGS 인터랙티브 모델이 준비됩니다.</p>
+          <h2 data-i18n="fcta_title">Ready to create your first 3D digital twin?</h2>
+          <p data-i18n="fcta_desc">Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.</p>
         </div>
         <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-          <a href="mailto:contact@points-and-reality.com" class="btn btn-primary" data-i18n="fcta_btn_primary">도입 문의하기 (Book Demo) →</a>
-          <a href="showroom.html" class="btn btn-ghost" data-i18n="fcta_btn_sec">쇼룸 둘러보기</a>
+          <a href="mailto:contact@points-and-reality.com" class="btn btn-primary" data-i18n="fcta_btn_primary">Book a Demo / Inquire →</a>
+          <a href="showroom.html" class="btn btn-ghost" data-i18n="fcta_btn_sec">Explore Showroom</a>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO.</div>
+        <div data-i18n="footer_rights">© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO.</div>
         <div style="display: flex; gap: 20px;">
           <a href="showroom.html" style="color: var(--brand-cyan); text-decoration: none;">[ 3D SHOWROOM ]</a>
           <a href="#site-nav" style="color: var(--fg-secondary); text-decoration: none;">↑ TOP</a>
@@ -1904,7 +1904,646 @@
        ======================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       01. Scroll Progress & Reveal Motion Engine
+       01. Multilingual Translation Engine & Data Structures (EN, KO, ZH, MI)
+       -------------------------------------------------------------------------- */
+    let currentLang = 'en';
+
+    const protocolDataByLang = {
+      en: [
+        {
+          num: "STEP 01 // OBJECT SETUP",
+          heading: "Object Setup & Clearance",
+          body: "Place your subject in a clear space allowing 360-degree walkable clearance. Ensure the subject remains completely stationary throughout the capture. Placing it on a waist-high pedestal makes circling smooth.",
+          k1: "1.2m – 2.5m",
+          k2: "4K @ 60 FPS",
+          k3: "~40s / Loop"
+        },
+        {
+          num: "STEP 02 // DIFFUSED LIGHTING",
+          heading: "Diffused Soft Lighting Environment",
+          body: "Harsh direct sunlight or sharp spot lights create harsh dynamic shadows that corrupt surface reconstruction. Soft diffused studio lighting or overcast outdoor daylight produces the cleanest radiance fields.",
+          k1: "Diffused Soft",
+          k2: "Shadow-Free",
+          k3: "5600K Daylight"
+        },
+        {
+          num: "STEP 03 // CAMERA PARAMETER LOCK",
+          heading: "Exposure, Focus & White Balance Lock",
+          body: "Lock Auto Exposure (AE), Auto Focus (AF), and Auto White Balance (AWB) on your camera. Consistent exposure and color temperature across all frames ensure accurate radiance field optimization.",
+          k1: "AE / AF Locked",
+          k2: "ISO 100-200",
+          k3: "1/120s Shutter"
+        },
+        {
+          num: "STEP 04 // SMOOTH MOVEMENT",
+          heading: "Steady Orbit Pace & Heel-to-Toe Walk",
+          body: "Walk smoothly and continuously at a steady pace of ~40 seconds per loop. Use a heel-to-toe walking technique to minimize vertical camera bounce and eliminate motion blur.",
+          k1: "Heel-to-Toe",
+          k2: "Zero Motion Blur",
+          k3: "Constant Speed"
+        },
+        {
+          num: "STEP 05 // MULTI-LOOP COVERAGE",
+          heading: "3-4 Height Loops for Full Surface Coverage",
+          body: "Circle the subject across 3 distinct elevations: eye-level horizon, 45-degree top-down orbit, and low angle pass to ensure zero blind spots across complex surfaces.",
+          k1: "3-4 Orbit Passes",
+          k2: "45° Top-Down",
+          k3: "100% Coverage"
+        },
+        {
+          num: "STEP 06 // NEURAL PIPELINE UPLOAD",
+          heading: "Points & Reality Automated Neural Processing",
+          body: "Upload video footage directly to the pipeline. Structure-from-Motion camera calibration, 3DGS neural optimization, and SOG web compression execute automatically in ~1 hour.",
+          k1: "~1 Hour Auto",
+          k2: "Pure SOG Output",
+          k3: "Instant CDN Live"
+        }
+      ],
+      ko: [
+        {
+          num: "STEP 01 // 피사체 배치",
+          heading: "피사체 배치 및 주변 공간 확보",
+          body: "피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.",
+          k1: "1.2m – 2.5m",
+          k2: "4K @ 60 FPS",
+          k3: "~40초 / 바퀴"
+        },
+        {
+          num: "STEP 02 // 확산광 조명",
+          heading: "균일한 확산광 조명 세팅",
+          body: "강한 직사광선이나 점조명은 날카로운 그림자를 만들어 텍스처 재구성을 방해합니다. 소프트박스 확산광이나 흐린 날의 부드러운 자연광 환경에서 촬영하는 것이 가장 이상적입니다.",
+          k1: "소프트 확산광",
+          k2: "그림자 최소화",
+          k3: "5600K 주광색"
+        },
+        {
+          num: "STEP 03 // 카메라 설정 고정",
+          heading: "노출·초점·화이트밸런스 고정 (Lock)",
+          body: "스마트폰 또는 카메라의 자동 노출(AE), 자동 초점(AF), 자동 화이트밸런스(AWB)를 고정합니다. 프레임 간 밝기와 색상 톤이 변하지 않아야 뉴럴 네트워크가 정확한 방사 휘도를 학습합니다.",
+          k1: "AE / AF 고정",
+          k2: "ISO 100-200",
+          k3: "1/120초 셔터"
+        },
+        {
+          num: "STEP 04 // 안정적 보행",
+          heading: "일정한 속도의 안정적 보행 궤적",
+          body: "급격한 카메라 회전이나 흔들림(모션 블러)을 방지하기 위해 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이를 사용합니다. 1바퀴당 약 40~50초의 일정한 페이스를 유지합니다.",
+          k1: "힐-투-토 보행",
+          k2: "모션 블러 0%",
+          k3: "일정 속도 유지"
+        },
+        {
+          num: "STEP 05 // 다각도 궤적",
+          heading: "3~4개 높이 궤적 완전 피복 (Multi-Pass)",
+          body: "단일 높이 촬영 시 상단이나 하단에 사각지대가 발생합니다. 수평(아이레벨), 45도 상단 탑다운, 하단 앙각 궤적을 순차적으로 3바퀴 녹화하여 물체의 모든 표면을 빠짐없이 커버합니다.",
+          k1: "3-4개 궤적 패스",
+          k2: "45° 탑다운 포함",
+          k3: "100% 표면 피복"
+        },
+        {
+          num: "STEP 06 // 파이프라인 업로드",
+          heading: "Points & Reality 파이프라인 업로드",
+          body: "촬영된 고해상도 영상을 업로드하면, 자동 프레임 추출, SfM 카메라 포즈 정렬, 3DGS 뉴럴 최적화 및 SOG 압축이 원스톱으로 진행되어 약 1시간 내에 완성됩니다.",
+          k1: "~1시간 자동 완성",
+          k2: "SOG 표준 출력",
+          k3: "글로벌 CDN 배포"
+        }
+      ],
+      zh: [
+        {
+          num: "STEP 01 // 物体布置",
+          heading: "物体布置与周边空间准备",
+          body: "确保物体周围有至少1.5米宽敞的360度环绕通道。拍摄过程中物体需保持绝对静止，置于齐腰平台可大幅减轻运镜负担。",
+          k1: "1.2米 – 2.5米",
+          k2: "4K @ 60 FPS",
+          k3: "~40秒 / 圈"
+        },
+        {
+          num: "STEP 02 // 柔和光线",
+          heading: "均匀扩散光照明环境",
+          body: "避免强烈直射日光或点状聚光灯产生生硬阴影。柔光箱或阴天柔和自然光是重建材质高光的最优选择。",
+          k1: "漫反射柔光",
+          k2: "无明显死角阴影",
+          k3: "5600K 日光色温"
+        },
+        {
+          num: "STEP 03 // 相机参数锁定",
+          heading: "锁定曝光、对焦与白平衡 (Lock)",
+          body: "开启手机专业模式，锁定自动曝光(AE)、自动对焦(AF)及白平衡(AWB)，确保各角度帧间色温与亮度严苛一致。",
+          k1: "AE / AF 锁定",
+          k2: "ISO 100-200",
+          k3: "1/120秒 快门"
+        },
+        {
+          num: "STEP 04 // 匀速运镜",
+          heading: "平稳步态与匀速环绕",
+          body: "采用脚后跟先着地的步法防止机身晃动，每圈保持约40秒匀速前行，消除动态模糊。",
+          k1: "脚跟平稳过渡",
+          k2: "零动态模糊",
+          k3: "恒定环绕速度"
+        },
+        {
+          num: "STEP 05 // 多高度覆盖",
+          heading: "3-4段不同高度轨迹全覆盖",
+          body: "分别在平视视角、俯视45度及仰视低角度环绕拍摄3圈，确保顶部与底部无死角覆盖。",
+          k1: "3-4圈分层轨迹",
+          k2: "45° 俯角录制",
+          k3: "100% 表面覆盖"
+        },
+        {
+          num: "STEP 06 // 管线上传",
+          heading: "上传至 Points & Reality 云端管线",
+          body: "上传原始高清视频后，系统自动完成帧提取、SfM姿态反算、3DGS神经优化及SOG压缩，约1小时交付可用模型。",
+          k1: "~1小时自动交付",
+          k2: "SOG标准格式",
+          k3: "全球CDN即刻分发"
+        }
+      ],
+      mi: [
+        {
+          num: "STEP 01 // WHAKARITE HUA",
+          heading: "Whakarite Hua me te Wāhi",
+          body: "Whakatūria tō hua ki tētahi wāhi e taea ai e koe te hīkoi 360° huri noa. Me tū pūmau te hua.",
+          k1: "1.2m – 2.5m",
+          k2: "4K @ 60 FPS",
+          k3: "~40s / Porohita"
+        },
+        {
+          num: "STEP 02 // MĀRAMA NGĀWARI",
+          heading: "Mārama Marara Ngāwari",
+          body: "Whakamahia te mārama marara, kaua te rā tika tonu hei karo i ngā ataata pōuri.",
+          k1: "Mārama Ngāwari",
+          k2: "Kore Ataata",
+          k3: "5600K Awatea"
+        },
+        {
+          num: "STEP 03 // RAKA KĀMERA",
+          heading: "Raka Tautuhinga Kāmera",
+          body: "Rakahia te arotahi, te māramatanga me te taurite mā kia rite tonu ngā whakaahua katoa.",
+          k1: "AE / AF Raka",
+          k2: "ISO 100-200",
+          k3: "1/120s Tere"
+        },
+        {
+          num: "STEP 04 // NEKE MARIE",
+          heading: "Hīkoi Marie me te Pūmau",
+          body: "Hīkoi marie mai te rekereke ki te matimati kia kore ai e ohorere te nekehanga.",
+          k1: "Rekereke-Matimati",
+          k2: "Kore Pohe",
+          k3: "Tere Ōrite"
+        },
+        {
+          num: "STEP 05 // KAPI WHĀNUI",
+          heading: "Hopu mai i ngā Teitei Maha",
+          body: "Hopukia mai i ngā teitei rerekē e 3-4 kia kitea katoatia ngā mata o te hua.",
+          k1: "Ngā Porohita 3-4",
+          k2: "45° mai Runga",
+          k3: "100% Kapi"
+        },
+        {
+          num: "STEP 06 // TUKU PŪKAHA",
+          heading: "Tuku ki te Pūkaha AI",
+          body: "Tukua te ataata ki te pūkaha Points & Reality, ka oti te tauira i roto i te haora kotahi.",
+          k1: "~1 Haora Aunoa",
+          k2: "Kōnae SOG",
+          k3: "Tohanga Ao"
+        }
+      ]
+    };
+
+    const hotspotsByLang = {
+      en: [
+        { label: "Carbon Hood", title: "Aerodynamic Carbon Hood", desc: "Ultra-light carbon fiber hood designed with aero ducting." },
+        { label: "19\" Aero Wheel", title: "19-inch Machined Aero Wheels", desc: "Diamond-cut lightweight alloys paired with high-performance calipers." },
+        { label: "Panoramic Roof", title: "Panoramic Tinted Glass", desc: "Acoustic-laminated panoramic glass blocking 99.9% UV rays." }
+      ],
+      ko: [
+        { label: "카본 후드", title: "에어로다이내믹 카본 보닛", desc: "초경량 탄소섬유 보닛과 에어로다이내믹 덕트 라인 설계." },
+        { label: "19인치 에어로 휠", title: "19인치 머신드 에어로 휠", desc: "다이아몬드 커팅 경량 알로이 휠 및 고성능 브레이크 캘리퍼." },
+        { label: "파노라믹 루프", title: "파노라믹 틴티드 글래스", desc: "자외선 99.9% 차단 이중접합 차음 파노라믹 글래스." }
+      ],
+      zh: [
+        { label: "碳纤机盖", title: "空气动力学碳纤维机盖", desc: "超轻量化碳纤维材质与空气动力学导流风道设计。" },
+        { label: "19寸风刃轮毂", title: "19英寸精车风刃轻量化轮毂", desc: "钻石切割工艺铝合金轮毂与高性能运动卡钳。" },
+        { label: "全景天幕", title: "隔音全景深色玻璃天幕", desc: "双层夹胶隔音玻璃，隔绝99.9%紫外线辐射。" }
+      ],
+      mi: [
+        { label: "Taupoki Waro", title: "Taupoki Waka Waro", desc: "He mea hanga ki te muka waro māmā me te rere hau pai." },
+        { label: "Wīra 19 Inihi", title: "Wīra Koranu 19 Inihi", desc: "He wīra māmā me ngā pereki kairangi." },
+        { label: "Tuanui Karaehe", title: "Tuanui Karaehe Whānui", desc: "He karaehe tiaki i te rā me te marino o roto." }
+      ]
+    };
+
+    const translations = {
+      en: {
+        top_status: "Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour",
+        top_cta: "Launch Showroom →",
+        nav_stage: "3D Stage",
+        nav_bento: "Technology",
+        nav_protocol: "6-Step Protocol",
+        nav_roi: "ROI Calculator",
+        nav_embed: "1-Line Embed",
+        nav_showroom: "[ 3D Showroom ↗ ]",
+        btn_inquire: "Book Demo →",
+        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.",
+        hero_btn_explore: "Launch 3D Showroom ↗",
+        hero_btn_how: "Explore 6-Step Workflow ↓",
+        hero_val_tag: "[ ENTERPRISE PERFORMANCE SPEC ]",
+        hero_val_title: "Next-Gen 3D Solution for Ecommerce & Automotive",
+        hero_val_desc: "Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.",
+        stage_hud_hotspots: "🏷️ Hotspots (Pins)",
+        stage_hud_studio: "💡 Studio Light",
+        stage_hud_cyber: "⚡ Cyber Neon",
+        stage_hud_ar: "⛶ 1:1 Scale AR",
+        stat_1_lbl: "Typical Optical Capture",
+        stat_2_lbl: "Turnaround to Live 3D",
+        stat_3_lbl: "Web-Optimized SOG Payload",
+        stat_4_lbl: "Pure Browser WebGL Performance",
+        bento_eyebrow: "CORE ARCHITECTURE",
+        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
+        bento_desc: "Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.",
+        b1_tag: "01 // OPTICAL TRAJECTORY ENGINE",
+        b1_title: "360° Multi-Angle Helical Trajectory Engine",
+        b1_desc: "Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.",
+        b1_footer_k: "● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong>",
+        b1_footer_v: "SFM OPTIMIZATION ACTIVE",
+        b2_tag: "02 // PAYLOAD COMPRESSION",
+        b2_title: "Ultra-Light SOG Compression",
+        b2_desc: "Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.",
+        b2_reduction: "Payload Reduction: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
+        b3_tag: "03 // SPATIAL AR READY",
+        b3_title: "1:1 Real-Scale Spatial AR",
+        b3_desc: "Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.",
+        b3_scan_qr: "[ SCAN QR ON MOBILE ]",
+        b4_tag: "04 // NEURAL RADIANCE",
+        b4_title: "Sub-Millimeter Neural Radiance",
+        b4_desc: "Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.",
+        b4_box_k: "PHYSICALLY ACCURATE SHADING",
+        b4_box_v: "Zero polygonal artifacts or flat baked textures.",
+        b5_tag: "05 // GLOBAL EDGE CDN",
+        b5_title: "Global Low-Latency Edge Delivery",
+        b5_desc: "Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.",
+        b5_latency: "<45ms",
+        b5_uptime: "99.99%",
+        proto_eyebrow: "OPERATIONAL PROTOCOL",
+        proto_title: "Six Steps to a Perfect<br /><em>3D Capture Protocol</em>",
+        proto_desc: "Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.",
+        pr_t1: "01 Setup",
+        pr_t2: "02 Lighting",
+        pr_t3: "03 Camera",
+        pr_t4: "04 Movement",
+        pr_t5: "05 Multi-Loop",
+        pr_t6: "06 Pipeline Upload",
+        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
+        calc_title: "Interactive 3DGS<br /><em>Business ROI Calculator</em>",
+        calc_desc: "Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.",
+        calc_l1: "Monthly Store Visitors",
+        calc_l2: "Average Order Value (AOV)",
+        calc_l3: "Current Product Return Rate",
+        calc_r1_lbl: "🚀 Projected Annual Revenue Uplift",
+        calc_r1_note: "Based on 2.0% baseline with +40% 3D interactive uplift",
+        calc_r2_lbl: "📉 Projected Annual Saved Return Costs",
+        calc_r2_note: "Saved return logistics from scale & material verification",
+        embed_eyebrow: "ONE-LINE INTEGRATION",
+        embed_title: "Embed Anywhere With<br /><em>A Single Line of Code</em>",
+        embed_desc: "Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.",
+        embed_btn_copy: "[ COPY CODE 📋 ]",
+        arch_eyebrow: "LIVE 3D REEL",
+        arch_title: "Curated 3D Deliverables Reel",
+        arch_btn_all: "Launch 3D Showroom ↗",
+        faq_eyebrow: "FREQUENTLY ASKED QUESTIONS",
+        faq_title: "Frequently Asked Questions",
+        faq_q1: "How does 3D Gaussian Splatting differ from traditional 3D polygon meshes?",
+        faq_a1: "Traditional 3D meshes wrap 2D textures onto geometric polygon vertices, struggling with reflections, transparency, and organic curves. 3D Gaussian Splatting reconstructs optical radiance using millions of 3D Gaussian ellipsoids, capturing true specular highlights, glass refractions, and sub-millimeter precision in real-time.",
+        faq_q2: "Do website visitors need to install any apps or plugins?",
+        faq_a2: "No plugins or apps are required. The Points & Reality viewer is compiled into pure WebGL shaders that run smoothly at 60+ FPS in Safari, Chrome, Edge, and iOS/Android mobile browsers upon clicking the link.",
+        faq_q3: "How long does optical capture and 3D reconstruction take?",
+        faq_a3: "Capture takes approximately 3 minutes using any standard smartphone camera. Once footage is uploaded to our neural pipeline, the production-ready 3D digital twin is reconstructed in approximately 1 hour.",
+        faq_q4: "How do I integrate this into Shopify or a custom website?",
+        faq_a4: "Simply paste a single line of HTML iframe or React/Liquid component code into your product page template. Responsive mobile layouts and touch gestures are supported out of the box.",
+        fcta_title: "Ready to create your first 3D digital twin?",
+        fcta_desc: "Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.",
+        fcta_btn_primary: "Book a Demo / Inquire →",
+        fcta_btn_sec: "Explore Showroom",
+        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO."
+      },
+      ko: {
+        top_status: "Points & Reality 3DGS — 영상으로 1시간 만에 60+ FPS 3D 디지털 트윈 생성",
+        top_cta: "3D 쇼룸 열기 →",
+        nav_stage: "3D 인터랙티브",
+        nav_bento: "핵심 기술",
+        nav_protocol: "6단계 촬영 가이드",
+        nav_roi: "ROI 계산기",
+        nav_embed: "코드 1줄 연동",
+        nav_showroom: "[ 3D 쇼룸 ↗ ]",
+        btn_inquire: "도입 문의 →",
+        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.",
+        hero_btn_explore: "공식 3D 쇼룸 열기 ↗",
+        hero_btn_how: "6단계 워크플로우 보기 ↓",
+        hero_val_tag: "[ 기업용 고성능 기술 규격 ]",
+        hero_val_title: "e커머스 & 자동차 산업용 차세대 3D 솔루션",
+        hero_val_desc: "기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.",
+        stage_hud_hotspots: "🏷️ 핫스팟 (핀)",
+        stage_hud_studio: "💡 스튜디오 조명",
+        stage_hud_cyber: "⚡ 사이버 네온",
+        stage_hud_ar: "⛶ 1:1 공간 AR",
+        stat_1_lbl: "평균 광학 촬영 시간",
+        stat_2_lbl: "3D 모델 완성 시간",
+        stat_3_lbl: "웹 최적화 SOG 용량",
+        stat_4_lbl: "브라우저 WebGL 성능",
+        bento_eyebrow: "핵심 기술 아키텍처",
+        bento_title: "실리콘밸리 Tier-1급<br /><em>Spatial AI 플랫폼</em>",
+        bento_desc: "Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.",
+        b1_tag: "01 // 광학 궤적 복원 엔진",
+        b1_title: "360° 다각도 나선형 궤적 복원",
+        b1_desc: "단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.",
+        b1_footer_k: "● 실시간 카메라 포즈: <strong>148개 포즈 포인트</strong>",
+        b1_footer_v: "SFM 최적화 활성",
+        b2_tag: "02 // 초경량 페이로드 압축",
+        b2_title: "초경량 SOG 압축 기술",
+        b2_desc: "수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.",
+        b2_reduction: "용량 압축률: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
+        b3_tag: "03 // 공간 증강현실",
+        b3_title: "1:1 실물 크기 증강현실 (AR)",
+        b3_desc: "iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.",
+        b3_scan_qr: "[ 모바일 QR 코드 스캔 ]",
+        b4_tag: "04 // 뉴럴 래디언스",
+        b4_title: "실시간 반사광 & 질감 보존",
+        b4_desc: "금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.",
+        b4_box_k: "물리 기반 광학 셰이딩",
+        b4_box_v: "폴리곤 각짐이나 평면 텍스처 왜곡 제로.",
+        b5_tag: "05 // 글로벌 엣지 CDN",
+        b5_title: "전 세계 180+ 엣지 즉시 배포",
+        b5_desc: "단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.",
+        b5_latency: "<45ms",
+        b5_uptime: "99.99%",
+        proto_eyebrow: "표준 촬영 가이드라인",
+        proto_title: "완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em>",
+        proto_desc: "스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.",
+        pr_t1: "01 피사체 배치",
+        pr_t2: "02 확산광 조명",
+        pr_t3: "03 카메라 세팅",
+        pr_t4: "04 보행 궤적",
+        pr_t5: "05 다각도 루프",
+        pr_t6: "06 파이프라인 업로드",
+        calc_eyebrow: "매출 & 구매전환 임팩트",
+        calc_title: "인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em>",
+        calc_desc: "쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.",
+        calc_l1: "월간 순 방문자 수",
+        calc_l2: "평균 주문 금액 (AOV)",
+        calc_l3: "현재 상품 반품률",
+        calc_r1_lbl: "🚀 예상 연간 추가 매출 (Annual Revenue Uplift)",
+        calc_r1_note: "기준 전환율 2.0% ➔ 3DGS 인터랙션 시 +40% 상승 적용",
+        calc_r2_lbl: "📉 예상 연간 반품 절감액 (Saved Return Costs)",
+        calc_r2_note: "치수 및 100% 실물 질감 사전 확인을 통한 단순 변심 -16% 절감",
+        embed_eyebrow: "코드 1줄 빠른 연동",
+        embed_title: "코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em>",
+        embed_desc: "Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.",
+        embed_btn_copy: "[ 코드 복사 📋 ]",
+        arch_eyebrow: "실시간 3D 릴",
+        arch_title: "최근 제작된 3D 산출물 릴",
+        arch_btn_all: "전체 3D 쇼룸 열기 ↗",
+        faq_eyebrow: "자주 묻는 질문",
+        faq_title: "자주 묻는 질문 (FAQ)",
+        faq_q1: "3D Gaussian Splatting은 기존 3D 메시(Mesh)와 무엇이 다른가요?",
+        faq_a1: "기존 3D 메시는 삼각형 폴리곤 위에 텍스처를 씌우는 방식으로 모서리가 각지고 미세 반사광이나 투명도 표현이 어렵습니다. 반면 3DGS는 수백만 개의 미세 타원체 가우시안으로 실제 광학 필드를 재구성하므로 실물과 100% 동일한 광택, 굴절, 서브밀리미터 디테일을 실시간으로 완벽하게 표현합니다.",
+        faq_q2: "고객이 볼 때 별도의 앱이나 플러그인 설치가 필요한가요?",
+        faq_a2: "전혀 필요하지 않습니다. Points & Reality 파이프라인은 표준 순수 WebGL 셰이더 기반으로 컴파일되어 Safari, Chrome, Edge, 모바일 브라우저 어디서나 링크 클릭 즉시 60+ FPS로 부드럽게 구동됩니다.",
+        faq_q3: "촬영 및 모델 복원에 소요되는 시간은 얼마나 걸리나요?",
+        faq_a3: "스마트폰 카메라로 제품 주위를 약 3분간 동영상으로 촬영한 뒤 파이프라인에 업로드하면, AI 뉴럴 복원 엔진이 약 1시간 만에 프로덕션 배포 가능한 3D 디지털 트윈을 자동 생성합니다.",
+        faq_q4: "자사 쇼핑몰(Shopify, 카페24, 자체 웹)에 어떻게 연동하나요?",
+        faq_a4: "단 1줄의 HTML iframe 또는 React/Liquid 컴포넌트 코드를 원하는 위치에 붙여넣기만 하면 즉시 연동됩니다. 모바일 최적화 반응형 레이아웃을 기본 지원합니다.",
+        fcta_title: "첫 번째 3D 디지털 트윈을 제작해보세요",
+        fcta_desc: "3분 분량의 제품 동영상을 업로드하면 약 1시간 만에 완성도 높은 3DGS 인터랙티브 모델이 준비됩니다.",
+        fcta_btn_primary: "도입 문의하기 (Book Demo) →",
+        fcta_btn_sec: "쇼룸 둘러보기",
+        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO."
+      },
+      zh: {
+        top_status: "Points & Reality 3DGS — 视频采集，约1小时生成 60+ FPS 超写实 3D 数字孪生",
+        top_cta: "进入 3D 展厅 →",
+        nav_stage: "3D 视口",
+        nav_bento: "核心技术",
+        nav_protocol: "6步采集指南",
+        nav_roi: "ROI 计算器",
+        nav_embed: "一行代码嵌入",
+        nav_showroom: "[ 3D 展厅 ↗ ]",
+        btn_inquire: "预约演示 →",
+        hero_eyebrow: "3D 高斯泼溅与 AI 空间工作室",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "仅需一段3分钟的手机或相机视频，约1小时即可生成可在网页流畅运行的 3D 高斯数字孪生。无需任何插件，浏览器 60+ FPS 原生旋转缩放。",
+        hero_btn_explore: "进入 3D 展厅 ↗",
+        hero_btn_how: "查看 6 步采集流程 ↓",
+        hero_val_tag: "[ 企业级高规格性能指标 ]",
+        hero_val_title: "电商与汽车工业级下一代 3D 方案",
+        hero_val_desc: "告别粗糙网格失真，完整还原真实金属光泽、车漆质感及亚毫米级细节，大幅提升下单信心并降低退货。",
+        stage_hud_hotspots: "🏷️ 热点标注 (针)",
+        stage_hud_studio: "💡 影棚光效",
+        stage_hud_cyber: "⚡ 赛博霓虹",
+        stage_hud_ar: "⛶ 1:1 真实空间 AR",
+        stat_1_lbl: "典型光学采集耗时",
+        stat_2_lbl: "模型交付耗时",
+        stat_3_lbl: "网页优化 SOG 体积",
+        stat_4_lbl: "浏览器原生 WebGL 帧率",
+        bento_eyebrow: "核心技术架构",
+        bento_title: "硅谷级顶级架构<br /><em>空间 AI 平台</em>",
+        bento_desc: "结合自研 3DGS 神经渲染管线与 SOG 极度压缩算法，带来极致轻量与高画质兼备的空间电商资产。",
+        b1_tag: "01 // 光学轨迹复原引擎",
+        b1_title: "360° 螺旋环绕轨迹复原",
+        b1_desc: "从视频单帧自动反算相机姿态（SfM），在三维空间中构建完整的连续拍摄轨迹。",
+        b1_footer_k: "● 实时相机姿态: <strong>148个连续姿态点</strong>",
+        b1_footer_v: "SFM 优化算法运行中",
+        b2_tag: "02 // 极致载荷压缩",
+        b2_title: "超轻量 SOG 压缩技术",
+        b2_desc: "将原始数 GB 的 PLY 高斯数据无损压缩高达 98%，实现网页 0.5 秒极速加载。",
+        b2_reduction: "体积压缩率: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
+        b3_tag: "03 // 空间增强现实",
+        b3_title: "1:1 空间真实 AR 体验",
+        b3_desc: "原生支持 iOS QuickLook 及 Android WebXR，无需安装 App 即可在实体房间中投射实物尺寸。",
+        b3_scan_qr: "[ 手机扫描二维码体验 AR ]",
+        b4_tag: "04 // 神经辐射场",
+        b4_title: "实时高光与材质反射",
+        b4_desc: "以六维神经辐射场函数计算视角相关的物理高光，告别死板贴图。",
+        b4_box_k: "基于物理的光学着色",
+        b4_box_v: "彻底消除多边形棱角与平面烘焙失真。",
+        b5_tag: "05 // 全球边缘 CDN",
+        b5_title: "全球 180+ 边缘节点秒级分发",
+        b5_desc: "静态包格式打包，通过全球 CDN 边缘节点实现低于 50ms 的超低延迟访问。",
+        b5_latency: "<45ms",
+        b5_uptime: "99.99%",
+        proto_eyebrow: "标准化采集指南",
+        proto_title: "打造完美 3D 资产的<br /><em>6 步标准拍摄指南</em>",
+        proto_desc: "使用普通手机即可达成电影级 3D 采集。点击各个步骤查看具体推荐参数与注意事项。",
+        pr_t1: "01 物体布置",
+        pr_t2: "02 柔和光线",
+        pr_t3: "03 相机锁定",
+        pr_t4: "04 匀速运镜",
+        pr_t5: "05 分层环绕",
+        pr_t6: "06 管线上传",
+        calc_eyebrow: "营收与转化率增长",
+        calc_title: "交互式 3DGS<br /><em>商业 ROI 收益计算器</em>",
+        calc_desc: "输入月度访客量与客单价，实时预估 3D 交互为独立站带来的销售额增长与退货节省。",
+        calc_l1: "月度独立访客数",
+        calc_l2: "平均订单客单价 (AOV)",
+        calc_l3: "当前退货率",
+        calc_r1_lbl: "🚀 预估年度新增销售额 (Annual Revenue Uplift)",
+        calc_r1_note: "基于 2.0% 基准转化率，结合 3D 交互带来的 +40% 提升",
+        calc_r2_lbl: "📉 预估年度退货节省额 (Saved Return Costs)",
+        calc_r2_note: "通过尺寸与材质精准可视化降低 -16% 盲目退货",
+        embed_eyebrow: "一行代码嵌入",
+        embed_title: "一行代码<br /><em>轻松嵌入任何网站</em>",
+        embed_desc: "无缝支持 Shopify、WooCommerce、Webflow 及 React/Next.js 等各类前端框架。",
+        embed_btn_copy: "[ 复制代码 📋 ]",
+        arch_eyebrow: "实时 3D 交付档案",
+        arch_title: "精选 3D 交付作品",
+        arch_btn_all: "进入 3D 展厅 ↗",
+        faq_eyebrow: "常见问题解答",
+        faq_title: "常见问题解答 (FAQ)",
+        faq_q1: "3D 高斯泼溅与传统 3D 多边形网格有何本质区别？",
+        faq_a1: "传统网格将二维贴图包裹在三角面片上，极难展现真实金属高光、透明折射与复杂轮廓。3D高斯泼溅通过数百万个空间微椭球体重建连续光场，实时还原物理光泽与亚毫米级超精细结构。",
+        faq_q2: "访问者需要安装任何额外应用或插件吗？",
+        faq_a2: "完全不需要。Points & Reality 视口基于纯 WebGL 着色器编译，在 Safari、Chrome、Edge 及移动端浏览器均可一键开启 60+ FPS 流畅交互。",
+        faq_q3: "光学采集与模型重建需要耗费多长时间？",
+        faq_a3: "使用任意普通手机环绕录制仅需约3分钟。上传至AI神经管线后，约1小时即可全自动生成生产级 3D 数字孪生资产。",
+        faq_q4: "如何集成至 Shopify 或自建独立站？",
+        faq_a4: "仅需将单行 HTML iframe 或 React/Liquid 代码嵌入商品详情页模板即可，全自动适配移动端触控手势与响应式布局。",
+        fcta_title: "立即打造您的首个 3D 数字孪生",
+        fcta_desc: "拍摄一段3分钟视频，上传至 Points & Reality，约1小时即可体验专属 3DGS 资产。",
+        fcta_btn_primary: "预约演示 / 商务咨询 →",
+        fcta_btn_sec: "探索展厅",
+        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. 硅谷级 3DGS 与空间 AI 工作室。"
+      },
+      mi: {
+        top_status: "Points & Reality 3DGS — Whakawhiti ataata ki te 3D matihiko i roto i te haora kotahi",
+        top_cta: "Tirohia te Pātaka →",
+        nav_stage: "Whakaaturanga 3D",
+        nav_bento: "Hangarau",
+        nav_protocol: "Ngā Hipanga e 6",
+        nav_roi: "Tatau ROI",
+        nav_embed: "Whakauru 1-Raina",
+        nav_showroom: "[ Whakaaturanga ↗ ]",
+        btn_inquire: "Whakapā mai →",
+        hero_eyebrow: "PŪKAHA 3D GAUSSIAN SPLATTING",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "Ko te 3D Gaussian Splatting he hangarau hou e whakaatu ana i te ao tūturu ki runga i te paetukutuku i roto i te haora kotahi me te 60+ FPS.",
+        hero_btn_explore: "Tirohia te Whakaaturanga ↗",
+        hero_btn_how: "Ngā Hipanga ↓",
+        hero_val_tag: "[ WHAKAMĀRAMA HANGARAU ]",
+        hero_val_title: "He hangarau 3D kairangi mō te ao matihiko",
+        hero_val_desc: "He mea tere, he mea māmā ki te tirotiro i runga paetukutuku me te kore he tono tāpiri.",
+        stage_hud_hotspots: "🏷️ Ngā Tohu 3D",
+        stage_hud_studio: "💡 Mārama Whare",
+        stage_hud_cyber: "⚡ Mārama Hangarau",
+        stage_hud_ar: "⛶ AR Tūturu 1:1",
+        stat_1_lbl: "Wā Hopu Whakaahua",
+        stat_2_lbl: "Wā Hanga 3D",
+        stat_3_lbl: "Rahi Kōnae SOG",
+        stat_4_lbl: "Tere WebGL",
+        bento_eyebrow: "PŪKORERO HANGARAU",
+        bento_title: "Hangarau Kairangi<br /><em>Pūhara AI Matihiko</em>",
+        bento_desc: "He hangarau hou mō te ao 3D me te hokohoko matihiko i runga ipurangi.",
+        b1_tag: "01 // PŪKAHA AROTURUKI",
+        b1_title: "Aroturuki 360° Pūmau",
+        b1_desc: "Whakahou i ngā tūnga kāmera katoa i roto i te wā tūturu me te tika.",
+        b1_footer_k: "● TŪNGA KĀMERA: <strong>148 TŪNGA</strong>",
+        b1_footer_v: "SFM WHAKAMAHI",
+        b2_tag: "02 // WHAKAITI KŌNAE",
+        b2_title: "Whakaiti Kōnae SOG",
+        b2_desc: "Whakaitihia ngā kōnae nui ki te 12MB me te pupuri i te kounga kairangi.",
+        b2_reduction: "Whakaiti Kōnae: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
+        b3_tag: "03 // AR TŪTURU",
+        b3_title: "AR Tūturu 1:1",
+        b3_desc: "Whakanohoia te taonga ki tō rūma tūturu mā te waea pūkoro.",
+        b3_scan_qr: "[ MATI QR KI TE WAEA ]",
+        b4_tag: "04 // MĀRAMA TŪTURU",
+        b4_title: "Mārama Whakaata Tūturu",
+        b4_desc: "Whakaatuhia ngā tīrourou me ngā kirihou i roto i te pono me te ātaahua.",
+        b4_box_k: "MĀRAMA PŪTAIAO",
+        b4_box_v: "Kore hē o ngā mata 3D.",
+        b5_tag: "05 // TOHANGA AO",
+        b5_title: "Tohanga Ao Tere Tonu",
+        b5_desc: "Tuku kōnae ki te ao katoa i roto i ngā mirihēkona mā ngā tūāpapa 180+.",
+        b5_latency: "<45ms",
+        b5_uptime: "99.99%",
+        proto_eyebrow: "TIKANGA HOPU WHAKAAHUA",
+        proto_title: "Ngā Hipanga e 6 ki te<br /><em>3D Kairangi</em>",
+        proto_desc: "A pee i ēnei hipanga māmā e ono hei hanga i tō tauira 3D tuatahi.",
+        pr_t1: "01 Whakarite Hua",
+        pr_t2: "02 Mārama Ngāwari",
+        pr_t3: "03 Raka Kāmera",
+        pr_t4: "04 Neke Marie",
+        pr_t5: "05 Kapi Whānui",
+        pr_t6: "06 Tuku Pūkaha",
+        calc_eyebrow: "TATURANGA HOKO",
+        calc_title: "Tatau ROI<br /><em>Whakapiki Hoko</em>",
+        calc_desc: "Tātaihia ngā hua ka puta mai i te whakauru i te 3D ki tō toa ipurangi.",
+        calc_l1: "Kaihoko ia Marama",
+        calc_l2: "Utu Toharite o te Ota (AOV)",
+        calc_l3: "Ōrau Whakahoki Taonga",
+        calc_r1_lbl: "🚀 Pikinga Hoko ia Tau",
+        calc_r1_note: "Whakapiki +40% ki ngā kiritaki e whakamahi ana i te 3D",
+        calc_r2_lbl: "📉 Pūtea Whakaora Whakahoki",
+        calc_r2_note: "Whakaora -16% i ngā whakahoki taonga",
+        embed_eyebrow: "WHAKAURU MĀMĀ",
+        embed_title: "Whakaurua ki te<br /><em>Raina Waehere Kotahi</em>",
+        embed_desc: "He māmā te whakauru ki Shopify, WooCommerce, me ngā paetukutuku katoa.",
+        embed_btn_copy: "[ TĀRUATIA 📋 ]",
+        arch_eyebrow: "PĀTAKA 3D",
+        arch_title: "Ngā Hua 3DGS Kairangi",
+        arch_btn_all: "Whakaaturanga ↗",
+        faq_eyebrow: "PĀTAI AUAU",
+        faq_title: "Ngā Pātai Auau (FAQ)",
+        faq_q1: "He aha te rerekētanga o te 3DGS ki ngā tauira 3D o mua?",
+        faq_a1: "He mea hanga te 3D Gaussian Splatting ki ngā miriona tohu mārama, e whakaatu tūturu ana i te kanapa me ngā kirihou.",
+        faq_q2: "Me tikiake tono tāpiri te kaihoko?",
+        faq_a2: "Kāore rawa. E rere ana i runga i te WebGL ki ngā pūtirotiro katoa me te 60+ FPS tere tonu.",
+        faq_q3: "He pēhea te roa o te hanga 3D?",
+        faq_a3: "He 3 meneti te roa o te hopu ataata, ā, ka oti te tauira i roto i te haora kotahi.",
+        faq_q4: "Me pēhea te whakauru ki taku toa ipurangi?",
+        faq_a4: "Whakaurua te raina waehere kotahi ki tō whārangi ipurangi.",
+        fcta_title: "Kua rite koe mō tō 3D tuatahi?",
+        fcta_desc: "Hopukia he ataata 3 meneti, tukua mai, ka oti i roto i te haora kotahi.",
+        fcta_btn_primary: "Whakapā mai →",
+        fcta_btn_sec: "Tirohia te Pātaka",
+        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. 3D GAUSSIAN SPLATTING STUDIO."
+      }
+    };
+
+    let activeProtocolStepIdx = 0;
+    function setLanguage(lang) {
+      currentLang = lang;
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+          el.innerHTML = t[key];
+        }
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-' + lang);
+      if (activeBtn) activeBtn.classList.add('active');
+      localStorage.setItem('pnr_lang', lang);
+
+      // Refresh protocol stepper in current language
+      switchProtocolStep(activeProtocolStepIdx);
+
+      // Refresh Hotspots pins
+      const hs = hotspotsByLang[lang] || hotspotsByLang.en;
+      for (let i = 0; i < 3; i++) {
+        const lbl = document.getElementById('pin-label-' + i);
+        if (lbl && hs[i]) lbl.textContent = hs[i].label;
+      }
+
+      // Recalculate ROI label formatting
+      calculateROI();
+    }
+
+    /* --------------------------------------------------------------------------
+       02. Scroll Progress & Reveal Motion Engine
        -------------------------------------------------------------------------- */
     const progressBar = document.getElementById('scroll-progress');
     window.addEventListener('scroll', () => {
@@ -1930,7 +2569,7 @@
     document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
 
     /* --------------------------------------------------------------------------
-       02. Bento 1: Optical Trajectory Engine 2D/3D Orbit Visualizer
+       03. Bento 1: Optical Trajectory Engine 2D/3D Orbit Visualizer
        -------------------------------------------------------------------------- */
     const tCanvas = document.getElementById('trajectory-canvas');
     if (tCanvas) {
@@ -2007,64 +2646,18 @@
     }
 
     /* --------------------------------------------------------------------------
-       03. 6-Step Protocol Stepper
+       04. 6-Step Protocol Stepper
        -------------------------------------------------------------------------- */
-    const protocolData = [
-      {
-        num: "STEP 01 // OBJECT SETUP",
-        heading: "피사체 배치 및 주변 공간 확보",
-        body: "피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.",
-        k1: "1.2m – 2.5m",
-        k2: "4K @ 60 FPS",
-        k3: "~40s / Loop"
-      },
-      {
-        num: "STEP 02 // DIFFUSED LIGHTING",
-        heading: "균일한 확산광 조명 세팅",
-        body: "강한 직사광선이나 점조명은 날카로운 그림자를 만들어 텍스처 재구성을 방해합니다. 소프트박스 확산광이나 흐린 날의 부드러운 자연광 환경에서 촬영하는 것이 가장 이상적입니다.",
-        k1: "Diffused Soft",
-        k2: "Shadow-Free",
-        k3: "5600K Daylight"
-      },
-      {
-        num: "STEP 03 // CAMERA PARAMETER LOCK",
-        heading: "노출·초점·화이트밸런스 고정 (Lock)",
-        body: "스마트폰 또는 카메라의 자동 노출(AE), 자동 초점(AF), 자동 화이트밸런스(AWB)를 고정합니다. 프레임 간 밝기와 색상 톤이 변하지 않아야 뉴럴 네트워크가 정확한 방사 휘도를 학습합니다.",
-        k1: "AE / AF Locked",
-        k2: "ISO 100-200",
-        k3: "1/120s Shutter"
-      },
-      {
-        num: "STEP 04 // SMOOTH MOVEMENT",
-        heading: "일정한 속도의 안정적 보행 궤적",
-        body: "급격한 카메라 회전이나 흔들림(모션 블러)을 방지하기 위해 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이를 사용합니다. 1바퀴당 약 40~50초의 일정한 페이스를 유지합니다.",
-        k1: "Heel-to-Toe",
-        k2: "Zero Motion Blur",
-        k3: "Constant Speed"
-      },
-      {
-        num: "STEP 05 // MULTI-LOOP COVERAGE",
-        heading: "3~4개 높이 궤적 완전 피복 (Multi-Pass)",
-        body: "단일 높이 촬영 시 상단이나 하단에 사각지대가 발생합니다. 수평(아이레벨), 45도 상단 탑다운, 하단 앙각 궤적을 순차적으로 3바퀴 녹화하여 물체의 모든 표면을 빠짐없이 커버합니다.",
-        k1: "3-4 Orbit Passes",
-        k2: "45° Top-Down",
-        k3: "100% Coverage"
-      },
-      {
-        num: "STEP 06 // NEURAL PIPELINE UPLOAD",
-        heading: "Points & Reality 파이프라인 업로드",
-        body: "촬영된 고해상도 영상을 업로드하면, 자동 프레임 추출, SfM 카메라 포즈 정렬, 3DGS 뉴럴 최적화 및 SOG 압축이 원스톱으로 진행되어 약 1시간 내에 완성됩니다.",
-        k1: "~1 Hour Auto",
-        k2: "Pure SOG Output",
-        k3: "Instant CDN Live"
-      }
-    ];
-
     function switchProtocolStep(idx, btnElem) {
-      document.querySelectorAll('.protocol-tab-btn').forEach(b => b.classList.remove('active'));
-      if (btnElem) btnElem.classList.add('active');
+      activeProtocolStepIdx = idx;
+      const stepBtns = document.querySelectorAll('.protocol-tab-btn');
+      stepBtns.forEach((b, i) => {
+        if (i === idx) b.classList.add('active');
+        else b.classList.remove('active');
+      });
 
-      const data = protocolData[idx];
+      const list = protocolDataByLang[currentLang] || protocolDataByLang.en;
+      const data = list[idx] || list[0];
       document.getElementById('proto-step-num').textContent = data.num;
       document.getElementById('proto-step-heading').textContent = data.heading;
       document.getElementById('proto-step-body').textContent = data.body;
@@ -2074,14 +2667,15 @@
     }
 
     /* --------------------------------------------------------------------------
-       04. Interactive ROI Calculator Logic
+       05. Interactive ROI Calculator Logic
        -------------------------------------------------------------------------- */
     function calculateROI() {
       const traffic = parseInt(document.getElementById('slider-traffic').value, 10);
       const aov = parseInt(document.getElementById('slider-aov').value, 10);
       const retRate = parseInt(document.getElementById('slider-return').value, 10);
 
-      document.getElementById('lbl-traffic').textContent = traffic.toLocaleString() + ' 명';
+      const visitorUnit = (currentLang === 'ko') ? ' 명' : (currentLang === 'zh') ? ' 人' : '';
+      document.getElementById('lbl-traffic').textContent = traffic.toLocaleString() + visitorUnit;
       document.getElementById('lbl-aov').textContent = '$' + aov;
       document.getElementById('lbl-return').textContent = retRate + '%';
 
@@ -2096,10 +2690,9 @@
       document.getElementById('calc-uplift-rev').textContent = '+$' + Math.round(extraRevAnnual).toLocaleString();
       document.getElementById('calc-saved-returns').textContent = '+$' + Math.round(savedReturnsAnnual).toLocaleString();
     }
-    calculateROI();
 
     /* --------------------------------------------------------------------------
-       05. 1-Line Embed Code Generator
+       06. 1-Line Embed Code Generator
        -------------------------------------------------------------------------- */
     const embedCodes = {
       html: `<iframe
@@ -2158,13 +2751,14 @@ export default function Product3DViewer() {
       const code = embedCodes[activeEmbedType];
       navigator.clipboard.writeText(code).then(() => {
         const btn = document.getElementById('btn-copy-code');
-        btn.textContent = 'COPIED! ✓';
-        setTimeout(() => { btn.textContent = '[ COPY CODE 📋 ]'; }, 2000);
+        const originalText = btn.textContent;
+        btn.textContent = (currentLang === 'ko') ? '복사 완료! ✓' : (currentLang === 'zh') ? '已复制! ✓' : 'COPIED! ✓';
+        setTimeout(() => { btn.textContent = originalText; }, 2000);
       });
     }
 
     /* --------------------------------------------------------------------------
-       06. FAQ Accordion Logic
+       07. FAQ Accordion Logic
        -------------------------------------------------------------------------- */
     function toggleFaq(elem) {
       const item = elem.parentElement;
@@ -2172,7 +2766,7 @@ export default function Product3DViewer() {
     }
 
     /* --------------------------------------------------------------------------
-       07. Hero Stage Controls & Hotspots
+       08. Hero Stage Controls & Hotspots
        -------------------------------------------------------------------------- */
     function switchHeroStage(url, title, btnElem) {
       const iframe = document.getElementById('hero-stage-iframe');
@@ -2198,8 +2792,10 @@ export default function Product3DViewer() {
       }
     }
 
-    function showHotspotInfo(title, desc) {
-      alert(`[ 3D HOTSPOT INSPECTION ]\n\nComponent: ${title}\nDetails: ${desc}`);
+    function showHotspotInfo(idx) {
+      const hs = hotspotsByLang[currentLang] || hotspotsByLang.en;
+      const item = hs[idx] || hs[0];
+      alert(`[ 3D HOTSPOT INSPECTION ]\n\nComponent: ${item.title}\nDetails: ${item.desc}`);
     }
 
     function openFullscreenStage() {
@@ -2209,12 +2805,18 @@ export default function Product3DViewer() {
     }
 
     function openARModal() {
-      alert('✦ 1:1 Scale Spatial AR\n\niPhone 또는 Android 카메라로 QR 코드를 스캔하면 실제 공간에 1:1 실물 크기로 즉시 투영됩니다.');
+      if (currentLang === 'ko') {
+        alert('✦ 1:1 공간 실물 AR\n\niPhone 또는 Android 카메라로 QR 코드를 스캔하면 실제 공간에 1:1 실물 크기로 즉시 투영됩니다.');
+      } else if (currentLang === 'zh') {
+        alert('✦ 1:1 空间真实 AR\n\n使用手机扫描二维码，即可在真实物理空间中以 1:1 比例投射该模型。');
+      } else {
+        alert('✦ 1:1 Scale Spatial AR\n\nScan the QR code on your mobile device to place this 3D model in your physical space in real 1:1 scale.');
+      }
     }
 
     function setStageEnv(mode, btn) {
       document.querySelectorAll('.stage-hud-controls .hud-chip').forEach(c => {
-        if (c.textContent.includes('Light') || c.textContent.includes('Neon')) c.classList.remove('active');
+        if (c.textContent.includes('Light') || c.textContent.includes('Neon') || c.textContent.includes('조명') || c.textContent.includes('네온')) c.classList.remove('active');
       });
       btn.classList.add('active');
       const wrap = document.querySelector('.stage-viewport-wrap');
@@ -2226,7 +2828,7 @@ export default function Product3DViewer() {
     }
 
     /* --------------------------------------------------------------------------
-       08. Dynamic Model Manifest Sync (models.json)
+       09. Dynamic Model Manifest Sync (models.json)
        -------------------------------------------------------------------------- */
     async function loadDynamicModels() {
       try {
@@ -2287,7 +2889,7 @@ export default function Product3DViewer() {
     loadDynamicModels();
 
     /* --------------------------------------------------------------------------
-       09. Ambient Particle Background
+       10. Ambient Particle Background
        -------------------------------------------------------------------------- */
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
@@ -2342,251 +2944,8 @@ export default function Product3DViewer() {
     }
     animateParticles();
 
-    /* --------------------------------------------------------------------------
-       10. Multilingual Translation Engine (EN, KO, ZH, MI)
-       -------------------------------------------------------------------------- */
-    const translations = {
-      en: {
-        top_status: "Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour",
-        top_cta: "Launch Showroom →",
-        nav_stage: "3D Stage",
-        nav_bento: "Technology",
-        nav_protocol: "6-Step Protocol",
-        nav_roi: "ROI Calculator",
-        nav_embed: "1-Line Embed",
-        nav_showroom: "[ 3D Showroom ↗ ]",
-        btn_inquire: "Book Demo →",
-        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.",
-        hero_btn_explore: "Launch 3D Showroom ↗",
-        hero_btn_how: "Explore 6-Step Workflow ↓",
-        hero_val_title: "Next-Gen 3D Solution for Ecommerce & Automotive",
-        hero_val_desc: "Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.",
-        stat_1_lbl: "Typical Optical Capture",
-        stat_2_lbl: "Turnaround to Live 3D",
-        stat_3_lbl: "Web-Optimized SOG Payload",
-        stat_4_lbl: "Pure Browser WebGL Performance",
-        bento_eyebrow: "CORE ARCHITECTURE",
-        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
-        bento_desc: "Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.",
-        b1_title: "360° Multi-Angle Helical Trajectory Engine",
-        b1_desc: "Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.",
-        b2_title: "Ultra-Light SOG Compression",
-        b2_desc: "Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.",
-        b3_title: "1:1 Real-Scale Spatial AR",
-        b3_desc: "Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.",
-        b4_title: "Sub-Millimeter Neural Radiance",
-        b4_desc: "Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.",
-        b5_title: "Global Low-Latency Edge Delivery",
-        b5_desc: "Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.",
-        proto_eyebrow: "OPERATIONAL PROTOCOL",
-        proto_title: "Six Steps to a Perfect<br /><em>3D Capture Protocol</em>",
-        proto_desc: "Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.",
-        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
-        calc_title: "Interactive 3DGS<br /><em>Business ROI Calculator</em>",
-        calc_desc: "Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.",
-        calc_l1: "Monthly Store Visitors",
-        calc_l2: "Average Order Value (AOV)",
-        calc_l3: "Current Product Return Rate",
-        calc_r1_lbl: "🚀 Projected Annual Revenue Uplift",
-        calc_r2_lbl: "📉 Projected Annual Saved Return Costs",
-        embed_eyebrow: "ONE-LINE INTEGRATION",
-        embed_title: "Embed Anywhere With<br /><em>A Single Line of Code</em>",
-        embed_desc: "Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.",
-        arch_eyebrow: "LIVE 3D REEL",
-        arch_title: "Curated 3D Deliverables Reel",
-        arch_btn_all: "Launch 3D Showroom ↗",
-        fcta_title: "Ready to create your first 3D digital twin?",
-        fcta_desc: "Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.",
-        fcta_btn_primary: "Book a Demo / Inquire →",
-        fcta_btn_sec: "Explore Showroom"
-      },
-      ko: {
-        top_status: "Points & Reality 3DGS — 영상으로 1시간 만에 60+ FPS 3D 디지털 트윈 생성",
-        top_cta: "3D 쇼룸 열기 →",
-        nav_stage: "3D 인터랙티브",
-        nav_bento: "핵심 기술",
-        nav_protocol: "6단계 촬영 가이드",
-        nav_roi: "ROI 계산기",
-        nav_embed: "코드 1줄 연동",
-        nav_showroom: "[ 3D 쇼룸 ↗ ]",
-        btn_inquire: "도입 문의 →",
-        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.",
-        hero_btn_explore: "공식 3D 쇼룸 열기 ↗",
-        hero_btn_how: "6단계 워크플로우 보기 ↓",
-        hero_val_title: "e커머스 & 자동차 산업용 차세대 3D 솔루션",
-        hero_val_desc: "기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.",
-        stat_1_lbl: "평균 광학 촬영 시간",
-        stat_2_lbl: "3D 모델 완성 시간",
-        stat_3_lbl: "웹 최적화 SOG 용량",
-        stat_4_lbl: "브라우저 WebGL 성능",
-        bento_eyebrow: "CORE ARCHITECTURE",
-        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
-        bento_desc: "Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.",
-        b1_title: "360° 다각도 나선형 궤적 복원",
-        b1_desc: "단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.",
-        b2_title: "초경량 SOG 압축 기술",
-        b2_desc: "수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.",
-        b3_title: "1:1 실물 크기 증강현실 (AR)",
-        b3_desc: "iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.",
-        b4_title: "실시간 반사광 & 질감 보존",
-        b4_desc: "금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.",
-        b5_title: "전 세계 180+ 엣지 즉시 배포",
-        b5_desc: "단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.",
-        proto_eyebrow: "OPERATIONAL PROTOCOL",
-        proto_title: "완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em>",
-        proto_desc: "스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.",
-        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
-        calc_title: "인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em>",
-        calc_desc: "쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.",
-        calc_l1: "월간 순 방문자 수 (Monthly Visitors)",
-        calc_l2: "평균 주문 금액 (Average Order Value)",
-        calc_l3: "현재 상품 반품률 (Current Return Rate)",
-        calc_r1_lbl: "🚀 예상 연간 추가 매출 (Annual Revenue Uplift)",
-        calc_r2_lbl: "📉 예상 연간 반품 절감액 (Saved Return Costs)",
-        embed_eyebrow: "ONE-LINE INTEGRATION",
-        embed_title: "코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em>",
-        embed_desc: "Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.",
-        arch_eyebrow: "LIVE 3D REEL",
-        arch_title: "최근 제작된 3D 산출물 릴",
-        arch_btn_all: "전체 3D 쇼룸 열기 ↗",
-        fcta_title: "첫 번째 3D 디지털 트윈을 제작해보세요",
-        fcta_desc: "3분 분량의 제품 동영상을 업로드하면 약 1시간 만에 완성도 높은 3DGS 인터랙티브 모델이 준비됩니다.",
-        fcta_btn_primary: "도입 문의하기 (Book Demo) →",
-        fcta_btn_sec: "쇼룸 둘러보기"
-      },
-      zh: {
-        top_status: "Points & Reality 3DGS — 视频采集，约1小时生成 60+ FPS 超写实 3D 数字孪生",
-        top_cta: "进入 3D 展厅 →",
-        nav_stage: "3D 视口",
-        nav_bento: "核心技术",
-        nav_protocol: "6步采集指南",
-        nav_roi: "ROI 计算器",
-        nav_embed: "一行代码嵌入",
-        nav_showroom: "[ 3D 展厅 ↗ ]",
-        btn_inquire: "预约演示 →",
-        hero_eyebrow: "3D 高斯泼溅与 AI 空间工作室",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "仅需一段3分钟的手机或相机视频，约1小时即可生成可在网页流畅运行的 3D 高斯数字孪生。无需任何插件，浏览器 60+ FPS 原生旋转缩放。",
-        hero_btn_explore: "进入 3D 展厅 ↗",
-        hero_btn_how: "查看 6 步采集流程 ↓",
-        hero_val_title: "电商与汽车工业级下一代 3D 方案",
-        hero_val_desc: "告别粗糙网格失真，完整还原真实金属光泽、车漆质感及亚毫米级细节，大幅提升下单信心并降低退货。",
-        stat_1_lbl: "典型光学采集耗时",
-        stat_2_lbl: "模型交付耗时",
-        stat_3_lbl: "网页优化 SOG 体积",
-        stat_4_lbl: "浏览器原生 WebGL 帧率",
-        bento_eyebrow: "CORE ARCHITECTURE",
-        bento_title: "硅谷级顶级架构<br /><em>空间 AI 平台</em>",
-        bento_desc: "结合自研 3DGS 神经渲染管线与 SOG 极度压缩算法，带来极致轻量与高画质兼备的空间电商资产。",
-        b1_title: "360° 螺旋环绕轨迹复原",
-        b1_desc: "从视频单帧自动反算相机姿态（SfM），在三维空间中构建完整的连续拍摄轨迹。",
-        b2_title: "超轻量 SOG 压缩技术",
-        b2_desc: "将原始数 GB 的 PLY 高斯数据无损压缩高达 98%，实现网页 0.5 秒极速加载。",
-        b3_title: "1:1 空间真实 AR 体验",
-        b3_desc: "原生支持 iOS QuickLook 及 Android WebXR，无需安装 App 即可在实体房间中投射实物尺寸。",
-        b4_title: "实时高光与材质反射",
-        b4_desc: "以六维神经辐射场函数计算视角相关的物理高光，告别死板贴图。",
-        b5_title: "全球 180+ 边缘节点秒级分发",
-        b5_desc: "静态包格式打包，通过全球 CDN 边缘节点实现低于 50ms 的超低延迟访问。",
-        proto_eyebrow: "OPERATIONAL PROTOCOL",
-        proto_title: "打造完美 3D 资产的<br /><em>6 步标准拍摄指南</em>",
-        proto_desc: "使用普通手机即可达成电影级 3D 采集。点击各个步骤查看具体推荐参数与注意事项。",
-        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
-        calc_title: "交互式 3DGS<br /><em>商业 ROI 收益计算器</em>",
-        calc_desc: "输入月度访客量与客单价，实时预估 3D 交互为独立站带来的销售额增长与退货节省。",
-        calc_l1: "月度独立访客数 (Monthly Visitors)",
-        calc_l2: "平均订单客单价 (AOV)",
-        calc_l3: "当前退货率 (Current Return Rate)",
-        calc_r1_lbl: "🚀 预估年度新增销售额 (Annual Revenue Uplift)",
-        calc_r2_lbl: "📉 预估年度退货节省额 (Saved Return Costs)",
-        embed_eyebrow: "ONE-LINE INTEGRATION",
-        embed_title: "一行代码<br /><em>轻松嵌入任何网站</em>",
-        embed_desc: "无缝支持 Shopify、WooCommerce、Webflow 及 React/Next.js 等各类前端框架。",
-        arch_eyebrow: "LIVE 3D REEL",
-        arch_title: "精选 3D 交付作品",
-        arch_btn_all: "进入 3D 展厅 ↗",
-        fcta_title: "立即打造您的首个 3D 数字孪生",
-        fcta_desc: "拍摄一段3分钟视频，上传至 Points & Reality，约1小时即可体验专属 3DGS 资产。",
-        fcta_btn_primary: "预约演示 / 商务咨询 →",
-        fcta_btn_sec: "探索展厅"
-      },
-      mi: {
-        top_status: "Points & Reality 3DGS — Whakawhiti ataata ki te 3D matihiko i roto i te haora kotahi",
-        top_cta: "Tirohia te Pātaka →",
-        nav_stage: "Whakaaturanga 3D",
-        nav_bento: "Hangarau",
-        nav_protocol: "Ngā Hipanga e 6",
-        nav_roi: "Tatau ROI",
-        nav_embed: "Whakauru 1-Raina",
-        nav_showroom: "[ Whakaaturanga ↗ ]",
-        btn_inquire: "Whakapā mai →",
-        hero_eyebrow: "PŪKAHA 3D GAUSSIAN SPLATTING",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "Ko te 3D Gaussian Splatting he hangarau hou e whakaatu ana i te ao tūturu ki runga i te paetukutuku i roto i te haora kotahi me te 60+ FPS.",
-        hero_btn_explore: "Tirohia te Whakaaturanga ↗",
-        hero_btn_how: "Ngā Hipanga ↓",
-        hero_val_title: "He hangarau 3D kairangi mō te ao matihiko",
-        hero_val_desc: "He mea tere, he mea māmā ki te tirotiro i runga paetukutuku me te kore he tono tāpiri.",
-        stat_1_lbl: "Wā Hopu Whakaahua",
-        stat_2_lbl: "Wā Hanga 3D",
-        stat_3_lbl: "Rahi Kōnae SOG",
-        stat_4_lbl: "Tere WebGL",
-        bento_eyebrow: "CORE ARCHITECTURE",
-        bento_title: "Hangarau Kairangi<br /><em>Pūhara AI Matihiko</em>",
-        bento_desc: "He hangarau hou mō te ao 3D me te hokohoko matihiko.",
-        b1_title: "Aroturuki 360° Pūmau",
-        b1_desc: "Whakahou i ngā tūnga kāmera katoa i roto i te wā tūturu.",
-        b2_title: "Whakaiti Kōnae SOG",
-        b2_desc: "Whakaitihia ngā kōnae nui ki te 12MB me te pupuri i te kounga kairangi.",
-        b3_title: "AR Tūturu 1:1",
-        b3_desc: "Whakanohoia te taonga ki tō rūma tūturu mā te waea pūkoro.",
-        b4_title: "Mārama Whakaata Tūturu",
-        b4_desc: "Whakaatuhia ngā tīrourou me ngā kirihou i roto i te pono.",
-        b5_title: "Tohanga Ao Tere Tonu",
-        b5_desc: "Tuku kōnae ki te ao katoa i roto i ngā mirihēkona.",
-        proto_eyebrow: "OPERATIONAL PROTOCOL",
-        proto_title: "Ngā Hipanga e 6 ki te<br /><em>3D Kairangi</em>",
-        proto_desc: "A pee i ēnei hipanga māmā e ono hei hanga i tō tauira 3D tuatahi.",
-        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
-        calc_title: "Tatau ROI<br /><em>Whakapiki Hoko</em>",
-        calc_desc: "Tātaihia ngā hua ka puta mai i te whakauru i te 3D ki tō toa.",
-        calc_l1: "Kaihoko ia Marama",
-        calc_l2: "Utu Toharite o te Ota",
-        calc_l3: "Ōrau Whakahoki Taonga",
-        calc_r1_lbl: "🚀 Pikinga Hoko ia Tau",
-        calc_r2_lbl: "📉 Pūtea Whakaora Whakahoki",
-        embed_eyebrow: "ONE-LINE INTEGRATION",
-        embed_title: "Whakaurua ki te<br /><em>Raina Waehere Kotahi</em>",
-        embed_desc: "He māmā te whakauru ki Shopify, WooCommerce, me ngā paetukutuku katoa.",
-        arch_eyebrow: "LIVE 3D REEL",
-        arch_title: "Ngā Hua 3DGS Kairangi",
-        arch_btn_all: "Whakaaturanga ↗",
-        fcta_title: "Kua rite koe mō tō 3D tuatahi?",
-        fcta_desc: "Hopukia he ataata 3 meneti, tukua mai, ka oti i roto i te haora kotahi.",
-        fcta_btn_primary: "Whakapā mai →",
-        fcta_btn_sec: "Tirohia te Pātaka"
-      }
-    };
-
-    function setLanguage(lang) {
-      const t = translations[lang] || translations.ko;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) {
-          el.innerHTML = t[key];
-        }
-      });
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById('btn-' + lang);
-      if (activeBtn) activeBtn.classList.add('active');
-      localStorage.setItem('pnr_lang', lang);
-    }
-
-    const savedLang = localStorage.getItem('pnr_lang') || 'ko';
+    // Initialize Language System with persistent memory
+    const savedLang = localStorage.getItem('pnr_lang') || 'en';
     setLanguage(savedLang);
   </script>
 </body>
