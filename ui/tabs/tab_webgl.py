@@ -169,16 +169,19 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     gap_str = f"{word_gap_px}px"
     row_gap_str = f"{row_gap_px}px"
     offset_px = int(font_size_px * 0.85)
+    # Shift the entire tiling canvas further left so that POINTS&REALITY reads correctly
+    # (the -24deg rotation causes right-side text to appear first without this shift)
+    shift_left_pct = -65  # shift canvas origin left of center
 
     rows_html = []
-    # 18 staggered repeating rows spanning a 340vw x 340vh canvas centered on screen
+    # 18 staggered repeating rows spanning a 440vw x 340vh canvas offset to the left
     for i in range(18):
         offset = f"transform: translateX({offset_px}px);" if (i % 2 == 1) else ""
         row = (
             f'<div style="display:flex; justify-content:center; gap:{gap_str}; color:#ffffff; '
             f'font-size:{font_size_str}; line-height:0.95; font-weight:900; font-family:\'Arial Black\', \'Impact\', \'Montserrat\', -apple-system, sans-serif; '
             f'letter-spacing:-2px; text-transform:uppercase; white-space:nowrap; {offset}">'
-            f'<span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span>'
+            f'<span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span>'
             f'</div>'
         )
         rows_html.append(row)
@@ -187,7 +190,7 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     return f'''
     <!-- Points & Reality Giant Repeating Watermark Overlay (Full Viewport Coverage, Centered Tiling) -->
     <div id="points-reality-watermark" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99990; pointer-events:none; overflow:hidden; user-select:none;">
-        <div style="position:absolute; top:50%; left:50%; width:340vw; height:340vh; transform:translate(-50%, -50%) rotate(-24deg); opacity:{opacity_val:.3f}; display:flex; flex-direction:column; justify-content:center; gap:{row_gap_str}; align-items:center;">
+        <div style="position:absolute; top:50%; left:{shift_left_pct}%; width:440vw; height:340vh; transform:translate(-50%, -50%) rotate(-24deg); opacity:{opacity_val:.3f}; display:flex; flex-direction:column; justify-content:center; gap:{row_gap_str}; align-items:center;">
         {body}
         </div>
     </div>'''
@@ -237,6 +240,7 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
             border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
             padding: 10px 18px; display: flex; align-items: center; gap: 14px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }}
         .brand {{ font-size: 14px; font-weight: 800; color: #38bdf8; }}
         .model-pill {{ font-size: 11px; background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.3); padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
@@ -244,10 +248,12 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
         
         #hud-help {{
             position: fixed; top: 16px; right: 16px; z-index: 100;
-            background: rgba(20,22,27,0.75); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            background: rgba(20,22,27,0.55); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
             padding: 8px 14px; font-size: 11px; color: #94a3b8;
+            opacity: 0.5; transition: opacity 0.5s ease, visibility 0.5s ease;
         }}
+        #hud-help:hover {{ opacity: 0.95; }}
         #hud-help span {{ color: #e2e8f0; font-weight: 600; }}
 
         #hud-controls {{
@@ -292,7 +298,8 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
 </head>
 <body>
     <div id="hud-header">
-        <div class="brand">✨ Points & Reality 3DGS</div>
+        <div class="brand">✨ Points & Reality</div>
+        <div style="color:#475569; font-size:13px;">|</div>
         <div class="model-pill">{model_filename}</div>
         <div class="fps-badge" id="lbl-fps">FPS: --</div>
     </div>
@@ -301,8 +308,8 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
         🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom
     </div>
 
-    <!-- Engine Attribution (MIT License Compliance - Non-blocking Static Pure Label) -->
-    <div id="points-reality-engine-credit" style="position:fixed; bottom:24px; right:20px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; opacity:0.4; letter-spacing:0.2px;">
+    <!-- Engine Attribution (MIT License Compliance - Fade synced with HUD controls) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:24px; right:20px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; opacity:0.4; letter-spacing:0.2px; transition:opacity 0.5s ease, visibility 0.5s ease;">
         <span style="opacity:0.75;">Powered by</span>
         <span style="color:#cbd5e1; font-weight:600;">Three.js</span>
         <span style="opacity:0.45;">&</span>
@@ -422,6 +429,31 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
             if (hudHelp && isTouch) {{
                 hudHelp.innerHTML = '👆 <span>1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span>2-Finger:</span> Pan & Zoom';
             }}
+
+            // --- HUD Auto-Fade System (synced with fullscreen button behavior) ---
+            const hudHeader = document.getElementById('hud-header');
+            const hudCredit = document.getElementById('points-reality-engine-credit');
+            const fadableEls = [hudHeader, hudHelp, hudCredit, document.getElementById('hud-controls')].filter(Boolean);
+            let hudTimeout = null;
+            function showHUD() {{
+                if (hudTimeout) clearTimeout(hudTimeout);
+                fadableEls.forEach(el => {{
+                    el.style.opacity = el.id === 'hud-help' ? '0.5' : (el.id === 'points-reality-engine-credit' ? '0.4' : '1');
+                    el.style.visibility = 'visible';
+                }});
+                hudTimeout = setTimeout(() => {{
+                    fadableEls.forEach(el => {{
+                        if (el.id !== 'hud-controls') {{
+                            el.style.opacity = '0';
+                            el.style.visibility = 'hidden';
+                        }}
+                    }});
+                }}, 4000);
+            }}
+            showHUD();
+            ['pointermove', 'mousemove', 'wheel', 'keydown', 'touchstart', 'click'].forEach(evt => {{
+                window.addEventListener(evt, showHUD, {{ passive: true }});
+            }});
 
             let lastTime = performance.now();
             let frameCount = 0;
@@ -1807,19 +1839,19 @@ class WebGLTab(QWidget):
                 # Final Release / Delivery Mode: Brand Header + Dynamic Touch/Mouse Hint + MIT License Attribution
                 overlays_html = f'''
     <!-- Points & Reality Final Branding Header -->
-    <div id="points-reality-brand-header" style="position:fixed; top:16px; left:16px; z-index:99999; display:flex; align-items:center; gap:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(14px); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:9px 18px; box-shadow:0 10px 32px rgba(0,0,0,0.6); pointer-events:auto; font-family:'Segoe UI',-apple-system,sans-serif; user-select:none;">
-        <span style="font-weight:900; font-size:14px; color:#38bdf8; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">✨ Points & Reality 3DGS</span>
+    <div id="points-reality-brand-header" class="points-reality-hud" style="position:fixed; top:16px; left:16px; z-index:99999; display:flex; align-items:center; gap:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(14px); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:9px 18px; box-shadow:0 10px 32px rgba(0,0,0,0.6); pointer-events:auto; font-family:'Segoe UI',-apple-system,sans-serif; user-select:none;">
+        <span style="font-weight:900; font-size:14px; color:#38bdf8; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">✨ Points & Reality</span>
         <span style="color:#475569; font-size:13px;">|</span>
-        <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{display_title}</span>
+        <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{base_name}</span>
     </div>
 
     <!-- Controls Hint (Auto Mouse / Touch Aware) -->
-    <div id="points-reality-controls-hint" style="position:fixed; top:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.75); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 14px; font-size:11.5px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none;">
+    <div id="points-reality-controls-hint" class="points-reality-hud" style="position:fixed; top:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.55); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:8px 14px; font-size:11.5px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none;">
         🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom
     </div>
 
-    <!-- Engine Attribution (MIT License Compliance - Non-blocking Static Pure Label) -->
-    <div id="points-reality-engine-credit" style="position:fixed; bottom:24px; right:60px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; opacity:0.4; letter-spacing:0.2px;">
+    <!-- Engine Attribution (MIT License Compliance - Fade synced with fullscreen button via .points-reality-hud) -->
+    <div id="points-reality-engine-credit" class="points-reality-hud" style="position:fixed; bottom:24px; right:60px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; letter-spacing:0.2px;">
         <span style="opacity:0.75;">Powered by</span>
         <span style="color:#cbd5e1; font-weight:600;">PlayCanvas</span>
         <span style="opacity:0.45;">&</span>

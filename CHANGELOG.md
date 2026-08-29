@@ -7,7 +7,14 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.243 (Current)
+### 🔹 v2.244 (Current)
+* **뷰어 HUD 오버레이 4대 개선 — 브랜드 타이틀, 조작 가이드, 어트리뷰션 Fade 동기화, 워터마크 읽기 순서 교정 (`v2.244`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **브랜드/모델 타이틀 중복 해소**: `✨ Points & Reality | {모델파일명}` 형식으로 통일. 기존 `display_title`(Points & Reality 3DGS - ...) 중복 삽입 문제를 `base_name` 직접 참조로 교정.
+  * **조작 가이드 시야 방해 최소화**: 배경 투명도를 `0.55`로 낮추고, 초기 `opacity: 0.5` + 호버 시 `0.95` 복원. 4초 비활동 시 자동 페이드아웃 적용.
+  * **엔진 어트리뷰션 전체화면 버튼 Fade 동기화**: SuperSplat 뷰어는 `.points-reality-hud` 클래스를 부여하여 `controlsHidden:changed` 이벤트 기반 fade-in/out을 전체화면 버튼과 100% 동기화. PLY 뷰어도 동일한 `showHUD()` 타이머 루프로 통합.
+  * **워터마크 읽기 순서 교정 (POINTS&REALITY)**: 타일링 캔버스를 `left: -65%`로 좌측 시프트하고, 가로 폭을 `440vw`로 확장하며, 행당 `<span>` 8개로 증설하여 `-24deg` 회전 시에도 반드시 "POINTS&REALITY" 순서로 가독.
+
+### 🔹 v2.243
 * **엔진 어트리뷰션 뱃지 초경량 무반응 순수 텍스트 라벨 전환 및 전체화면 버튼 밀착 수직 중앙 정렬 (`v2.243`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **초경량 무반응 순수 텍스트 라벨 (`pointer-events: none;`)**: 불필요한 하이퍼링크(`<a>`), 링크 색상 및 호버 반응을 모두 제거하고 마우스 이벤트가 3D 씬으로 바로 통과되도록 처리하여 조작 방해를 원천 차단.
   * **전체화면 버튼 수직 중앙 정렬 (`bottom: 24px; right: 60px; height: 24px;`)**: 전체화면 버튼과 완벽하게 수직 중앙(`y = 36px`)을 일치시키고 4px 여백으로 밀착시켜 조화롭고 완성도 높은 단일 툴바 클러스터 디자인 구현.
