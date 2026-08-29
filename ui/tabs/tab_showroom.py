@@ -403,7 +403,7 @@ class ShowroomTab(QWidget):
         html_files = [f for f in os.listdir(self.repo_web_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
         self.table_cloud.setRowCount(len(html_files))
 
-        for row, h in enumerate(sorted(html_files)):
+        for row, h in enumerate(sorted(html_files, key=lambda f: os.path.getmtime(os.path.join(self.repo_web_dir, f)), reverse=True)):
             h_path = os.path.join(self.repo_web_dir, h)
             h_size = os.path.getsize(h_path)
 
@@ -568,7 +568,7 @@ class ShowroomTab(QWidget):
         html_files = [f for f in os.listdir(local_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
         self.table_local.setRowCount(len(html_files))
 
-        for row, h in enumerate(sorted(html_files)):
+        for row, h in enumerate(sorted(html_files, key=lambda f: os.path.getmtime(os.path.join(local_dir, f)), reverse=True)):
             h_path = os.path.join(local_dir, h)
             h_size = os.path.getsize(h_path)
             h_time = time.strftime("%Y-%m-%d %H:%M", time.localtime(os.path.getmtime(h_path)))
