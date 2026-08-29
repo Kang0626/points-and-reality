@@ -121,6 +121,14 @@
             .points-reality-hud {
               transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
+            #points-reality-engine-credit.points-reality-hud.faded-in {
+              opacity: 0.4 !important;
+              pointer-events: none !important;
+            }
+            #points-reality-controls-hint.points-reality-hud.faded-in {
+              opacity: 1 !important;
+              pointer-events: none !important;
+            }
             #controlsWrap > #timelineContainer {
               height: 30px;
               cursor: pointer;
@@ -100655,6 +100663,9 @@ const initUI = (global) => {
     };
     showUI();
     events.on('inputEvent', showUI);
+    ['pointermove', 'mousemove', 'wheel', 'keydown', 'touchstart'].forEach((evt) => {
+        window.addEventListener(evt, showUI, { passive: true });
+    });
 
     // Natural fade out when mouse leaves viewport, fade in when returning
     document.addEventListener('mouseleave', () => {
