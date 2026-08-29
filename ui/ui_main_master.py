@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                              QGroupBox, QLabel, QPushButton, QSplitter, 
                              QSizePolicy, QComboBox, QLineEdit, QFileDialog, 
                              QInputDialog, QMessageBox, QScrollArea, QFrame, 
-                             QTabBar, QStackedWidget)
+                             QButtonGroup, QStackedWidget)
 from PyQt5.QtCore import Qt, QSettings
 from config import DARK_THEME_CSS, APP_VERSION
 from ui.ui_translations import TRANSLATIONS
@@ -130,51 +130,62 @@ class PointsAndRealityController(QMainWindow):
         header_vlayout.addWidget(sep)
 
         # ----------------------------------------------------
-        # Tier 2: Pipeline Step Navigation Tabs (Full Width Dedicated Row)
+        # Tier 2: Pipeline Step Navigation Tabs (Segmented Button Group)
         # ----------------------------------------------------
         tier2_layout = QHBoxLayout()
-        tier2_layout.setContentsMargins(0, 0, 0, 0)
-        tier2_layout.setSpacing(8)
+        tier2_layout.setContentsMargins(0, 2, 0, 2)
+        tier2_layout.setSpacing(6)
 
-        # Pipeline Navigation Tabs
-        self.tab_bar = QTabBar()
-        self.tab_bar.setDrawBase(False)
-        self.tab_bar.setExpanding(False)
-        self.tab_bar.setUsesScrollButtons(False)
-        self.tab_bar.setMinimumHeight(36)
-        self.tab_bar.addTab("Capture & Ingest")
-        self.tab_bar.addTab("Splat Cleanup")
-        self.tab_bar.addTab("WebGL Build")
-        self.tab_bar.setStyleSheet("""
-            QTabBar {
-                background-color: transparent;
-                min-height: 36px;
-            }
-            QTabBar::tab { 
-                background-color: #171922; 
-                color: #94a3b8; 
-                min-height: 32px;
-                height: 32px;
-                padding: 0px 18px; 
+        self.tab_btn_group = QButtonGroup(self)
+        self.tab_btn_group.setExclusive(True)
+
+        self.btn_tab_capture = QPushButton("Capture & Ingest")
+        self.btn_tab_capture.setCheckable(True)
+        self.btn_tab_capture.setChecked(True)
+        self.btn_tab_capture.setCursor(Qt.PointingHandCursor)
+
+        self.btn_tab_cleanup = QPushButton("Splat Cleanup")
+        self.btn_tab_cleanup.setCheckable(True)
+        self.btn_tab_cleanup.setCursor(Qt.PointingHandCursor)
+
+        self.btn_tab_webgl = QPushButton("WebGL Build")
+        self.btn_tab_webgl.setCheckable(True)
+        self.btn_tab_webgl.setCursor(Qt.PointingHandCursor)
+
+        self.tab_buttons = [self.btn_tab_capture, self.btn_tab_cleanup, self.btn_tab_webgl]
+
+        nav_tab_css = """
+            QPushButton {
+                background-color: #171922;
+                color: #94a3b8;
                 border: 1px solid #282d3c;
                 border-radius: 5px;
-                margin-right: 6px;
+                min-height: 32px;
+                height: 32px;
+                padding: 0px 20px;
                 font-weight: 600;
                 font-size: 12px;
+                text-align: center;
             }
-            QTabBar::tab:hover { 
-                background-color: #202636; 
-                color: #f1f5f9; 
+            QPushButton:hover {
+                background-color: #202636;
+                color: #f1f5f9;
                 border-color: #3b465c;
             }
-            QTabBar::tab:selected { 
-                background-color: #1d4ed8; 
-                color: #ffffff; 
+            QPushButton:checked {
+                background-color: #1d4ed8;
+                color: #ffffff;
                 border: 1px solid #3b82f6;
                 font-weight: 700;
             }
-        """)
-        tier2_layout.addWidget(self.tab_bar)
+        """
+
+        for idx, btn in enumerate(self.tab_buttons):
+            btn.setStyleSheet(nav_tab_css)
+            self.tab_btn_group.addButton(btn, idx)
+            tier2_layout.addWidget(btn)
+
+        self.tab_btn_group.buttonClicked[int].connect(self._on_tab_changed)
         tier2_layout.addStretch()
 
         header_vlayout.addLayout(tier2_layout)
@@ -198,7 +209,6 @@ class PointsAndRealityController(QMainWindow):
 
         # Stacked Pages
         self.stacked_widget = QStackedWidget()
-        self.tab_bar.currentChanged.connect(self._on_tab_changed)
 
         # --- Tab 1: Capture & Ingest Pipeline ---
         tab1_widget = QWidget()
@@ -403,9 +413,9 @@ class PointsAndRealityController(QMainWindow):
         t = TRANSLATIONS.get(lang, TRANSLATIONS["EN"])
         self.btn_lang.setText(lang)
         
-        self.tab_bar.setTabText(0, t.get("tab_capture", "Capture && Ingest").replace("&", "&&") if "&&" not in t.get("tab_capture", "") else t.get("tab_capture"))
-        self.tab_bar.setTabText(1, t.get("tab_cleanup", "Splat Cleanup").replace("&", "&&") if "&&" not in t.get("tab_cleanup", "") else t.get("tab_cleanup"))
-        self.tab_bar.setTabText(2, t.get("tab_webgl", "WebGL Build").replace("&", "&&") if "&&" not in t.get("tab_webgl", "") else t.get("tab_webgl"))
+        self.btn_tab_capture.setText(t.get("tab_capture", "Capture & Ingest"))
+        self.btn_tab_cleanup.setText(t.get("tab_cleanup", "Splat Cleanup"))
+        self.btn_tab_webgl.setText(t.get("tab_webgl", "WebGL Build"))
         
         self.lbl_log_title.setText(t.get('log_title', 'Console & Activity Log'))
         self.btn_clear_log.setText(t.get("btn_clear_log", "Clear"))
@@ -427,6 +437,8 @@ class PointsAndRealityController(QMainWindow):
 
     def _on_tab_changed(self, index):
         self.stacked_widget.setCurrentIndex(index)
+        if 0 <= index < len(self.tab_buttons):
+            self.tab_buttons[index].setChecked(True)
         if index == 1 and hasattr(self, 'tab_cleanup'):
             self.tab_cleanup.scan_exported_splats(silent=True)
         elif index == 2 and hasattr(self, 'tab_webgl'):
