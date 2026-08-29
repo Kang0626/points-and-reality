@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.240)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.241)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -160,9 +160,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.240`
+* **Current Version**: `v2.241`
 * **주요 변경 요약**:
-  * **SuperSplat Orbit 카메라 모드 완전 잠금(Fly 모드 영구 비활성화) 및 시각적 방해 뱃지 완전 제거 (`v2.240`)**: 바운딩 박스 위치 계산, 키보드 축 입력(WASD/방향키), 이벤트 전환 등 모든 경로에서 Fly 모드로 전환되는 동작을 원천 봉쇄하고, `FlyController`를 `OrbitController`로 강제 매핑하여 100% 영구적인 Orbit 조작 환경을 보장. 또한 화면 중앙 하단의 플로팅 뱃지를 뷰포트에서 완전히 제거하여 깨끗하고 탁 트인 3DGS 렌더링 뷰 완성.
+  * **엔진 어트리뷰션 뱃지 우측 하단 초슬림/고투명도 재배치 (`v2.241`)**: 시야를 가리지 않도록 뱃지를 화면 우측 하단(`bottom: 16px; right: 16px;`)으로 이동 배치하고, 35% 투명도(`opacity: 0.35`)와 초슬림 패딩으로 시각적 간섭을 최소화하면서 마우스 오버 시 부드러운 하이라이트(`opacity: 0.9`)를 지원하여 MIT 라이선스 준수와 시각적 몰입감을 동시에 만족.
+  * **SuperSplat Orbit 카메라 모드 완전 잠금(Fly 모드 영구 비활성화) (`v2.240`)**: 바운딩 박스 위치 계산, 키보드 축 입력(WASD/방향키), 이벤트 전환 등 모든 경로에서 Fly 모드로 전환되는 동작을 원천 봉쇄하고, `FlyController`를 `OrbitController`로 강제 매핑하여 100% 영구적인 Orbit 조작 환경을 보장.
   * **SuperSplat 뷰어 Orbit 모드 기본 고정, 디바이스(마우스/터치) 자동 감지 및 툴바 간소화 (`v2.239`)**: Orbit 카메라를 뷰어 기본 모드로 고정하고, 런타임 디바이스 감지를 통해 데스크톱 마우스와 모바일 터치 조작 힌트를 자동 분기하며, 하단 툴바의 불필요한 4개 아이콘을 숨기고 전체화면 버튼만 보존.
   * **Cloud Showroom 탭 배포 버튼 텍스트 간소화('▼ 쇼룸으로 업로드') 및 중앙 정렬 배치 (`v2.238`)**: 기존의 긴 업로드 문구를 하향 화살표와 함께 간결한 **`"▼ 쇼룸으로 업로드"`** (영문: `"▼ Upload to Showroom"`)로 개편하고, 로컬 카드와 클라우드 카드 사이 중앙에 배치하여 직관적인 데이터 이동 흐름 완성.
 

@@ -7,10 +7,15 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.240 (Current)
-* **SuperSplat Orbit 카메라 모드 완전 잠금(Fly 모드 영구 비활성화) 및 시각적 방해 뱃지 완전 제거 ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+### 🔹 v2.241 (Current)
+* **엔진 어트리뷰션 뱃지 우측 하단 초슬림/고투명도(Subtle/High-Transparency) 재배치 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **우측 하단 코너 배치**: 시각적 시야를 가리지 않도록 뱃지 위치를 화면 중앙에서 **우측 하단(`bottom: 16px; right: 16px;`)**으로 이동 배치.
+  * **고투명도 및 호버 반응형 UI**: 기본 투명도를 35%(`opacity: 0.35`) 및 초슬림 패딩(`3px 10px`, `font-size: 10px`)으로 극대화하여 3D 씬 감상을 전혀 방해하지 않도록 처리하고, 마우스 호버 시 부드럽게 강조(`opacity: 0.9`)되어 링크 접근성을 동시에 확보.
+  * **MIT 라이선스 완벽 준수**: SuperSplat(PlayCanvas & SuperSplat) 및 Three.js(Three.js & GaussianSplats3D) 뷰어 모두에 균형 잡힌 저작권 표기를 적용.
+
+### 🔹 v2.240
+* **SuperSplat Orbit 카메라 모드 완전 잠금(Fly 모드 영구 비활성화) ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **Orbit 카메라 모드 절대 고정 & Fly 모드 영구 차단**: 바운딩 박스 위치 계산, 키보드 축 입력(WASD/방향키), 이벤트 전환 등 모든 경로에서 Fly 모드로 전환되는 동작을 원천 봉쇄하고, `FlyController`를 `OrbitController`로 강제 매핑하여 100% 영구적인 Orbit 조작 환경을 보장.
-  * **화면 하단 플로팅 뱃지 완전 삭제**: 시야를 가리고 시각적으로 도드라져 보였던 화면 중앙 하단의 `Powered by PlayCanvas & SuperSplat` 플로팅 뱃지를 뷰포트에서 완전히 제거하여 깨끗하고 탁 트인 3DGS 렌더링 뷰 완성 (MIT 라이선스 고지는 소스 코드 내에 안전하게 보존).
 
 ### 🔹 v2.239
 * **SuperSplat 뷰어 Orbit 기본 모드 고정, 디바이스별(마우스/터치) 조작 가이드 자동 감지 및 툴바 간소화 & MIT 라이선스 공식 표기 ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:

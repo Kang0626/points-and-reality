@@ -297,6 +297,14 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
         🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom
     </div>
 
+    <!-- Engine Attribution (MIT License Compliance - Subtle Bottom-Right) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
+        <span style="opacity:0.7;">Powered by</span>
+        <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">Three.js</a>
+        <span style="opacity:0.3;">&</span>
+        <a href="https://github.com/mkkellogg/GaussianSplats3D" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">GaussianSplats3D</a>
+    </div>
+
 
     <div id="hud-controls">
         {copy_cam_btn_html}
@@ -1804,6 +1812,14 @@ class WebGLTab(QWidget):
     <!-- Controls Hint (Auto Mouse / Touch Aware) -->
     <div id="points-reality-controls-hint" style="position:fixed; top:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.75); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 14px; font-size:11.5px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none;">
         🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom
+    </div>
+
+    <!-- Engine Attribution (MIT License Compliance - Subtle Bottom-Right) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:5px; background:rgba(15,23,42,0.35); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:3px 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; opacity:0.35; transition:opacity 0.25s ease, background 0.25s ease; box-shadow:0 2px 8px rgba(0,0,0,0.2);" onmouseenter="this.style.opacity='0.9'; this.style.background='rgba(15,23,42,0.75)';" onmouseleave="this.style.opacity='0.35'; this.style.background='rgba(15,23,42,0.35)';">
+        <span style="opacity:0.7;">Powered by</span>
+        <a href="https://playcanvas.com" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">PlayCanvas</a>
+        <span style="opacity:0.3;">&</span>
+        <a href="https://github.com/playcanvas/supersplat" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc; text-decoration:none; font-weight:500;">SuperSplat</a>
     </div>
 
 
