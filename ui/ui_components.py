@@ -101,15 +101,17 @@ class ModernStepCard(QFrame):
 
         # Header Bar
         self.header_layout = QHBoxLayout()
-        self.header_layout.setSpacing(8)
+        self.header_layout.setContentsMargins(0, 0, 0, 0)
+        self.header_layout.setSpacing(10)
+        self.header_layout.setAlignment(Qt.AlignVCenter)
 
         # Title Label
         self.lbl_title = QLabel(title)
-        self.lbl_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
+        self.lbl_title.setStyleSheet("font-size: 13px; font-weight: 700; color: #f1f5f9; padding: 2px 0px;")
 
         # Subtitle
         self.lbl_subtitle = QLabel(subtitle)
-        self.lbl_subtitle.setStyleSheet("font-size: 11px; color: #64748b;")
+        self.lbl_subtitle.setStyleSheet("font-size: 11.5px; color: #8892b0; padding: 2px 0px;")
 
         self.header_layout.addWidget(self.lbl_title)
         if subtitle:
@@ -119,6 +121,7 @@ class ModernStepCard(QFrame):
         # Header Right Actions Area
         self.header_actions_layout = QHBoxLayout()
         self.header_actions_layout.setSpacing(6)
+        self.header_actions_layout.setAlignment(Qt.AlignVCenter)
         self.header_layout.addLayout(self.header_actions_layout)
 
         # Toggle Button
@@ -127,9 +130,9 @@ class ModernStepCard(QFrame):
         self.btn_toggle.setCursor(Qt.PointingHandCursor)
         self.btn_toggle.setStyleSheet("""
             QPushButton {
-                background: transparent; border: none; color: #64748b; font-size: 12px; font-weight: bold; padding: 0px;
+                background: transparent; border: none; color: #8892b0; font-size: 12px; font-weight: bold; padding: 0px; min-height: 20px;
             }
-            QPushButton:hover { color: #3b82f6; }
+            QPushButton:hover { color: #f1f5f9; }
         """)
         self.btn_toggle.clicked.connect(self.toggle)
         self.header_layout.addWidget(self.btn_toggle)

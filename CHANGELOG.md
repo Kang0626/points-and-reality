@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.225 (Current)
+### 🔹 v2.226 (Current)
+* **전체 UI 텍스트 상하/좌우 잘림(Font Clipping) 전면 수정 및 High-DPI 대응 ([`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py), [`section_project.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_project.py))**:
+  * **탭바 텍스트 하단 잘림 해결**: `QTabBar::tab`에 명시적 `min-height: 28px;` 및 여유 있는 패딩(`padding: 3px 16px;`)을 적용하여 'g', 'p', 'y' 등 글자 디센더가 잘리던 문제 해결.
+  * **프로젝트 디렉토리 콤보박스 텍스트 잘림 해결**: `QComboBox` 및 내부 `QLineEdit`에 `min-height: 28px / 22px` 및 적정 패딩을 부여하여 폰트 상하가 눌리던 현상 완벽 수정.
+  * **버튼, 카드 헤더, 테이블 헤더 및 체크박스 여백 최적화**: 전역 `min-height: 28px;` 표준화 및 헤더 텍스트 수직 중앙 정렬(`Qt.AlignVCenter`) 적용.
+
+### 🔹 v2.225
 * **프로젝트 디렉토리 최근 목록(최대 5개) 드롭다운 히스토리 및 저채도(Low-Saturation) 스튜디오 룩앤필 적용 ([`section_project.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_project.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py), [`section_ingest.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_ingest.py))**:
   * **최근 프로젝트 디렉토리 히스토리(최대 5개) 드롭다운**: 단일 텍스트 입력창 대신 편집 가능한 콤보박스(`QComboBox`)를 적용하여 최근에 선택 및 생성한 작업 디렉토리를 최대 5개까지 드롭다운으로 표시하고, 1클릭으로 즉시 작업 공간 전환 가능.
   * **저채도(Low-Saturation) 전문 스튜디오 컬러 팔레트 전면 개편**: 고채도/형광 버튼 컬러를 눈의 피로가 적은 차분한 슬레이트 네이비(`#283344`, `#324056`), 세이지 올리브(`#24352c`), 뮤티드 크림슨(`#3a2224`)으로 재조정하여 VFX/3D 스튜디오 수준의 고급스럽고 매트한 룩앤필 구현.

@@ -93,66 +93,6 @@ class CleanupTab(QWidget):
         self.table_ply.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_ply.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_ply.verticalHeader().setVisible(False)
-        self.table_ply.setStyleSheet("""
-            QTableWidget {
-                background-color: #0f1013;
-                border: 1px solid #2d3139;
-                border-radius: 6px;
-                gridline-color: #1f232b;
-                selection-background-color: #1e3a5f;
-                selection-color: #ffffff;
-                outline: none;
-            }
-            QTableWidget:focus {
-                outline: none;
-                border: 1px solid #38bdf8;
-            }
-            QTableCornerButton::section {
-                background-color: #141619;
-                border: 1px solid #2d3139;
-            }
-            QHeaderView::section {
-                background-color: #1a1d24;
-                border: 1px solid #2d3139;
-                color: #cbd5e1;
-                font-weight: 600;
-                padding: 4px;
-            }
-            QHeaderView::section:hover {
-                background-color: #242936;
-                color: #38bdf8;
-            }
-            QTableWidget::item:selected {
-                background-color: #1e3a5f;
-                color: #ffffff;
-            }
-            QCheckBox {
-                margin: 0px;
-                padding: 0px;
-                background-color: transparent;
-                outline: none;
-            }
-            QCheckBox:focus {
-                outline: none;
-                border: none;
-            }
-            QCheckBox::indicator {
-                width: 16px;
-                height: 16px;
-                background-color: #1a1d24;
-                border: 1px solid #475569;
-                border-radius: 3px;
-                outline: none;
-            }
-            QCheckBox::indicator:hover {
-                border: 1px solid #38bdf8;
-            }
-            QCheckBox::indicator:checked {
-                background-color: #0284c7;
-                border: 1px solid #38bdf8;
-                image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
-            }
-        """)
         c1_layout.addWidget(self.table_ply)
 
         self.card_input.setContentLayout(c1_layout)

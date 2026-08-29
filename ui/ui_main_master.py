@@ -149,24 +149,25 @@ class PointsAndRealityController(QMainWindow):
                 background-color: transparent;
             }
             QTabBar::tab { 
-                background-color: #171920; 
-                color: #94a3b8; 
-                padding: 5px 14px; 
-                border: 1px solid #232732;
+                background-color: #15171d; 
+                color: #8892b0; 
+                min-height: 28px;
+                padding: 3px 16px; 
+                border: 1px solid #22252e;
                 border-radius: 4px;
                 margin-right: 4px;
                 font-weight: 600;
-                font-size: 11.5px;
+                font-size: 12px;
             }
             QTabBar::tab:hover { 
-                background-color: #20242e; 
-                color: #f1f5f9; 
-                border-color: #3b4254;
+                background-color: #1e2129; 
+                color: #e2e8f0; 
+                border-color: #323846;
             }
             QTabBar::tab:selected { 
-                background-color: #2563eb; 
+                background-color: #283344; 
                 color: #ffffff; 
-                border: 1px solid #3b82f6;
+                border: 1px solid #3d4f68;
             }
         """)
         tier2_layout.addWidget(self.tab_bar)

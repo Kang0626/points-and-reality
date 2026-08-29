@@ -1,4 +1,4 @@
-APP_VERSION = "v2.225"
+APP_VERSION = "v2.226"
 
 # Points & Reality 표준 프로젝트 서브폴더 구조
 PROJECT_SUBFOLDERS = [
@@ -10,7 +10,7 @@ PROJECT_SUBFOLDERS = [
     "05_web_build"
 ]
 
-# Points & Reality 전문 스튜디오 다크 테마 (Low-Saturation Neutral Dark QSS)
+# Points & Reality 전문 스튜디오 다크 테마 (Pro Studio Low-Saturation Neutral Dark QSS)
 DARK_THEME_CSS = """
 QMainWindow, QWidget { 
     background-color: #101215; 
@@ -33,12 +33,13 @@ QTabBar {
 QTabBar::tab { 
     background-color: #15171d; 
     color: #8892b0; 
-    padding: 6px 14px; 
+    min-height: 28px;
+    padding: 3px 16px; 
     border: 1px solid #22252e;
     border-radius: 4px;
     margin-right: 4px;
     font-weight: 600;
-    font-size: 11.5px;
+    font-size: 12px;
 }
 
 QTabBar::tab:hover { 
@@ -48,16 +49,17 @@ QTabBar::tab:hover {
 }
 
 QTabBar::tab:selected { 
-    background-color: #272d38; 
+    background-color: #283344; 
     color: #ffffff; 
-    border: 1px solid #3c4656;
+    border: 1px solid #3d4f68;
 }
 
 /* --- Standard Buttons --- */
 QPushButton { 
     background-color: #191b22; 
     border: 1px solid #282c37; 
-    padding: 6px 13px; 
+    min-height: 28px;
+    padding: 3px 14px; 
     border-radius: 4px; 
     color: #cbd5e1; 
     font-weight: 500;
@@ -89,7 +91,8 @@ QPushButton#PrimaryBtn, QPushButton[objectName="PrimaryBtn"] {
     color: #f1f5f9;
     font-weight: 600;
     font-size: 11.5px;
-    padding: 6px 14px;
+    min-height: 28px;
+    padding: 3px 14px;
 }
 QPushButton#PrimaryBtn:hover, QPushButton[objectName="PrimaryBtn"]:hover {
     background-color: #324056;
@@ -109,7 +112,8 @@ QPushButton#SuccessBtn, QPushButton[objectName="SuccessBtn"] {
     color: #e6f4ea;
     font-weight: 600;
     font-size: 11.5px;
-    padding: 6px 14px;
+    min-height: 28px;
+    padding: 3px 14px;
 }
 QPushButton#SuccessBtn:hover, QPushButton[objectName="SuccessBtn"]:hover {
     background-color: #2d4237;
@@ -129,7 +133,8 @@ QPushButton#DangerBtn, QPushButton[objectName="DangerBtn"] {
     color: #fce8e8;
     font-weight: 600;
     font-size: 11.5px;
-    padding: 6px 14px;
+    min-height: 28px;
+    padding: 3px 14px;
 }
 QPushButton#DangerBtn:hover, QPushButton[objectName="DangerBtn"]:hover {
     background-color: #492b2d;
@@ -143,24 +148,49 @@ QPushButton#DangerBtn:pressed, QPushButton[objectName="DangerBtn"]:pressed {
 }
 
 /* --- Inputs & Combos --- */
-QLineEdit, QComboBox, QSpinBox { 
+QLineEdit, QSpinBox { 
     background-color: #0b0c0f; 
     border: 1px solid #20232c; 
-    padding: 5px 8px; 
+    min-height: 28px;
+    padding: 2px 8px; 
     color: #e2e8f0; 
     border-radius: 4px;
     font-size: 11.5px;
 }
 
-QLineEdit:focus, QComboBox:focus { 
+QLineEdit:focus, QSpinBox:focus { 
     border: 1px solid #48566e; 
     background-color: #0f1015;
+}
+
+QComboBox { 
+    background-color: #0b0c0f; 
+    border: 1px solid #20232c; 
+    min-height: 28px;
+    padding: 2px 6px; 
+    color: #e2e8f0; 
+    border-radius: 4px;
+    font-size: 11.5px;
+}
+
+QComboBox:focus { 
+    border: 1px solid #48566e; 
+    background-color: #0f1015;
+}
+
+QComboBox QLineEdit {
+    min-height: 22px;
+    padding: 0px 4px;
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-size: 11.5px;
 }
 
 QComboBox::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
-    width: 22px;
+    width: 24px;
     border-left: 1px solid #20232c;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -185,6 +215,7 @@ QComboBox QAbstractItemView {
     color: #cbd5e1;
     padding: 4px;
     border-radius: 4px;
+    min-height: 24px;
 }
 
 /* --- Tables --- */
@@ -203,7 +234,8 @@ QTableWidget {
 
 QHeaderView::section { 
     background-color: #14161c; 
-    padding: 6px 8px; 
+    padding: 5px 8px; 
+    min-height: 24px;
     border: none;
     border-bottom: 1px solid #20232c;
     border-right: 1px solid #181a21;
@@ -224,6 +256,7 @@ QCheckBox {
     background-color: transparent;
     outline: none;
     color: #cbd5e1;
+    min-height: 20px;
 }
 QCheckBox:focus {
     outline: none;
@@ -260,6 +293,7 @@ QProgressBar {
     background-color: #0b0c0f;
     font-weight: 600;
     font-size: 11px;
+    min-height: 20px;
 }
 
 QProgressBar::chunk { 

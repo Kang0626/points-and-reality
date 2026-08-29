@@ -30,13 +30,15 @@ class ProjectConfigWidget(ModernStepCard):
         self.combo_proj_dir = QComboBox()
         self.combo_proj_dir.setEditable(True)
         self.combo_proj_dir.setInsertPolicy(QComboBox.NoInsert)
+        self.combo_proj_dir.setMinimumHeight(28)
         self.combo_proj_dir.setStyleSheet("""
             QComboBox {
                 background-color: #0b0c0f;
                 border: 1px solid #20232c;
                 border-radius: 4px;
-                padding: 4px 8px;
-                font-family: Consolas, monospace;
+                min-height: 28px;
+                padding: 1px 6px;
+                font-family: Consolas, 'Courier New', monospace;
                 font-size: 11.5px;
                 color: #e2e8f0;
             }
@@ -48,7 +50,7 @@ class ProjectConfigWidget(ModernStepCard):
         line_edit = self.combo_proj_dir.lineEdit()
         if line_edit:
             line_edit.setPlaceholderText("Select or enter project directory path...")
-            line_edit.setStyleSheet("background: transparent; border: none; font-family: Consolas, monospace; font-size: 11.5px; color: #e2e8f0;")
+            line_edit.setStyleSheet("background: transparent; border: none; font-family: Consolas, 'Courier New', monospace; font-size: 11.5px; color: #e2e8f0; min-height: 22px; padding: 0px 2px;")
             line_edit.editingFinished.connect(self.on_proj_dir_edited)
 
         self.combo_proj_dir.activated.connect(self.on_recent_selected)

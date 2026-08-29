@@ -11,7 +11,8 @@ STYLE_PRESET_ACTIVE = (
     "QPushButton { "
     "background-color: #283344; color: #f1f5f9; "
     "border: 1px solid #43546f; border-radius: 4px; "
-    "padding: 3px 10px; font-size: 10.5px; font-weight: 600; "
+    "min-height: 26px; "
+    "padding: 2px 10px; font-size: 11px; font-weight: 600; "
     "} "
     "QPushButton:hover { background-color: #324056; color: #ffffff; }"
 )
@@ -20,7 +21,8 @@ STYLE_PRESET_INACTIVE = (
     "QPushButton { "
     "background-color: #14161c; color: #8892b0; "
     "border: 1px solid #22252e; border-radius: 4px; "
-    "padding: 3px 10px; font-size: 10.5px; font-weight: 500; "
+    "min-height: 26px; "
+    "padding: 2px 10px; font-size: 11px; font-weight: 500; "
     "} "
     "QPushButton:hover { background-color: #1a1d25; color: #cbd5e1; border-color: #323846; }"
 )
