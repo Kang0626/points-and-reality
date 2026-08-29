@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Points & Reality — Industrial 3D Gaussian Splatting & AI Studio</title>
-  <meta name="description" content="Turn optical video or multi-angle photos into ultra-realistic, interactive 3D Gaussian Splatting digital twins in ~1 hour. Capture, Create, Convert." />
-  <meta name="keywords" content="3D Gaussian Splatting, 3DGS, Reality Capture, Digital Twin, WebGL, Ecommerce 3D, Automotive 3D, Spatial Computing" />
+  <title>Points & Reality — Industrial 3D Gaussian Splatting & Spatial AI Studio</title>
+  <meta name="description" content="Turn optical video or multi-angle photos into ultra-realistic, interactive 3D Gaussian Splatting digital twins in ~1 hour. Next-Gen 3D capture, creation, and ecommerce conversion." />
+  <meta name="keywords" content="3D Gaussian Splatting, 3DGS, Spatial AI, Reality Capture, Digital Twin, WebGL, Ecommerce 3D, Automotive 3D, SOG" />
 
-  <!-- Typography Stack: Archivo & Archivo Narrow (SharpLink Style) + Pretendard + JetBrains Mono -->
+  <!-- Fonts: Archivo & Archivo Narrow + Pretendard + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -15,25 +15,31 @@
 
   <style>
     /* ==========================================================================
-       01. SHARPLINK-GRADE DESIGN TOKENS & HIGH-PRECISION ARCHITECTURE
+       01. SILICON VALLEY TIER-1 DESIGN TOKENS & CSS SYSTEM
        ========================================================================== */
     :root {
-      --bg-base: #06070a;
-      --bg-surface: #0c0e14;
-      --bg-surface-elevated: #131620;
-      --bg-surface-hover: #1a1e2b;
+      --bg-base: #050608;
+      --bg-surface: #0b0d13;
+      --bg-surface-elevated: #111420;
+      --bg-surface-hover: #181d2e;
+      --bg-glass: rgba(11, 13, 19, 0.75);
       
       --border-subtle: rgba(255, 255, 255, 0.08);
       --border-medium: rgba(255, 255, 255, 0.16);
-      --border-bright: rgba(255, 255, 255, 0.35);
+      --border-accent: rgba(14, 118, 255, 0.35);
+      --border-bright: rgba(14, 118, 255, 0.8);
 
-      --fg-primary: #ffffff;
-      --fg-secondary: #94a3b8;
-      --fg-muted: #64748b;
+      --brand-blue: #0E76FF;
+      --brand-cyan: #38BDF8;
+      --brand-glow: rgba(14, 118, 255, 0.25);
+      --brand-emerald: #10B981;
+      --brand-amber: #F59E0B;
+
+      --fg-primary: #FFFFFF;
+      --fg-secondary: #94A3B8;
+      --fg-muted: #64748B;
       --fg-accent: #0E76FF;
       --fg-cyan: #38BDF8;
-      --fg-lime: #0E76FF;
-      --fg-emerald: #10b981;
       
       --font-display: 'Archivo', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-sans: 'Archivo', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -41,6 +47,7 @@
       --font-mono: 'JetBrains Mono', 'Archivo Narrow', monospace;
 
       --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     *, *::before, *::after {
@@ -59,8 +66,8 @@
     }
 
     ::selection {
-      background: #0E76FF;
-      color: #ffffff;
+      background: var(--brand-blue);
+      color: #FFFFFF;
     }
 
     body {
@@ -73,16 +80,48 @@
       min-height: 100vh;
     }
 
-    /* Top Scroll Progress Indicator (SharpLink Style) */
+    /* Scroll Progress Bar */
     .scroll-progress-bar {
       position: fixed;
       top: 0;
       left: 0;
       height: 3px;
       width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #0E76FF);
+      background: linear-gradient(90deg, #0E76FF 0%, #38BDF8 50%, #10B981 100%);
       z-index: 1000;
-      transition: width 0.1s ease-out;
+      box-shadow: 0 0 10px rgba(14, 118, 255, 0.8);
+      transition: width 0.08s ease-out;
+    }
+
+    /* Laser / Glowing Aurora Background */
+    .aurora-glow-1 {
+      position: fixed;
+      top: -20%;
+      left: 20%;
+      width: 60vw;
+      height: 50vh;
+      background: radial-gradient(circle, rgba(14, 118, 255, 0.12) 0%, rgba(56, 189, 248, 0.04) 40%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatAurora 18s ease-in-out infinite alternate;
+    }
+
+    .aurora-glow-2 {
+      position: fixed;
+      bottom: 10%;
+      right: 10%;
+      width: 50vw;
+      height: 50vh;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(14, 118, 255, 0.03) 50%, transparent 70%);
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes floatAurora {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5%, 8%) scale(1.15); }
     }
 
     /* Subtle Architectural Background Grid */
@@ -92,18 +131,18 @@
       background-image: 
         linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 80px 80px;
+      background-size: 72px 72px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Ambient Realtime Canvas */
+    /* Ambient Realtime Particle Canvas */
     #ambient-canvas {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.35;
+      opacity: 0.4;
     }
 
     .container {
@@ -116,11 +155,11 @@
     }
 
     /* ==========================================================================
-       02. SHARPLINK SCROLL REVEAL MOTION PHYSICS
+       02. MOTION PHYSICS & SHARPLINK CROSSHAIRS
        ========================================================================== */
     .reveal-on-scroll {
       opacity: 0;
-      transform: translateY(36px);
+      transform: translateY(32px);
       transition: opacity 0.85s var(--ease-smooth), transform 0.85s var(--ease-smooth);
       will-change: opacity, transform;
     }
@@ -137,7 +176,7 @@
     .stagger-5 { transition-delay: 300ms; }
     .stagger-6 { transition-delay: 360ms; }
 
-    /* Corner Pins & Precision Crosshairs (SharpLink Style) */
+    /* Precision Corner Crosshairs (+) */
     .has-crosshair {
       position: relative;
     }
@@ -150,9 +189,10 @@
       font-family: var(--font-mono);
       font-size: 14px;
       font-weight: 300;
-      color: var(--fg-lime);
+      color: var(--brand-blue);
       pointer-events: none;
       line-height: 1;
+      z-index: 5;
     }
 
     .has-crosshair::after {
@@ -163,9 +203,26 @@
       font-family: var(--font-mono);
       font-size: 14px;
       font-weight: 300;
-      color: var(--fg-lime);
+      color: var(--brand-blue);
       pointer-events: none;
       line-height: 1;
+      z-index: 5;
+    }
+
+    /* Border Beam / Glowing Border */
+    .glow-border-card {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      transition: all 0.35s var(--ease-smooth);
+      overflow: hidden;
+    }
+
+    .glow-border-card:hover {
+      border-color: var(--border-accent);
+      box-shadow: 0 12px 36px -8px rgba(14, 118, 255, 0.25);
+      transform: translateY(-3px);
     }
 
     /* ==========================================================================
@@ -181,58 +238,72 @@
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--fg-lime);
+      letter-spacing: 1.6px;
+      color: var(--brand-cyan);
       display: inline-flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 14px;
+      background: rgba(14, 118, 255, 0.1);
+      border: 1px solid rgba(14, 118, 255, 0.25);
+      padding: 4px 12px;
+      border-radius: 9999px;
     }
 
-    .eyebrow::before {
-      content: '';
-      display: inline-block;
+    .eyebrow .pulse-dot {
       width: 6px;
       height: 6px;
-      background-color: var(--fg-lime);
+      background-color: var(--brand-blue);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--fg-lime);
+      box-shadow: 0 0 8px var(--brand-blue);
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
     }
 
     .hero-title {
       font-family: var(--font-display);
-      font-size: clamp(48px, 7.8vw, 104px);
-      font-weight: 800;
+      font-size: clamp(46px, 7.5vw, 100px);
+      font-weight: 900;
       line-height: 0.94;
       letter-spacing: -0.04em;
       text-transform: uppercase;
       color: var(--fg-primary);
     }
 
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, #FFFFFF 20%, #38BDF8 70%, #0E76FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .hero-title em {
       font-style: normal;
-      color: var(--fg-lime);
-      font-weight: 800;
+      color: var(--brand-blue);
+      font-weight: 900;
     }
 
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(34px, 5vw, 64px);
+      font-size: clamp(34px, 4.8vw, 60px);
       font-weight: 800;
-      line-height: 0.98;
+      line-height: 1.02;
       letter-spacing: -0.035em;
       text-transform: uppercase;
     }
 
     .section-title em {
       font-style: normal;
-      color: var(--fg-lime);
+      color: var(--brand-blue);
     }
 
     .section-desc {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--fg-secondary);
-      line-height: 1.65;
+      line-height: 1.7;
       letter-spacing: -0.01em;
       max-width: 640px;
     }
@@ -243,63 +314,71 @@
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       padding: 14px 28px;
-      border-radius: 4px;
+      border-radius: 6px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
       transition: all 0.25s var(--ease-smooth);
     }
 
-    .btn-lime {
-      background: #0E76FF;
-      color: #ffffff;
-      border: 1px solid var(--fg-lime);
+    .btn-primary {
+      background: var(--brand-blue);
+      color: #FFFFFF;
+      border: 1px solid var(--brand-blue);
+      box-shadow: 0 6px 20px -4px rgba(14, 118, 255, 0.45);
     }
 
-    .btn-lime:hover {
-      background: #2B87FF;
+    .btn-primary:hover {
+      background: #2582ff;
+      border-color: #2582ff;
       transform: translateY(-2px);
-      box-shadow: 0 10px 28px -6px rgba(14, 118, 255, 0.45);
+      box-shadow: 0 12px 30px -4px rgba(14, 118, 255, 0.6);
     }
 
     .btn-ghost {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.03);
       color: var(--fg-primary);
       border: 1px solid var(--border-medium);
+      backdrop-filter: blur(10px);
     }
 
     .btn-ghost:hover {
       border-color: var(--fg-primary);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
       transform: translateY(-2px);
     }
 
     /* ==========================================================================
-       04. TOP ANNOUNCEMENT & HEADER NAVIGATION
+       04. TOP STATUS & NAVIGATION BAR
        ========================================================================== */
-    .announce-bar {
-      background: linear-gradient(90deg, #0e1017 0%, #161a26 50%, #0e1017 100%);
+    .top-status-bar {
+      background: linear-gradient(90deg, #090b10 0%, #101524 50%, #090b10 100%);
       border-bottom: 1px solid var(--border-subtle);
       padding: 8px 16px;
       text-align: center;
       font-size: 11px;
       font-family: var(--font-narrow);
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--fg-secondary);
       position: relative;
       z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
     }
 
-    .announce-bar a {
-      color: var(--fg-lime);
+    .top-status-bar a {
+      color: var(--brand-cyan);
       text-decoration: underline;
       text-underline-offset: 3px;
-      margin-left: 6px;
       font-weight: 600;
     }
 
@@ -308,10 +387,10 @@
       top: 0;
       width: 100%;
       z-index: 100;
-      padding: 18px 0;
-      background: rgba(6, 7, 10, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      padding: 16px 0;
+      background: rgba(5, 6, 8, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-subtle);
       transition: all 0.3s ease;
     }
@@ -338,7 +417,7 @@
     .brand-logo svg {
       width: 24px;
       height: 24px;
-      color: var(--fg-lime);
+      color: var(--brand-blue);
     }
 
     .nav-menu {
@@ -359,7 +438,7 @@
       font-size: 13px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       transition: color 0.2s ease;
     }
 
@@ -395,14 +474,14 @@
 
     .lang-btn.active, .lang-btn:hover {
       color: var(--fg-primary);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(14, 118, 255, 0.2);
     }
 
     /* ==========================================================================
-       05. HERO SECTION (SharpLink Aesthetics + 3D Stage)
+       05. HERO SECTION & INTERACTIVE 3D COMMAND STAGE
        ========================================================================== */
     .hero-section {
-      padding: 60px 0 80px;
+      padding: 60px 0 90px;
       position: relative;
       z-index: 2;
     }
@@ -416,29 +495,29 @@
     }
 
     @media (max-width: 960px) {
-      .hero-top-grid { grid-template-columns: 1fr; }
+      .hero-top-grid { grid-template-columns: 1fr; gap: 32px; }
     }
 
     .hero-cta-group {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-top: 28px;
+      margin-top: 32px;
       flex-wrap: wrap;
     }
 
-    /* Main Interactive 3D Stage */
+    /* Interactive 3D Splatting Command Center */
     .hero-stage-card {
-      background: #030406;
+      background: #020305;
       border: 1px solid var(--border-medium);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.9), 0 0 40px -10px rgba(14, 118, 255, 0.15);
       position: relative;
     }
 
     .stage-top-bar {
-      padding: 12px 20px;
+      padding: 14px 24px;
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
@@ -460,16 +539,17 @@
     .stage-title-tag .ping {
       width: 7px;
       height: 7px;
-      background: var(--fg-emerald);
+      background: var(--brand-emerald);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--fg-emerald);
+      box-shadow: 0 0 8px var(--brand-emerald);
     }
 
     .stage-viewport-wrap {
       position: relative;
       width: 100%;
-      height: clamp(480px, 64vh, 740px);
-      background: #020305;
+      height: clamp(500px, 66vh, 760px);
+      background: #010203;
+      overflow: hidden;
     }
 
     .stage-iframe {
@@ -479,27 +559,65 @@
       display: block;
     }
 
-    /* Output Chips */
-    .stage-output-chips {
+    /* Interactive 3D Hotspot Simulator Pins */
+    .hotspot-layer {
       position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      max-width: calc(100% - 32px);
-      z-index: 10;
+      inset: 0;
       pointer-events: none;
+      z-index: 15;
     }
 
-    .output-chip {
+    .hotspot-pin {
+      position: absolute;
       pointer-events: auto;
-      background: rgba(6, 7, 10, 0.88);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(11, 13, 19, 0.88);
+      border: 1px solid var(--brand-blue);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-narrow);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--fg-primary);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(14, 118, 255, 0.4);
+      transition: all 0.25s var(--ease-bounce);
+    }
+
+    .hotspot-pin:hover {
+      background: var(--brand-blue);
+      color: #FFF;
+      transform: scale(1.08);
+    }
+
+    .hotspot-pin .pin-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--brand-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--brand-cyan);
+    }
+
+    /* Floating Viewport HUD Controls */
+    .stage-hud-controls {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .hud-chip {
+      background: rgba(8, 10, 16, 0.85);
       border: 1px solid var(--border-subtle);
-      padding: 5px 12px;
-      border-radius: 4px;
+      backdrop-filter: blur(14px);
+      padding: 6px 12px;
+      border-radius: 6px;
       font-family: var(--font-narrow);
       font-size: 11px;
       font-weight: 600;
@@ -510,74 +628,81 @@
       transition: all 0.2s ease;
     }
 
-    .output-chip.active, .output-chip:hover {
-      border-color: var(--fg-lime);
-      color: var(--fg-lime);
-      background: rgba(14, 118, 255, 0.12);
+    .hud-chip.active, .hud-chip:hover {
+      border-color: var(--brand-blue);
+      color: #FFFFFF;
+      background: rgba(14, 118, 255, 0.2);
     }
 
     .stage-bottom-bar {
-      padding: 12px 20px;
+      padding: 14px 24px;
       background: var(--bg-surface);
       border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
     }
 
     .model-pills {
       display: flex;
-      gap: 6px;
+      gap: 8px;
     }
 
     .model-pill {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border-subtle);
       color: var(--fg-secondary);
       font-family: var(--font-mono);
       font-size: 11px;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .model-pill.active, .model-pill:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--fg-primary);
-      border-color: var(--border-bright);
+      background: rgba(14, 118, 255, 0.2);
+      color: #FFFFFF;
+      border-color: var(--brand-blue);
     }
 
-    /* Key Value Stats Bar */
+    /* 4-Stat Metric Strip */
     .hero-stats-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+      gap: 20px;
       margin-top: 48px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 28px 36px;
     }
 
     @media (max-width: 860px) {
-      .hero-stats-strip { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .hero-stats-strip { grid-template-columns: repeat(2, 1fr); gap: 16px; }
     }
     @media (max-width: 500px) {
       .hero-stats-strip { grid-template-columns: 1fr; }
     }
 
     .stat-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 24px 28px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-surface-elevated);
+      transform: translateY(-2px);
     }
 
     .stat-val {
       font-family: var(--font-display);
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 900;
       letter-spacing: -0.03em;
       color: var(--fg-primary);
@@ -585,11 +710,11 @@
     }
 
     .stat-val em {
-      font-size: 0.55em;
-      color: var(--fg-lime);
+      font-size: 0.5em;
+      color: var(--brand-cyan);
       font-style: normal;
       font-family: var(--font-narrow);
-      margin-left: 2px;
+      margin-left: 3px;
     }
 
     .stat-lbl {
@@ -602,238 +727,430 @@
     }
 
     /* ==========================================================================
-       06. WORKFLOW SECTIONS (01 Capture, 02 Create, 03 Convert)
+       06. SILICON VALLEY BENTO GRID PLATFORM
        ========================================================================== */
-    .phase-section {
+    .section-bento {
       padding: 120px 0;
       border-top: 1px solid var(--border-subtle);
     }
 
-    .phase-layout {
+    .bento-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      margin-top: 48px;
     }
+
+    .bento-col-8 { grid-column: span 8; }
+    .bento-col-4 { grid-column: span 4; }
+    .bento-col-6 { grid-column: span 6; }
+    .bento-col-12 { grid-column: span 12; }
 
     @media (max-width: 960px) {
-      .phase-layout { grid-template-columns: 1fr; gap: 40px; }
+      .bento-col-8, .bento-col-4, .bento-col-6 { grid-column: span 12; }
     }
 
-    .phase-bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin: 24px 0;
-    }
-
-    .phase-bullets li {
-      font-size: 15px;
-      color: var(--fg-secondary);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .phase-bullets li::before {
-      content: '✓';
-      color: var(--fg-lime);
-      font-weight: bold;
-    }
-
-    /* 6-Step Capture Grid */
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 900px) {
-      .steps-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 600px) {
-      .steps-grid { grid-template-columns: 1fr; }
-    }
-
-    .step-card {
+    .bento-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 28px;
+      border-radius: 8px;
+      padding: 36px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
       transition: all 0.3s var(--ease-smooth);
     }
 
-    .step-card:hover {
+    .bento-card:hover {
+      border-color: var(--border-accent);
       background: var(--bg-surface-elevated);
-      border-color: var(--border-medium);
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
-    .step-number {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--fg-lime);
-      font-weight: 700;
-    }
-
-    .step-name {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -0.02em;
-    }
-
-    .step-desc {
-      font-size: 14px;
-      color: var(--fg-secondary);
-      line-height: 1.6;
-    }
-
-    .step-tip {
-      font-family: var(--font-narrow);
-      font-size: 12px;
-      color: var(--fg-muted);
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 12px;
-      border-radius: 4px;
-      border-left: 2px solid var(--fg-lime);
-      margin-top: auto;
-    }
-
-    /* 4-Deliverables Cards (Phase 02 Create) */
-    .deliverables-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 1100px) {
-      .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 600px) {
-      .deliverables-grid { grid-template-columns: 1fr; }
-    }
-
-    .deliv-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      transition: all 0.3s var(--ease-smooth);
-    }
-
-    .deliv-card:hover {
-      background: var(--bg-surface-elevated);
-      border-color: var(--fg-lime);
-      transform: translateY(-4px);
-    }
-
-    .deliv-tag {
+    .bento-tag {
       font-family: var(--font-narrow);
       font-size: 12px;
       font-weight: 600;
-      color: var(--fg-lime);
+      color: var(--brand-cyan);
       text-transform: uppercase;
       letter-spacing: 1px;
+      margin-bottom: 12px;
     }
 
-    .deliv-title {
+    .bento-title {
       font-family: var(--font-display);
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      line-height: 1.15;
       text-transform: uppercase;
       letter-spacing: -0.02em;
+      margin-bottom: 12px;
     }
 
-    .deliv-desc {
-      font-size: 14px;
+    .bento-desc {
+      font-size: 15px;
       color: var(--fg-secondary);
-      line-height: 1.6;
+      line-height: 1.65;
+    }
+
+    /* Trajectory Canvas Visualizer in Bento */
+    #trajectory-canvas {
+      width: 100%;
+      height: 200px;
+      background: #06080e;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      margin-top: 24px;
+      display: block;
+    }
+
+    /* Interactive Compression Slider in Bento */
+    .compression-box {
+      background: #06080e;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .comp-slider-bar {
+      width: 100%;
+      margin: 16px 0;
+      accent-color: var(--brand-blue);
+    }
+
+    .comp-stats-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 12px;
     }
 
     /* ==========================================================================
-       07. CONVERT & COMMERCE EMBED SECTION
+       07. INTERACTIVE 6-STEP CAPTURE PROTOCOL
        ========================================================================== */
-    .roi-strip {
+    .section-protocol {
+      padding: 120px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .protocol-stepper-wrap {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 36px;
-      margin: 48px 0;
+      grid-template-columns: 320px 1fr;
+      gap: 40px;
+      margin-top: 48px;
     }
 
-    @media (max-width: 768px) {
-      .roi-strip { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .protocol-stepper-wrap { grid-template-columns: 1fr; }
     }
 
-    .roi-tile {
+    .protocol-nav {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .roi-num {
-      font-family: var(--font-display);
-      font-size: 52px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--fg-lime);
-      line-height: 1;
+    .protocol-tab-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 16px 20px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .roi-title {
-      font-family: var(--font-display);
+    .protocol-tab-btn.active, .protocol-tab-btn:hover {
+      background: var(--bg-surface-elevated);
+      border-color: var(--brand-blue);
+    }
+
+    .protocol-tab-btn .num {
+      font-family: var(--font-mono);
+      font-size: 13px;
       font-weight: 700;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: -0.01em;
+      color: var(--brand-cyan);
     }
 
-    .roi-sub {
-      font-size: 14px;
+    .protocol-tab-btn .title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--fg-primary);
+      text-transform: uppercase;
+    }
+
+    .protocol-content-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .protocol-spec-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    @media (max-width: 600px) {
+      .protocol-spec-matrix { grid-template-columns: 1fr; }
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .spec-k {
+      font-family: var(--font-narrow);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
       color: var(--fg-muted);
     }
 
-    .platform-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      padding: 16px 24px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
+    .spec-v {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--brand-cyan);
     }
 
-    .platform-pill {
+    /* ==========================================================================
+       08. INTERACTIVE ECOMMERCE ROI CALCULATOR
+       ========================================================================== */
+    .section-calculator {
+      padding: 120px 0;
+      border-top: 1px solid var(--border-subtle);
+      background: linear-gradient(180deg, #050608 0%, #090c14 100%);
+    }
+
+    .calc-card-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      padding: clamp(32px, 5vw, 60px);
+      margin-top: 48px;
+    }
+
+    @media (max-width: 960px) {
+      .calc-card-grid { grid-template-columns: 1fr; }
+    }
+
+    .calc-slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .calc-control {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .calc-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .calc-val-badge {
+      font-family: var(--font-mono);
+      color: var(--brand-cyan);
+    }
+
+    .calc-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #191e2e;
+      outline: none;
+      accent-color: var(--brand-blue);
+    }
+
+    .calc-result-panel {
+      background: #06080e;
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .calc-result-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .calc-result-number {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 4.5vw, 54px);
+      font-weight: 900;
+      color: var(--brand-cyan);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    /* ==========================================================================
+       09. 1-LINE CODE EMBED PLAYGROUND
+       ========================================================================== */
+    .section-embed {
+      padding: 120px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .embed-card {
+      background: #030407;
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+
+    .embed-header {
+      background: var(--bg-surface);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .embed-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .embed-tab {
+      background: none;
+      border: none;
+      color: var(--fg-secondary);
       font-family: var(--font-narrow);
       font-size: 13px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.8px;
       padding: 6px 14px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
       border-radius: 4px;
-      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .embed-tab.active, .embed-tab:hover {
+      background: rgba(14, 118, 255, 0.2);
+      color: #FFF;
+    }
+
+    .embed-code-block {
+      padding: 28px 32px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.6;
+      color: #E2E8F0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
     }
 
     /* ==========================================================================
-       08. CURATED 3D DELIVERABLES REEL (Live models.json Archive)
+       10. FAQ ACCORDION
+       ========================================================================== */
+    .section-faq {
+      padding: 120px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .faq-accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 48px;
+      max-width: 900px;
+    }
+
+    .faq-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .faq-item:hover {
+      border-color: var(--border-medium);
+    }
+
+    .faq-question {
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .faq-q-text {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    .faq-icon {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      color: var(--brand-blue);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s var(--ease-smooth), padding 0.35s ease;
+      font-size: 15px;
+      color: var(--fg-secondary);
+      line-height: 1.65;
+      padding: 0 28px;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0 28px 24px 28px;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    /* ==========================================================================
+       11. CURATED 3D GALLERY ARCHIVE
        ========================================================================== */
     .section-archive {
       padding: 120px 0;
@@ -864,14 +1181,14 @@
     }
 
     .archive-card:hover {
-      border-color: var(--border-bright);
+      border-color: var(--brand-blue);
       transform: translateY(-4px);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(14, 118, 255, 0.2);
     }
 
     .archive-thumb {
       width: 100%;
-      height: 230px;
+      height: 240px;
       background: #020305;
       position: relative;
     }
@@ -916,18 +1233,18 @@
     }
 
     /* ==========================================================================
-       09. FOOTER & CALL TO ACTION
+       12. FOOTER
        ========================================================================== */
     .site-footer {
       padding: 120px 0 40px;
       border-top: 1px solid var(--border-subtle);
-      background: #040508;
+      background: #040507;
       position: relative;
       z-index: 2;
     }
 
     .footer-cta-box {
-      background: linear-gradient(135deg, #0e111a 0%, #141926 100%);
+      background: linear-gradient(135deg, #0b0e17 0%, #121828 100%);
       border: 1px solid var(--border-medium);
       border-radius: 8px;
       padding: clamp(36px, 5vw, 68px);
@@ -975,16 +1292,21 @@
   <!-- Scroll Progress Indicator -->
   <div class="scroll-progress-bar" id="scroll-progress"></div>
 
-  <!-- Ambient Background System -->
+  <!-- Ambient Laser Background -->
+  <div class="aurora-glow-1"></div>
+  <div class="aurora-glow-2"></div>
   <div class="bg-grid"></div>
   <canvas id="ambient-canvas"></canvas>
 
   <!-- ========================================================================
-       TOP ANNOUNCEMENT BAR
+       TOP STATUS BAR
        ======================================================================== -->
-  <aside class="announce-bar" aria-label="Announcement">
-    <span data-i18n="ann_text">⚡ Points & Reality 3DGS Engine — Turn video or photos into photorealistic 3D digital twins in ~1 hour</span>
-    <a href="showroom.html" data-i18n="ann_cta">Explore Showroom →</a>
+  <aside class="top-status-bar" aria-label="Status">
+    <span>● ENGINE STATUS: <strong>ONLINE v2.4</strong></span>
+    <span style="opacity: 0.3;">|</span>
+    <span data-i18n="top_status">Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour</span>
+    <span style="opacity: 0.3;">|</span>
+    <a href="showroom.html" data-i18n="top_cta">Launch Showroom →</a>
   </aside>
 
   <!-- ========================================================================
@@ -1001,11 +1323,12 @@
         </a>
 
         <nav class="nav-menu">
-          <a href="#how-it-works" data-i18n="nav_how">How It Works</a>
-          <a href="#create-platform" data-i18n="nav_create">What We Create</a>
-          <a href="#convert-section" data-i18n="nav_convert">Convert</a>
-          <a href="#archive" data-i18n="nav_gallery">Gallery</a>
-          <a href="showroom.html" style="color: var(--fg-lime);" data-i18n="nav_showroom">[ 3D Showroom ↗ ]</a>
+          <a href="#hero-stage" data-i18n="nav_stage">3D Stage</a>
+          <a href="#bento-tech" data-i18n="nav_bento">Technology</a>
+          <a href="#capture-protocol" data-i18n="nav_protocol">6-Step Protocol</a>
+          <a href="#roi-calculator" data-i18n="nav_roi">ROI Calculator</a>
+          <a href="#embed-playground" data-i18n="nav_embed">1-Line Embed</a>
+          <a href="showroom.html" style="color: var(--brand-cyan);" data-i18n="nav_showroom">[ 3D Showroom ↗ ]</a>
         </nav>
 
         <div class="nav-actions">
@@ -1015,14 +1338,14 @@
             <button class="lang-btn" onclick="setLanguage('zh')" id="btn-zh">ZH</button>
             <button class="lang-btn" onclick="setLanguage('mi')" id="btn-mi">MI</button>
           </div>
-          <a href="#contact" class="btn btn-lime" data-i18n="btn_inquire">Inquire / Demo</a>
+          <a href="#contact" class="btn btn-primary" data-i18n="btn_inquire">Book Demo →</a>
         </div>
       </div>
     </div>
   </header>
 
   <!-- ========================================================================
-       01. HERO SECTION (Capture. Create. Convert.)
+       01. HERO SECTION (High-Impact Spatial AI Showcase)
        ======================================================================== -->
   <main>
     <section class="hero-section">
@@ -1030,42 +1353,45 @@
         
         <div class="hero-top-grid">
           <div class="reveal-on-scroll">
-            <div class="eyebrow" data-i18n="hero_eyebrow">3D Gaussian Splatting & AI Studio</div>
+            <div class="eyebrow">
+              <span class="pulse-dot"></span>
+              <span data-i18n="hero_eyebrow">3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO</span>
+            </div>
             <h1 class="hero-title" data-i18n="hero_h1">
-              Capture. Create.<br />
-              <em>Convert.</em>
+              Capture The Real World.<br />
+              <span class="gradient-text">Render In Neural 3D.</span>
             </h1>
-            <p class="section-desc" style="margin-top: 18px;" data-i18n="hero_desc">
-              단 한 번의 스마트폰/카메라 촬영으로 약 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 생성합니다. 전용 프로그램 없이 웹 브라우저에서 60+ FPS로 회전·확대·공간 배치가 가능합니다.
+            <p class="section-desc" style="margin-top: 20px;" data-i18n="hero_desc">
+              단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.
             </p>
 
             <div class="hero-cta-group">
-              <a href="showroom.html" class="btn btn-lime" data-i18n="hero_btn_explore">Explore 3D Showroom ↗</a>
-              <a href="#how-it-works" class="btn btn-ghost" data-i18n="hero_btn_how">How It Works ↓</a>
+              <a href="showroom.html" class="btn btn-primary" data-i18n="hero_btn_explore">Launch 3D Showroom ↗</a>
+              <a href="#capture-protocol" class="btn btn-ghost" data-i18n="hero_btn_how">Explore 6-Step Workflow ↓</a>
             </div>
           </div>
 
-          <!-- Quick Value Box -->
-          <div class="has-crosshair reveal-on-scroll stagger-2" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 28px;">
-            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--fg-lime); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;">[ ENTERPRISE VALUE PROP ]</div>
-            <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 10px;" data-i18n="hero_val_title">e커머스 및 산업용 차세대 3D 솔루션</h3>
+          <!-- Quick Enterprise Metric Panel -->
+          <div class="has-crosshair glow-border-card reveal-on-scroll stagger-2" style="padding: 32px;">
+            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--brand-cyan); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;">[ ENTERPRISE PERFORMANCE SPEC ]</div>
+            <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="hero_val_title">e커머스 & 자동차 산업용 차세대 3D 솔루션</h3>
             <p style="font-size: 14px; color: var(--fg-secondary); line-height: 1.65;" data-i18n="hero_val_desc">
-              무겁고 디테일이 뭉개지는 기존 3D 폴리곤 모델링의 한계를 넘어, 실물의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽하게 재현하여 고객 구매 전환율을 극대화합니다.
+              기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.
             </p>
           </div>
         </div>
 
-        <!-- Interactive 3D Hero Stage -->
-        <div class="hero-stage-card reveal-on-scroll stagger-1">
+        <!-- 3DGS Interactive Control Center -->
+        <div class="hero-stage-card has-crosshair reveal-on-scroll stagger-1" id="hero-stage">
           <div class="stage-top-bar">
             <div class="stage-title-tag">
               <span class="ping"></span>
               <span id="active-model-title">ACTIVE STAGE: FordEscape_new_LF_09</span>
             </div>
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); display: flex; gap: 16px;">
-              <span>FPS: <strong>60+</strong></span>
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); display: flex; gap: 16px; align-items: center;">
+              <span>SPLATS: <strong style="color: var(--brand-cyan);">2.8M</strong></span>
               <span>RENDER: <strong>Pure WebGL</strong></span>
-              <span onclick="openFullscreenStage()" style="cursor: pointer; color: var(--fg-lime);">[ ⛶ FULLSCREEN ]</span>
+              <span onclick="openFullscreenStage()" style="cursor: pointer; color: var(--brand-blue); font-weight: 700;">[ ⛶ FULLSCREEN ]</span>
             </div>
           </div>
 
@@ -1078,46 +1404,60 @@
               title="Interactive 3DGS Stage">
             </iframe>
 
-            <!-- Feature Chips -->
-            <div class="stage-output-chips">
-              <span class="output-chip active">✦ Interactive 3D Model</span>
-              <span class="output-chip">⛶ 1:1 Scale AR Ready</span>
-              <span class="output-chip">🏷️ Hotspots & Annotations</span>
-              <span class="output-chip">💡 Real-time Radiance</span>
-              <span class="output-chip">📦 Standalone SOG Package</span>
+            <!-- Floating Viewport HUD Chips -->
+            <div class="stage-hud-controls">
+              <span class="hud-chip active" onclick="toggleHotspots(this)">🏷️ Hotspots (Pins)</span>
+              <span class="hud-chip" onclick="setStageEnv('studio', this)">💡 Studio Light</span>
+              <span class="hud-chip" onclick="setStageEnv('cyber', this)">⚡ Cyber Neon</span>
+              <span class="hud-chip" onclick="openARModal()">⛶ 1:1 Scale AR</span>
+            </div>
+
+            <!-- Simulated 3D Interactive Hotspot Pins -->
+            <div class="hotspot-layer" id="hotspot-layer">
+              <div class="hotspot-pin" style="top: 35%; left: 25%;" onclick="showHotspotInfo('Aerodynamic Carbon Hood', '초경량 탄소섬유 보닛과 에어로다이내믹 덕트 라인 설계.')">
+                <span class="pin-dot"></span>
+                <span>Carbon Hood</span>
+              </div>
+              <div class="hotspot-pin" style="top: 60%; left: 70%;" onclick="showHotspotInfo('19-inch Machined Aero Wheels', '다이아몬드 커팅 알로이 휠 및 고성능 브레이크 캘리퍼.')">
+                <span class="pin-dot"></span>
+                <span>19\" Aero Wheel</span>
+              </div>
+              <div class="hotspot-pin" style="top: 40%; left: 55%;" onclick="showHotspotInfo('Panoramic Tinted Glass', '자외선 99.9% 차단 파노라믹 틴티드 글래스.')">
+                <span class="pin-dot"></span>
+                <span>Panoramic Roof</span>
+              </div>
             </div>
           </div>
 
           <div class="stage-bottom-bar">
             <div class="model-pills" id="hero-model-pills">
-              <button class="model-pill active" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_09.html', 'FordEscape_new_LF_09', this)">LF_09 [Automotive]</button>
-              <button class="model-pill" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_08.html', 'FordEscape_new_LF_08', this)">LF_08 [High-Res]</button>
-              <button class="model-pill" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_07.html', 'FordEscape_new_LF_07', this)">LF_07 [Refined]</button>
+              <button class="model-pill active" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_09.html', 'FordEscape_new_LF_09', this)">LF_09 [Automotive Studio]</button>
+              <button class="model-pill" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_08.html', 'FordEscape_new_LF_08', this)">LF_08 [High-Res Detail]</button>
             </div>
 
             <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted);">
-              <span>✦ DRAG TO ORBIT</span> &nbsp;•&nbsp; <span>SCROLL TO ZOOM</span>
+              <span>✦ DRAG TO ORBIT</span> &nbsp;•&nbsp; <span>PINCH / SCROLL TO ZOOM</span>
             </div>
           </div>
         </div>
 
-        <!-- 4-Stat Metric Strip -->
+        <!-- 4-Stat Metric Matrix -->
         <div class="hero-stats-strip reveal-on-scroll stagger-2">
           <div class="stat-box">
             <div class="stat-val">3<em>mins</em></div>
-            <div class="stat-lbl" data-i18n="stat_1_lbl">Typical capture time</div>
+            <div class="stat-lbl" data-i18n="stat_1_lbl">Typical Optical Capture</div>
           </div>
           <div class="stat-box">
             <div class="stat-val">~1<em>hour</em></div>
-            <div class="stat-lbl" data-i18n="stat_2_lbl">Turnaround to live 3D</div>
+            <div class="stat-lbl" data-i18n="stat_2_lbl">Turnaround to Live 3D</div>
           </div>
           <div class="stat-box">
-            <div class="stat-val">4–18<em>MB</em></div>
-            <div class="stat-lbl" data-i18n="stat_3_lbl">Web-optimized SOG size</div>
+            <div class="stat-val">12<em>MB</em></div>
+            <div class="stat-lbl" data-i18n="stat_3_lbl">Web-Optimized SOG Payload</div>
           </div>
           <div class="stat-box">
             <div class="stat-val">60+<em>FPS</em></div>
-            <div class="stat-lbl" data-i18n="stat_4_lbl">Pure browser WebGL</div>
+            <div class="stat-lbl" data-i18n="stat_4_lbl">Pure Browser WebGL Performance</div>
           </div>
         </div>
 
@@ -1125,208 +1465,251 @@
     </section>
 
     <!-- ========================================================================
-         02. PHASE 01: CAPTURE (촬영 가이드 & 6단계 프로세스)
+         02. SILICON VALLEY BENTO GRID (Deep Technology & Ecosystem)
          ======================================================================== -->
-    <section class="phase-section" id="how-it-works">
+    <section class="section-bento" id="bento-tech">
       <div class="container">
         
-        <div class="phase-layout">
-          <div class="reveal-on-scroll">
-            <div class="eyebrow" data-i18n="p1_eyebrow">01 · Capture</div>
-            <h2 class="section-title" data-i18n="p1_title">Capture your product.<br /><em>Any device, anywhere.</em></h2>
-            <p class="section-desc" style="margin-top: 18px;" data-i18n="p1_desc">
-              고가의 전문 3D 스캐너나 거대한 스튜디오가 필요하지 않습니다. 스마트폰이나 DSLR 카메라로 제품 주위를 3분간 둘러보며 촬영하여 업로드하면 모든 준비가 끝납니다.
-            </p>
-
-            <ul class="phase-bullets">
-              <li data-i18n="p1_b1">스마트폰 4K 카메라, DSLR, 미러리스 모두 완벽 지원</li>
-              <li data-i18n="p1_b2">단 3분 분량의 동영상 또는 80~150장의 사진만으로 캡처 가능</li>
-              <li data-i18n="p1_b3">자동차, 럭셔리 제품, 가구, 의류, 건축 공간 등 모든 카테고리 적용</li>
-              <li data-i18n="p1_b4">초기 스튜디오 셋업 비용 0원</li>
-            </ul>
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            <span data-i18n="bento_eyebrow">CORE ARCHITECTURE</span>
           </div>
-
-          <div class="has-crosshair reveal-on-scroll stagger-2" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 36px;">
-            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--fg-lime); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;">[ CAPTURE OVERVIEW ]</div>
-            <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="p1_box_title">손쉬운 3분 광학 촬영</h3>
-            <p style="font-size: 15px; color: var(--fg-secondary); line-height: 1.65;" data-i18n="p1_box_desc">
-              피사체를 중심에 두고 일정한 속도로 3~4개의 궤적(아이레벨, 45도 상단, 디테일 클로즈업)을 부드럽게 걸으며 녹화합니다.
-            </p>
-          </div>
+          <h2 class="section-title" data-i18n="bento_title">Silicon Valley Grade<br /><em>Spatial AI Platform</em></h2>
+          <p class="section-desc" style="margin-top: 16px;" data-i18n="bento_desc">
+            Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.
+          </p>
         </div>
 
-        <!-- 6 Steps to a Perfect Capture -->
-        <div style="margin-top: 72px;">
-          <div class="reveal-on-scroll" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px;">
+        <div class="bento-grid">
+          
+          <!-- Bento 1: Trajectory Simulator (Span 8) -->
+          <div class="bento-card bento-col-8 glow-border-card has-crosshair reveal-on-scroll stagger-1">
             <div>
-              <div class="eyebrow" data-i18n="steps_eyebrow">Capture Guidelines</div>
-              <h3 class="section-title" style="font-size: clamp(26px, 4vw, 42px);" data-i18n="steps_title">완벽한 3D 캡처를 위한 6단계</h3>
+              <div class="bento-tag">01 // OPTICAL TRAJECTORY ENGINE</div>
+              <h3 class="bento-title" data-i18n="b1_title">360° 다각도 나선형 궤적 복원</h3>
+              <p class="bento-desc" data-i18n="b1_desc">
+                단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.
+              </p>
             </div>
-            <span style="font-family: var(--font-narrow); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted);">6 Steps Workflow</span>
-          </div>
-
-          <div class="steps-grid">
-            <div class="step-card reveal-on-scroll stagger-1">
-              <div class="step-number">01 // SETUP</div>
-              <div class="step-name" data-i18n="s1_name">Object Setup</div>
-              <div class="step-desc" data-i18n="s1_desc">제품 주위를 360도 원활하게 걸어 다닐 수 있는 공간에 피사체를 배치합니다. 촬영 중 제품이 움직이지 않도록 고정합니다.</div>
-              <div class="step-tip" data-i18n="s1_tip">Tip: 허리 높이의 받침대에 놓으면 촬영이 매우 수월합니다.</div>
-            </div>
-
-            <div class="step-card reveal-on-scroll stagger-2">
-              <div class="step-number">02 // LIGHTING</div>
-              <div class="step-name" data-i18n="s2_name">Soft Lighting</div>
-              <div class="step-desc" data-i18n="s2_desc">강한 직사광선 대신 부드럽고 균일하게 퍼진 확산광(Diffused Light)이나 흐린 날의 자연광이 가장 이상적입니다.</div>
-              <div class="step-tip" data-i18n="s2_tip">Tip: 그림자가 강하게 지지 않는 균일한 환경을 추천합니다.</div>
-            </div>
-
-            <div class="step-card reveal-on-scroll stagger-3">
-              <div class="step-number">03 // CAMERA</div>
-              <div class="step-name" data-i18n="s3_name">Camera Settings</div>
-              <div class="step-desc" data-i18n="s3_desc">4K 해상도로 설정하고, 노출(Exposure)과 초점(Focus), 화이트 밸런스를 고정(Lock)하여 일관된 톤을 유지합니다.</div>
-              <div class="step-tip" data-i18n="s3_tip">Tip: 최신 iPhone 및 Android 스마트폰으로도 최고 퀄리티 구현.</div>
-            </div>
-
-            <div class="step-card reveal-on-scroll stagger-4">
-              <div class="step-number">04 // MOVEMENT</div>
-              <div class="step-name" data-i18n="s4_name">Smooth Movement</div>
-              <div class="step-desc" data-i18n="s4_desc">흔들림이나 급격한 움직임을 피하고, 1바퀴당 약 40초 정도의 일정한 속도로 천천히 걷습니다.</div>
-              <div class="step-tip" data-i18n="s4_tip">Tip: 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이 활용.</div>
-            </div>
-
-            <div class="step-card reveal-on-scroll stagger-5">
-              <div class="step-number">05 // COVERAGE</div>
-              <div class="step-name" data-i18n="s5_name">Multi-Loop Coverage</div>
-              <div class="step-desc" data-i18n="s5_desc">3~4개의 서로 다른 높이(수평, 45도 상단, 하단)에서 궤적을 촬영하여 사각지대 없이 모든 표면을 담아냅니다.</div>
-              <div class="step-tip" data-i18n="s5_tip">Tip: 상단 45도 탑다운 패스가 포함되면 디테일이 극대화됩니다.</div>
-            </div>
-
-            <div class="step-card reveal-on-scroll stagger-6">
-              <div class="step-number">06 // UPLOAD</div>
-              <div class="step-name" data-i18n="s6_name">Pipeline Upload</div>
-              <div class="step-desc" data-i18n="s6_desc">동영상을 Points & Reality 파이프라인에 업로드하면, AI 뉴럴 엔진이 약 1시간 만에 3D 모델을 자동 생성합니다.</div>
-              <div class="step-tip" data-i18n="s6_tip">Tip: 다각도 고해상도 영상을 복수 업로드하여 품질 향상 가능.</div>
+            <canvas id="trajectory-canvas"></canvas>
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-top: 12px; display: flex; justify-content: space-between;">
+              <span>● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong></span>
+              <span style="color: var(--brand-cyan);">SFM OPTIMIZATION ACTIVE</span>
             </div>
           </div>
+
+          <!-- Bento 2: Extreme SOG Compression (Span 4) -->
+          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
+            <div>
+              <div class="bento-tag">02 // PAYLOAD COMPRESSION</div>
+              <h3 class="bento-title" data-i18n="b2_title">초경량 SOG 압축 기술</h3>
+              <p class="bento-desc" data-i18n="b2_desc">
+                수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.
+              </p>
+            </div>
+            <div class="compression-box">
+              <div class="comp-stats-row">
+                <span style="color: var(--fg-muted);">RAW PLY: 1.2 GB</span>
+                <span style="color: var(--brand-cyan); font-weight: 700;">SOG PACK: <span id="comp-val">12.4 MB</span></span>
+              </div>
+              <input type="range" min="4" max="60" value="12" class="comp-slider-bar" id="comp-slider" oninput="updateCompDisplay(this.value)" />
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); text-align: center;">
+                Payload Reduction: <strong style="color: var(--brand-emerald);">98.9%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bento 3: 1:1 Scale Spatial AR (Span 4) -->
+          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-1">
+            <div>
+              <div class="bento-tag">03 // SPATIAL AR READY</div>
+              <h3 class="bento-title" data-i18n="b3_title">1:1 실물 크기 증강현실 (AR)</h3>
+              <p class="bento-desc" data-i18n="b3_desc">
+                iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.
+              </p>
+            </div>
+            <div style="margin-top: 24px; text-align: center; padding: 20px; background: #06080e; border-radius: 6px; border: 1px solid var(--border-subtle);">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan); margin-bottom: 8px;">[ SCAN QR ON MOBILE ]</div>
+              <div style="display: inline-block; padding: 8px; background: #FFF; border-radius: 4px;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://points-and-reality.vercel.app/showroom.html" alt="AR QR Code" style="display: block; width: 90px; height: 90px;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Bento 4: Sub-Millimeter Radiance Fidelity (Span 4) -->
+          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
+            <div>
+              <div class="bento-tag">04 // NEURAL RADIANCE</div>
+              <h3 class="bento-title" data-i18n="b4_title">실시간 반사광 & 질감 보존</h3>
+              <p class="bento-desc" data-i18n="b4_desc">
+                금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.
+              </p>
+            </div>
+            <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; border-left: 3px solid var(--brand-blue);">
+              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan);">PHYSICALLY ACCURATE SHADING</div>
+              <div style="font-size: 13px; color: var(--fg-secondary); margin-top: 6px;">Zero polygonal artifacts or flat baked textures.</div>
+            </div>
+          </div>
+
+          <!-- Bento 5: Enterprise Global CDN (Span 4) -->
+          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-3">
+            <div>
+              <div class="bento-tag">05 // GLOBAL EDGE CDN</div>
+              <h3 class="bento-title" data-i18n="b5_title">전 세계 180+ 엣지 즉시 배포</h3>
+              <p class="bento-desc" data-i18n="b5_desc">
+                단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.
+              </p>
+            </div>
+            <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; display: flex; justify-content: space-around; font-family: var(--font-mono); font-size: 12px;">
+              <div>LATENCY: <strong style="color: var(--brand-emerald);">&lt;45ms</strong></div>
+              <div>UPTIME: <strong style="color: var(--brand-cyan);">99.99%</strong></div>
+            </div>
+          </div>
+
         </div>
 
       </div>
     </section>
 
     <!-- ========================================================================
-         03. PHASE 02: CREATE (올인원 산출물 플랫폼)
+         03. INTERACTIVE 6-STEP CAPTURE PROTOCOL
          ======================================================================== -->
-    <section class="phase-section" id="create-platform">
+    <section class="section-protocol" id="capture-protocol">
       <div class="container">
         
-        <div class="phase-layout">
-          <div class="reveal-on-scroll">
-            <div class="eyebrow" data-i18n="p2_eyebrow">02 · Create</div>
-            <h2 class="section-title" data-i18n="p2_title">Create everything from<br /><em>a single capture.</em></h2>
-            <p class="section-desc" style="margin-top: 18px;" data-i18n="p2_desc">
-              단 1번의 3분 촬영으로 완성된 초고화질 디지털 트윈 하나에서, 고객의 시선을 사로잡는 모든 상업용 에셋을 즉시 추출하여 활용할 수 있습니다.
-            </p>
-
-            <ul class="phase-bullets">
-              <li data-i18n="p2_b1">웹 브라우저에서 60+ FPS로 부드럽게 구동되는 인터랙티브 3D 모델</li>
-              <li data-i18n="p2_b2">스마트폰 공간 내 1:1 실물 크기 증강현실(AR) 배치 기능</li>
-              <li data-i18n="p2_b3">인터랙티브 3D 핫스팟(소재, 특징, 치수 설명 핀) 내장</li>
-              <li data-i18n="p2_b4">재촬영 없는 무제한 AI 스튜디오 배경 합성 및 라이프스타일 컷 생성</li>
-              <li data-i18n="p2_b5">단일 파일 배포가 가능한 표준 SOG / PLY 파일 패키징</li>
-            </ul>
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            <span data-i18n="proto_eyebrow">OPERATIONAL PROTOCOL</span>
           </div>
-
-          <div class="has-crosshair reveal-on-scroll stagger-2" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 36px;">
-            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--fg-lime); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px;">[ OUTPUT ASSET ECOSYSTEM ]</div>
-            <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="p2_box_title">완벽한 올인원 디지털 자산</h3>
-            <p style="font-size: 15px; color: var(--fg-secondary); line-height: 1.65;" data-i18n="p2_box_desc">
-              3D 모델 뷰어, 공간 AR, 마케팅용 제품 렌더링 컷, 3D 기술 사양 시트까지 추가 제작 비용 없이 단 하나의 에셋으로 해결됩니다.
-            </p>
-          </div>
+          <h2 class="section-title" data-i18n="proto_title">완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em></h2>
+          <p class="section-desc" style="margin-top: 16px;" data-i18n="proto_desc">
+            스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.
+          </p>
         </div>
 
-        <!-- 4 Deliverables Cards -->
-        <div class="deliverables-grid">
-          <div class="deliv-card reveal-on-scroll stagger-1">
-            <div class="deliv-tag">01 · INTERACTIVE 3D</div>
-            <div class="deliv-title" data-i18n="d1_title">60+ FPS Web 3D Viewer</div>
-            <div class="deliv-desc" data-i18n="d1_desc">별도 앱 설치 없이 모바일과 PC 웹에서 즉시 360도 회전, 확대, 내부 탐색이 가능한 초경량(4~18MB) 뷰어를 제공합니다.</div>
+        <div class="protocol-stepper-wrap reveal-on-scroll stagger-1">
+          <!-- Step Nav -->
+          <div class="protocol-nav">
+            <button class="protocol-tab-btn active" onclick="switchProtocolStep(0, this)">
+              <span class="num">01</span>
+              <span class="title" data-i18n="pr_t1">피사체 배치 (Setup)</span>
+            </button>
+            <button class="protocol-tab-btn" onclick="switchProtocolStep(1, this)">
+              <span class="num">02</span>
+              <span class="title" data-i18n="pr_t2">확산광 조명 (Lighting)</span>
+            </button>
+            <button class="protocol-tab-btn" onclick="switchProtocolStep(2, this)">
+              <span class="num">03</span>
+              <span class="title" data-i18n="pr_t3">카메라 설정 (Camera)</span>
+            </button>
+            <button class="protocol-tab-btn" onclick="switchProtocolStep(3, this)">
+              <span class="num">04</span>
+              <span class="title" data-i18n="pr_t4">안정적 보행 (Movement)</span>
+            </button>
+            <button class="protocol-tab-btn" onclick="switchProtocolStep(4, this)">
+              <span class="num">05</span>
+              <span class="title" data-i18n="pr_t5">다각도 궤적 (Multi-Loop)</span>
+            </button>
+            <button class="protocol-tab-btn" onclick="switchProtocolStep(5, this)">
+              <span class="num">06</span>
+              <span class="title" data-i18n="pr_t6">파이프라인 업로드 (Upload)</span>
+            </button>
           </div>
 
-          <div class="deliv-card reveal-on-scroll stagger-2">
-            <div class="deliv-tag">02 · AUGMENTED REALITY</div>
-            <div class="deliv-title" data-i18n="d2_title">1:1 Real-Scale AR</div>
-            <div class="deliv-desc" data-i18n="d2_desc">iOS 및 Android 스마트폰으로 실제 내 방, 매장, 차고에 실물 크기 3D 모델을 즉시 배치해볼 수 있습니다.</div>
-          </div>
+          <!-- Step Content Display -->
+          <div class="protocol-content-card glow-border-card has-crosshair">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 12px; color: var(--brand-cyan); font-weight: 700;" id="proto-step-num">STEP 01 // OBJECT SETUP</div>
+              <h3 style="font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin: 12px 0 16px;" id="proto-step-heading">피사체 배치 및 주변 공간 확보</h3>
+              <p style="font-size: 16px; color: var(--fg-secondary); line-height: 1.7;" id="proto-step-body">
+                피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.
+              </p>
+            </div>
 
-          <div class="deliv-card reveal-on-scroll stagger-3">
-            <div class="deliv-tag">03 · HOTSPOTS & SPECS</div>
-            <div class="deliv-title" data-i18n="d3_title">3D Hotspots & Annotations</div>
-            <div class="deliv-desc" data-i18n="d3_desc">특정 부품, 소재 질감, 치수 스펙을 클릭하면 상세 설명이 펼쳐지는 인터랙티브 설명 핀을 자유롭게 추가합니다.</div>
-          </div>
-
-          <div class="deliv-card reveal-on-scroll stagger-4">
-            <div class="deliv-tag">04 · AI SYNTHESIS</div>
-            <div class="deliv-title" data-i18n="d4_title">AI Studio Imagery</div>
-            <div class="deliv-desc" data-i18n="d4_desc">추가 화보 촬영 없이 3D 디지털 트윈을 활용해 스튜디오 조명 변경 및 원하는 배경 환경으로 제품 사진을 무제한 생성합니다.</div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         04. PHASE 03: CONVERT (e커머스 임베드 & 비즈니스 ROI)
-         ======================================================================== -->
-    <section class="phase-section" id="convert-section">
-      <div class="container">
-        
-        <div class="phase-layout">
-          <div class="reveal-on-scroll">
-            <div class="eyebrow" data-i18n="p3_eyebrow">03 · Convert</div>
-            <h2 class="section-title" data-i18n="p3_title">Convert more customers.<br /><em>One-line embed.</em></h2>
-            <p class="section-desc" style="margin-top: 18px;" data-i18n="p3_desc">
-              HTML 코드 한 줄로 기존 쇼핑몰(Shopify, WooCommerce 등)이나 공식 웹사이트에 3D 뷰어를 즉시 삽입할 수 있습니다. 소비자의 구매 확신을 높여 반품을 줄이고 매출을 극대화합니다.
-            </p>
-
-            <ul class="phase-bullets">
-              <li data-i18n="p3_b1">Shopify, WooCommerce, BigCommerce, Adobe Commerce 원라인 임베드</li>
-              <li data-i18n="p3_b2">모바일 우선(Mobile-First) 최적화로 버벅임 없는 로딩 속도</li>
-              <li data-i18n="p3_b3">76%의 소비자가 온라인 쇼핑 시 3D 인터랙티브 경험을 기대 (Adobe 리포트)</li>
-              <li data-i18n="p3_b4">독립 호스팅 및 보안 암호화 지원</li>
-            </ul>
-          </div>
-
-          <div class="reveal-on-scroll stagger-2">
-            <div class="platform-row">
-              <span style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--fg-lime); letter-spacing: 1px;">COMPATIBLE PLATFORMS:</span>
-              <span class="platform-pill">Shopify</span>
-              <span class="platform-pill">WooCommerce</span>
-              <span class="platform-pill">Adobe Commerce</span>
-              <span class="platform-pill">Webflow</span>
-              <span class="platform-pill">Custom HTML</span>
+            <div class="protocol-spec-matrix">
+              <div class="spec-item">
+                <div class="spec-k">RECOMMENDED DISTANCE</div>
+                <div class="spec-v" id="proto-k1">1.2m – 2.5m</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-k">IDEAL CAMERA FPS</div>
+                <div class="spec-v" id="proto-k2">4K @ 60 FPS</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-k">TARGET ORBIT TIME</div>
+                <div class="spec-v" id="proto-k3">~40s / Loop</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- ROI Stats Strip -->
-        <div class="roi-strip reveal-on-scroll stagger-1">
-          <div class="roi-tile">
-            <div class="roi-num">+24% ~ +94%</div>
-            <div class="roi-title" data-i18n="roi_1_title">Conversion Uplift</div>
-            <div class="roi-sub" data-i18n="roi_1_sub">3D 인터랙션을 경험한 고객의 구매 전환율 대폭 상승</div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         04. INTERACTIVE ECOMMERCE ROI CALCULATOR
+         ======================================================================== -->
+    <section class="section-calculator" id="roi-calculator">
+      <div class="container">
+        
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            <span data-i18n="calc_eyebrow">REVENUE & CONVERSION IMPACT</span>
+          </div>
+          <h2 class="section-title" data-i18n="calc_title">인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em></h2>
+          <p class="section-desc" style="margin-top: 16px;" data-i18n="calc_desc">
+            쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.
+          </p>
+        </div>
+
+        <div class="calc-card-grid has-crosshair glow-border-card reveal-on-scroll stagger-1">
+          <!-- Sliders -->
+          <div class="calc-slider-group">
+            <div class="calc-control">
+              <div class="calc-label-row">
+                <span data-i18n="calc_l1">월간 순 방문자 수 (Monthly Visitors)</span>
+                <span class="calc-val-badge" id="lbl-traffic">50,000 명</span>
+              </div>
+              <input type="range" min="5000" max="500000" step="5000" value="50000" class="calc-slider" id="slider-traffic" oninput="calculateROI()" />
+            </div>
+
+            <div class="calc-control">
+              <div class="calc-label-row">
+                <span data-i18n="calc_l2">평균 주문 금액 (Average Order Value)</span>
+                <span class="calc-val-badge" id="lbl-aov">$120</span>
+              </div>
+              <input type="range" min="20" max="1000" step="10" value="120" class="calc-slider" id="slider-aov" oninput="calculateROI()" />
+            </div>
+
+            <div class="calc-control">
+              <div class="calc-label-row">
+                <span data-i18n="calc_l3">현재 상품 반품률 (Current Return Rate)</span>
+                <span class="calc-val-badge" id="lbl-return">18%</span>
+              </div>
+              <input type="range" min="5" max="40" step="1" value="18" class="calc-slider" id="slider-return" oninput="calculateROI()" />
+            </div>
           </div>
 
-          <div class="roi-tile">
-            <div class="roi-num">-16%</div>
-            <div class="roi-title" data-i18n="roi_2_title">Reduced Return Rate</div>
-            <div class="roi-sub" data-i18n="roi_2_sub">치수 및 실제 질감 확인을 통한 단순 변심 반품 감소</div>
-          </div>
+          <!-- Real-Time Calculated ROI Results -->
+          <div class="calc-result-panel">
+            <div class="calc-result-box">
+              <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-cyan);" data-i18n="calc_r1_lbl">
+                🚀 예상 연간 추가 매출 (Annual Revenue Uplift)
+              </div>
+              <div class="calc-result-number" id="calc-uplift-rev">+$576,000</div>
+              <div style="font-size: 13px; color: var(--fg-secondary);">기준 전환율 2.0% ➔ 3DGS 인터랙션 시 +40% 상승 적용</div>
+            </div>
 
-          <div class="roi-tile">
-            <div class="roi-num">+76%</div>
-            <div class="roi-title" data-i18n="roi_3_title">Engagement Boost</div>
-            <div class="roi-sub" data-i18n="roi_3_sub">상세 페이지 체류 시간 및 브랜드 몰입도 증가</div>
+            <div class="calc-result-box">
+              <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-emerald);" data-i18n="calc_r2_lbl">
+                📉 예상 연간 반품 절감액 (Saved Return Costs)
+              </div>
+              <div class="calc-result-number" style="color: var(--brand-emerald);" id="calc-saved-returns">+$207,360</div>
+              <div style="font-size: 13px; color: var(--fg-secondary);">치수 및 100% 실물 질감 사전 확인을 통한 단순 변심 -16% 절감</div>
+            </div>
           </div>
         </div>
 
@@ -1334,22 +1717,68 @@
     </section>
 
     <!-- ========================================================================
-         05. LIVE DELIVERABLES ARCHIVE (Curated 3D Reel)
+         05. 1-LINE DEVELOPER & ECOMMERCE EMBED PLAYGROUND
+         ======================================================================== -->
+    <section class="section-embed" id="embed-playground">
+      <div class="container">
+        
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            <span data-i18n="embed_eyebrow">ONE-LINE INTEGRATION</span>
+          </div>
+          <h2 class="section-title" data-i18n="embed_title">코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em></h2>
+          <p class="section-desc" style="margin-top: 16px;" data-i18n="embed_desc">
+            Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.
+          </p>
+        </div>
+
+        <div class="embed-card glow-border-card has-crosshair reveal-on-scroll stagger-1">
+          <div class="embed-header">
+            <div class="embed-tabs">
+              <button class="embed-tab active" onclick="switchEmbedCode('html', this)">HTML / IFRAME</button>
+              <button class="embed-tab" onclick="switchEmbedCode('react', this)">REACT / NEXT.JS</button>
+              <button class="embed-tab" onclick="switchEmbedCode('shopify', this)">SHOPIFY LIQUID</button>
+              <button class="embed-tab" onclick="switchEmbedCode('webflow', this)">WEBFLOW</button>
+            </div>
+            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 11px;" onclick="copyEmbedCode()" id="btn-copy-code">
+              [ COPY CODE 📋 ]
+            </button>
+          </div>
+          <pre class="embed-code-block" id="embed-code-display">&lt;iframe
+  src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
+  width="100%"
+  height="600"
+  frameborder="0"
+  allow="fullscreen; xr-spatial-tracking"
+  loading="lazy"
+  style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);"&gt;
+&lt;/iframe&gt;</pre>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         06. CURATED 3D DELIVERABLES REEL (Live models.json Archive)
          ======================================================================== -->
     <section class="section-archive" id="archive">
       <div class="container">
         
         <div class="reveal-on-scroll" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
           <div>
-            <div class="eyebrow" data-i18n="arch_eyebrow">Live 3DGS Gallery</div>
+            <div class="eyebrow">
+              <span class="pulse-dot"></span>
+              <span data-i18n="arch_eyebrow">LIVE 3D REEL</span>
+            </div>
             <h2 class="section-title" data-i18n="arch_title">최근 제작된 3D 산출물 릴</h2>
           </div>
-          <a href="showroom.html" class="btn btn-lime" data-i18n="arch_btn_all">전체 3D 쇼룸 열기 ↗</a>
+          <a href="showroom.html" class="btn btn-primary" data-i18n="arch_btn_all">전체 3D 쇼룸 열기 ↗</a>
         </div>
 
         <div class="archive-grid" id="deliverables-grid">
           <!-- Populated dynamically via models.json -->
-          <a href="05_web_build/Review_FordEscape_new_LF_09.html" target="_blank" class="archive-card reveal-on-scroll stagger-1">
+          <a href="05_web_build/Review_FordEscape_new_LF_09.html" target="_blank" class="archive-card glow-border-card reveal-on-scroll stagger-1">
             <div class="archive-thumb">
               <iframe src="05_web_build/Review_FordEscape_new_LF_09.html" loading="lazy" title="LF_09"></iframe>
             </div>
@@ -1363,7 +1792,7 @@
             </div>
           </a>
 
-          <a href="05_web_build/Review_FordEscape_new_LF_08.html" target="_blank" class="archive-card reveal-on-scroll stagger-2">
+          <a href="05_web_build/Review_FordEscape_new_LF_08.html" target="_blank" class="archive-card glow-border-card reveal-on-scroll stagger-2">
             <div class="archive-thumb">
               <iframe src="05_web_build/Review_FordEscape_new_LF_08.html" loading="lazy" title="LF_08"></iframe>
             </div>
@@ -1376,47 +1805,93 @@
               </div>
             </div>
           </a>
-
-          <a href="05_web_build/Review_FordEscape_new_LF_07.html" target="_blank" class="archive-card reveal-on-scroll stagger-3">
-            <div class="archive-thumb">
-              <iframe src="05_web_build/Review_FordEscape_new_LF_07.html" loading="lazy" title="LF_07"></iframe>
-            </div>
-            <div class="archive-body">
-              <div class="archive-title">FordEscape_new_LF_07</div>
-              <div class="archive-chips">
-                <span class="chip-item">3DGS SOG</span>
-                <span class="chip-item">REFINED</span>
-                <span class="chip-item">2.1M SPLATS</span>
-              </div>
-            </div>
-          </a>
         </div>
 
       </div>
     </section>
+
+    <!-- ========================================================================
+         07. FAQ ACCORDION SECTION
+         ======================================================================== -->
+    <section class="section-faq" id="faq">
+      <div class="container">
+        
+        <div class="reveal-on-scroll">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            <span>FREQUENTLY ASKED QUESTIONS</span>
+          </div>
+          <h2 class="section-title">자주 묻는 질문</h2>
+        </div>
+
+        <div class="faq-accordion reveal-on-scroll stagger-1">
+          <div class="faq-item open">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-q-text">3D Gaussian Splatting은 기존 3D 메시(Mesh)와 무엇이 다른가요?</span>
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              기존 3D 메시는 삼각형 폴리곤 위에 텍스처를 씌우는 방식으로 모서리가 각지고 미세 반사광이나 투명도 표현이 어렵습니다. 반면 3DGS는 수백만 개의 미세 타원체 가우시안으로 실제 광학 필드를 재구성하므로 실물과 100% 동일한 광택, 굴절, 서브밀리미터 디테일을 실시간으로 완벽하게 표현합니다.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-q-text">고객이 볼 때 별도의 앱이나 플러그인 설치가 필요한가요?</span>
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              전혀 필요하지 않습니다. Points & Reality 파이프라인은 표준 순수 WebGL 셰이더 기반으로 컴파일되어 Safari, Chrome, Edge, 모바일 브라우저 어디서나 링크 클릭 즉시 60+ FPS로 부드럽게 구동됩니다.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-q-text">촬영 및 모델 복원에 소요되는 시간은 얼마나 걸리나요?</span>
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              스마트폰 카메라로 제품 주위를 약 3분간 동영상으로 촬영한 뒤 파이프라인에 업로드하면, AI 뉴럴 복원 엔진이 약 1시간 만에 프로덕션 배포 가능한 3D 디지털 트윈을 자동 생성합니다.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-q-text">자사 쇼핑몰(Shopify, 카페24, 자체 웹)에 어떻게 연동하나요?</span>
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              단 1줄의 HTML iframe 또는 React/Liquid 컴포넌트 코드를 원하는 위치에 붙여넣기만 하면 즉시 연동됩니다. 모바일 최적화 반응형 레이아웃을 기본 지원합니다.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- ========================================================================
-       06. STUDIO FOOTER & INQUIRY
+       08. STUDIO FOOTER & INQUIRY
        ======================================================================== -->
   <footer class="site-footer" id="contact">
     <div class="container">
       
-      <div class="footer-cta-box has-crosshair reveal-on-scroll">
+      <div class="footer-cta-box has-crosshair glow-border-card reveal-on-scroll">
         <div class="footer-cta-text">
           <h2 data-i18n="fcta_title">첫 번째 3D 디지털 트윈을 제작해보세요</h2>
           <p data-i18n="fcta_desc">3분 분량의 제품 동영상을 업로드하면 약 1시간 만에 완성도 높은 3DGS 인터랙티브 모델이 준비됩니다.</p>
         </div>
         <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-          <a href="mailto:contact@points-and-reality.com" class="btn btn-lime" data-i18n="fcta_btn_primary">도입 문의하기 (Book Demo) →</a>
+          <a href="mailto:contact@points-and-reality.com" class="btn btn-primary" data-i18n="fcta_btn_primary">도입 문의하기 (Book Demo) →</a>
           <a href="showroom.html" class="btn btn-ghost" data-i18n="fcta_btn_sec">쇼룸 둘러보기</a>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. 3D GAUSSIAN SPLATTING & AI SPATIAL STUDIO.</div>
+        <div>© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO.</div>
         <div style="display: flex; gap: 20px;">
-          <a href="showroom.html" style="color: var(--fg-lime); text-decoration: none;">[ 3D SHOWROOM ]</a>
+          <a href="showroom.html" style="color: var(--brand-cyan); text-decoration: none;">[ 3D SHOWROOM ]</a>
           <a href="#site-nav" style="color: var(--fg-secondary); text-decoration: none;">↑ TOP</a>
         </div>
       </div>
@@ -1425,11 +1900,11 @@
   </footer>
 
   <!-- ========================================================================
-       JAVASCRIPT LOGIC (Scroll Motion, Ambient Physics, models.json, i18n)
+       JAVASCRIPT LOGIC (Interactive Bento, ROI Calc, Stepper, Ambient Engine)
        ======================================================================== -->
   <script>
     /* --------------------------------------------------------------------------
-       01. SharpLink Scroll Progress & Reveal Motion Engine
+       01. Scroll Progress & Reveal Motion Engine
        -------------------------------------------------------------------------- */
     const progressBar = document.getElementById('scroll-progress');
     window.addEventListener('scroll', () => {
@@ -1455,63 +1930,249 @@
     document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
 
     /* --------------------------------------------------------------------------
-       02. Ambient Particle Canvas
+       02. Bento 1: Optical Trajectory Engine 2D/3D Orbit Visualizer
        -------------------------------------------------------------------------- */
-    const canvas = document.getElementById('ambient-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
+    const tCanvas = document.getElementById('trajectory-canvas');
+    if (tCanvas) {
+      const tCtx = tCanvas.getContext('2d');
+      let tAngle = 0;
 
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3;
-        this.radius = Math.random() * 2 + 1;
-        this.color = Math.random() > 0.5 ? '#0E76FF' : '#38bdf8';
-        this.alpha = Math.random() * 0.4 + 0.1;
+      function resizeTCanvas() {
+        tCanvas.width = tCanvas.offsetWidth;
+        tCanvas.height = 200;
       }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
+      window.addEventListener('resize', resizeTCanvas);
+      resizeTCanvas();
+
+      function drawTrajectory() {
+        const w = tCanvas.width;
+        const h = tCanvas.height;
+        tCtx.clearRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const rx = w * 0.38;
+        const ry = h * 0.28;
+
+        // Draw Elliptical Orbit Rings
+        for (let r = 0; r < 3; r++) {
+          tCtx.beginPath();
+          tCtx.ellipse(cx, cy + (r - 1) * 22, rx * (1 - r * 0.12), ry * (1 - r * 0.12), 0, 0, Math.PI * 2);
+          tCtx.strokeStyle = 'rgba(14, 118, 255, ' + (0.15 + r * 0.1) + ')';
+          tCtx.setLineDash([4, 6]);
+          tCtx.lineWidth = 1.2;
+          tCtx.stroke();
+          tCtx.setLineDash([]);
+        }
+
+        // Draw Central Target Box
+        tCtx.save();
+        tCtx.fillStyle = '#0E76FF';
+        tCtx.shadowColor = '#0E76FF';
+        tCtx.shadowBlur = 12;
+        tCtx.beginPath();
+        tCtx.arc(cx, cy, 7, 0, Math.PI * 2);
+        tCtx.fill();
+        tCtx.restore();
+
+        // Draw Rotating Camera Poses
+        tAngle += 0.015;
+        for (let i = 0; i < 18; i++) {
+          const a = tAngle + (i * (Math.PI * 2 / 18));
+          const px = cx + Math.cos(a) * rx;
+          const py = cy + Math.sin(a) * ry + Math.sin(a * 2) * 12;
+          
+          tCtx.beginPath();
+          tCtx.arc(px, py, 3.5, 0, Math.PI * 2);
+          tCtx.fillStyle = (i % 3 === 0) ? '#38BDF8' : 'rgba(255, 255, 255, 0.4)';
+          tCtx.fill();
+
+          // Connect sight ray to center
+          if (i % 4 === 0) {
+            tCtx.beginPath();
+            tCtx.moveTo(px, py);
+            tCtx.lineTo(cx, cy);
+            tCtx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+            tCtx.stroke();
+          }
+        }
+
+        requestAnimationFrame(drawTrajectory);
       }
-      draw() {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.alpha;
-        ctx.fill();
-        ctx.restore();
-      }
+      drawTrajectory();
     }
 
-    for (let i = 0; i < 60; i++) particles.push(new Particle());
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, width, height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animateParticles);
+    function updateCompDisplay(val) {
+      document.getElementById('comp-val').textContent = val + '.4 MB';
     }
-    animateParticles();
 
     /* --------------------------------------------------------------------------
-       03. Hero Stage Controls
+       03. 6-Step Protocol Stepper
+       -------------------------------------------------------------------------- */
+    const protocolData = [
+      {
+        num: "STEP 01 // OBJECT SETUP",
+        heading: "피사체 배치 및 주변 공간 확보",
+        body: "피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.",
+        k1: "1.2m – 2.5m",
+        k2: "4K @ 60 FPS",
+        k3: "~40s / Loop"
+      },
+      {
+        num: "STEP 02 // DIFFUSED LIGHTING",
+        heading: "균일한 확산광 조명 세팅",
+        body: "강한 직사광선이나 점조명은 날카로운 그림자를 만들어 텍스처 재구성을 방해합니다. 소프트박스 확산광이나 흐린 날의 부드러운 자연광 환경에서 촬영하는 것이 가장 이상적입니다.",
+        k1: "Diffused Soft",
+        k2: "Shadow-Free",
+        k3: "5600K Daylight"
+      },
+      {
+        num: "STEP 03 // CAMERA PARAMETER LOCK",
+        heading: "노출·초점·화이트밸런스 고정 (Lock)",
+        body: "스마트폰 또는 카메라의 자동 노출(AE), 자동 초점(AF), 자동 화이트밸런스(AWB)를 고정합니다. 프레임 간 밝기와 색상 톤이 변하지 않아야 뉴럴 네트워크가 정확한 방사 휘도를 학습합니다.",
+        k1: "AE / AF Locked",
+        k2: "ISO 100-200",
+        k3: "1/120s Shutter"
+      },
+      {
+        num: "STEP 04 // SMOOTH MOVEMENT",
+        heading: "일정한 속도의 안정적 보행 궤적",
+        body: "급격한 카메라 회전이나 흔들림(모션 블러)을 방지하기 위해 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이를 사용합니다. 1바퀴당 약 40~50초의 일정한 페이스를 유지합니다.",
+        k1: "Heel-to-Toe",
+        k2: "Zero Motion Blur",
+        k3: "Constant Speed"
+      },
+      {
+        num: "STEP 05 // MULTI-LOOP COVERAGE",
+        heading: "3~4개 높이 궤적 완전 피복 (Multi-Pass)",
+        body: "단일 높이 촬영 시 상단이나 하단에 사각지대가 발생합니다. 수평(아이레벨), 45도 상단 탑다운, 하단 앙각 궤적을 순차적으로 3바퀴 녹화하여 물체의 모든 표면을 빠짐없이 커버합니다.",
+        k1: "3-4 Orbit Passes",
+        k2: "45° Top-Down",
+        k3: "100% Coverage"
+      },
+      {
+        num: "STEP 06 // NEURAL PIPELINE UPLOAD",
+        heading: "Points & Reality 파이프라인 업로드",
+        body: "촬영된 고해상도 영상을 업로드하면, 자동 프레임 추출, SfM 카메라 포즈 정렬, 3DGS 뉴럴 최적화 및 SOG 압축이 원스톱으로 진행되어 약 1시간 내에 완성됩니다.",
+        k1: "~1 Hour Auto",
+        k2: "Pure SOG Output",
+        k3: "Instant CDN Live"
+      }
+    ];
+
+    function switchProtocolStep(idx, btnElem) {
+      document.querySelectorAll('.protocol-tab-btn').forEach(b => b.classList.remove('active'));
+      if (btnElem) btnElem.classList.add('active');
+
+      const data = protocolData[idx];
+      document.getElementById('proto-step-num').textContent = data.num;
+      document.getElementById('proto-step-heading').textContent = data.heading;
+      document.getElementById('proto-step-body').textContent = data.body;
+      document.getElementById('proto-k1').textContent = data.k1;
+      document.getElementById('proto-k2').textContent = data.k2;
+      document.getElementById('proto-k3').textContent = data.k3;
+    }
+
+    /* --------------------------------------------------------------------------
+       04. Interactive ROI Calculator Logic
+       -------------------------------------------------------------------------- */
+    function calculateROI() {
+      const traffic = parseInt(document.getElementById('slider-traffic').value, 10);
+      const aov = parseInt(document.getElementById('slider-aov').value, 10);
+      const retRate = parseInt(document.getElementById('slider-return').value, 10);
+
+      document.getElementById('lbl-traffic').textContent = traffic.toLocaleString() + ' 명';
+      document.getElementById('lbl-aov').textContent = '$' + aov;
+      document.getElementById('lbl-return').textContent = retRate + '%';
+
+      // Base conversion 2.0%, uplift +40% = 0.8% extra conversion
+      const extraOrdersMonthly = traffic * 0.008;
+      const extraRevAnnual = extraOrdersMonthly * aov * 12;
+
+      // Return reduction: -16% relative decrease on returns
+      const totalOrdersMonthly = traffic * 0.028;
+      const savedReturnsAnnual = (totalOrdersMonthly * (retRate / 100) * 0.16) * (aov * 0.35) * 12;
+
+      document.getElementById('calc-uplift-rev').textContent = '+$' + Math.round(extraRevAnnual).toLocaleString();
+      document.getElementById('calc-saved-returns').textContent = '+$' + Math.round(savedReturnsAnnual).toLocaleString();
+    }
+    calculateROI();
+
+    /* --------------------------------------------------------------------------
+       05. 1-Line Embed Code Generator
+       -------------------------------------------------------------------------- */
+    const embedCodes = {
+      html: `<iframe
+  src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
+  width="100%"
+  height="600"
+  frameborder="0"
+  allow="fullscreen; xr-spatial-tracking"
+  loading="lazy"
+  style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+</iframe>`,
+      react: `import React from 'react';
+
+export default function Product3DViewer() {
+  return (
+    <div className="w-full h-[600px] rounded-lg overflow-hidden border border-white/10">
+      <iframe
+        src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
+        className="w-full h-full border-none"
+        allow="fullscreen; xr-spatial-tracking"
+        loading="lazy"
+      />
+    </div>
+  );
+}`,
+      shopify: `{% comment %} Points & Reality 3DGS Liquid Embed {% endcomment %}
+<div class="points-and-reality-stage" style="width: 100%; height: 600px;">
+  <iframe
+    src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
+    width="100%"
+    height="100%"
+    frameborder="0"
+    allow="fullscreen; xr-spatial-tracking"
+    loading="lazy">
+  </iframe>
+</div>`,
+      webflow: `<!-- Webflow Custom Code Embed -->
+<div style="width: 100%; height: 600px; position: relative;">
+  <iframe
+    src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
+    style="width: 100%; height: 100%; border: none; border-radius: 8px;"
+    allow="fullscreen; xr-spatial-tracking">
+  </iframe>
+</div>`
+    };
+
+    let activeEmbedType = 'html';
+    function switchEmbedCode(type, btn) {
+      activeEmbedType = type;
+      document.querySelectorAll('.embed-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('embed-code-display').textContent = embedCodes[type];
+    }
+
+    function copyEmbedCode() {
+      const code = embedCodes[activeEmbedType];
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('btn-copy-code');
+        btn.textContent = 'COPIED! ✓';
+        setTimeout(() => { btn.textContent = '[ COPY CODE 📋 ]'; }, 2000);
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       06. FAQ Accordion Logic
+       -------------------------------------------------------------------------- */
+    function toggleFaq(elem) {
+      const item = elem.parentElement;
+      item.classList.toggle('open');
+    }
+
+    /* --------------------------------------------------------------------------
+       07. Hero Stage Controls & Hotspots
        -------------------------------------------------------------------------- */
     function switchHeroStage(url, title, btnElem) {
       const iframe = document.getElementById('hero-stage-iframe');
@@ -1526,14 +2187,46 @@
       }
     }
 
+    function toggleHotspots(btn) {
+      const layer = document.getElementById('hotspot-layer');
+      if (layer.style.display === 'none') {
+        layer.style.display = 'block';
+        btn.classList.add('active');
+      } else {
+        layer.style.display = 'none';
+        btn.classList.remove('active');
+      }
+    }
+
+    function showHotspotInfo(title, desc) {
+      alert(`[ 3D HOTSPOT INSPECTION ]\n\nComponent: ${title}\nDetails: ${desc}`);
+    }
+
     function openFullscreenStage() {
       const iframe = document.getElementById('hero-stage-iframe');
       if (iframe.requestFullscreen) iframe.requestFullscreen();
       else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
     }
 
+    function openARModal() {
+      alert('✦ 1:1 Scale Spatial AR\n\niPhone 또는 Android 카메라로 QR 코드를 스캔하면 실제 공간에 1:1 실물 크기로 즉시 투영됩니다.');
+    }
+
+    function setStageEnv(mode, btn) {
+      document.querySelectorAll('.stage-hud-controls .hud-chip').forEach(c => {
+        if (c.textContent.includes('Light') || c.textContent.includes('Neon')) c.classList.remove('active');
+      });
+      btn.classList.add('active');
+      const wrap = document.querySelector('.stage-viewport-wrap');
+      if (mode === 'cyber') {
+        wrap.style.boxShadow = 'inset 0 0 80px rgba(14, 118, 255, 0.4)';
+      } else {
+        wrap.style.boxShadow = 'none';
+      }
+    }
+
     /* --------------------------------------------------------------------------
-       04. Dynamic Model Manifest Synchronizer (05_web_build/models.json)
+       08. Dynamic Model Manifest Sync (models.json)
        -------------------------------------------------------------------------- */
     async function loadDynamicModels() {
       try {
@@ -1569,7 +2262,7 @@
             const card = document.createElement('a');
             card.href = m.path;
             card.target = '_blank';
-            card.className = `archive-card reveal-on-scroll stagger-${(idx % 4) + 1}`;
+            card.className = `archive-card glow-border-card reveal-on-scroll stagger-${(idx % 4) + 1}`;
             card.innerHTML = `
               <div class="archive-thumb">
                 <iframe src="${m.path}" loading="lazy" title="${cleanTitle}"></iframe>
@@ -1594,178 +2287,170 @@
     loadDynamicModels();
 
     /* --------------------------------------------------------------------------
-       05. Multilingual Translation Dictionary (EN, KO, ZH, MI)
+       09. Ambient Particle Background
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.35;
+        this.vy = (Math.random() - 0.5) * 0.35;
+        this.radius = Math.random() * 2 + 1;
+        this.color = Math.random() > 0.5 ? '#0E76FF' : '#38BDF8';
+        this.alpha = Math.random() * 0.45 + 0.1;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw() {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* --------------------------------------------------------------------------
+       10. Multilingual Translation Engine (EN, KO, ZH, MI)
        -------------------------------------------------------------------------- */
     const translations = {
       en: {
-        ann_text: "⚡ Points & Reality 3DGS Engine — Turn video or photos into photorealistic 3D digital twins in ~1 hour",
-        ann_cta: "Explore Showroom →",
-        nav_how: "How It Works",
-        nav_create: "What We Create",
-        nav_convert: "Convert",
-        nav_gallery: "Gallery",
+        top_status: "Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour",
+        top_cta: "Launch Showroom →",
+        nav_stage: "3D Stage",
+        nav_bento: "Technology",
+        nav_protocol: "6-Step Protocol",
+        nav_roi: "ROI Calculator",
+        nav_embed: "1-Line Embed",
         nav_showroom: "[ 3D Showroom ↗ ]",
-        btn_inquire: "Inquire / Demo",
-        hero_eyebrow: "3D Gaussian Splatting & AI Studio",
-        hero_h1: "Capture. Create.<br/><em>Convert.</em>",
-        hero_desc: "Turn a simple smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in around an hour. No 3D software required. 60+ FPS in any browser.",
-        hero_btn_explore: "Explore 3D Showroom ↗",
-        hero_btn_how: "How It Works ↓",
-        hero_val_title: "Next-Gen 3D Solution for Ecommerce & Enterprise",
+        btn_inquire: "Book Demo →",
+        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.",
+        hero_btn_explore: "Launch 3D Showroom ↗",
+        hero_btn_how: "Explore 6-Step Workflow ↓",
+        hero_val_title: "Next-Gen 3D Solution for Ecommerce & Automotive",
         hero_val_desc: "Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.",
-        stat_1_lbl: "Typical capture time",
-        stat_2_lbl: "Turnaround to live 3D",
-        stat_3_lbl: "Web-optimized SOG size",
-        stat_4_lbl: "Pure browser WebGL",
-        p1_eyebrow: "01 · Capture",
-        p1_title: "Capture your product.<br/><em>Any device, anywhere.</em>",
-        p1_desc: "No studio, no specialist scanning equipment. Shoot a 3-minute video on any mobile phone or DSLR and upload it to the pipeline.",
-        p1_b1: "Supports iPhone, Android, DSLR, mirrorless cameras",
-        p1_b2: "Just 3 minutes of video or 80-150 photos needed",
-        p1_b3: "Applies to automotive, luxury goods, furniture, apparel, architecture",
-        p1_b4: "Zero studio equipment setup fees",
-        p1_box_title: "Effortless 3-Minute Capture",
-        p1_box_desc: "Smoothly walk around your subject at waist height across 3-4 orbits (eye level, 45° top-down, detail pass).",
-        steps_eyebrow: "Capture Guidelines",
-        steps_title: "Six Steps to a Perfect 3D Capture",
-        s1_name: "Object Setup",
-        s1_desc: "Place your product in a space where you can easily walk 360° around it. Keep it completely stationary.",
-        s1_tip: "Tip: Waist height makes movement smooth and easy.",
-        s2_name: "Soft Lighting",
-        s2_desc: "Use soft, even diffused lighting or overcast daylight. Avoid harsh direct sunlight.",
-        s2_tip: "Tip: A uniform environment prevents distracting shadows.",
-        s3_name: "Camera Settings",
-        s3_desc: "Set to 4K resolution and lock exposure, focus, and white balance for consistent color.",
-        s3_tip: "Tip: Modern iPhone and Android phones produce exceptional quality.",
-        s4_name: "Smooth Movement",
-        s4_desc: "Walk deliberately and continuously. Aim for ~40 seconds per complete loop.",
-        s4_tip: "Tip: Use a heel-to-toe walk for gimbal-like stability.",
-        s5_name: "Multi-Loop Coverage",
-        s5_desc: "Record 3-4 loops at different heights (eye level, 45° top-down, lower angle) to capture every surface.",
-        s5_tip: "Tip: Top-down pass ensures complete surface reconstruction.",
-        s6_name: "Pipeline Upload",
-        s6_desc: "Upload footage to the pipeline. AI neural optimization delivers a production-ready model in ~1 hour.",
-        s6_tip: "Tip: You can upload multi-camera angles for higher detail.",
-        p2_eyebrow: "02 · Create",
-        p2_title: "Create everything from<br/><em>a single capture.</em>",
-        p2_desc: "From a single 3-minute capture, generate an entire ecosystem of commercial digital twin assets ready for instant deployment.",
-        p2_b1: "Interactive 60+ FPS WebGL 3D model with zero plugin dependencies",
-        p2_b2: "Place-in-space 1:1 real scale Augmented Reality (AR) on iOS & Android",
-        p2_b3: "Interactive 3D hotspots highlighting materials, features, and dimensions",
-        p2_b4: "Unlimited AI studio lifestyle photography without reshooting",
-        p2_b5: "Standalone SOG / PLY package for self-contained offline distribution",
-        p2_box_title: "All-in-One Digital Twin Ecosystem",
-        p2_box_desc: "Web viewer, AR, lifestyle imagery, and interactive spec callouts created seamlessly from a single asset.",
-        d1_title: "60+ FPS Web 3D Viewer",
-        d1_desc: "A lightweight (4-18MB) photorealistic 3D viewer customers can rotate, zoom, and inspect directly in any browser.",
-        d2_title: "1:1 Real-Scale AR",
-        d2_desc: "One-tap placement in physical rooms via iOS and Android AR to build immediate purchase confidence.",
-        d3_title: "3D Hotspots & Annotations",
-        d3_desc: "Interactive tap-to-explore pins that highlight materials, engineering features, and exact dimensions.",
-        d4_title: "AI Studio Imagery",
-        d4_desc: "Synthesize infinite studio and lifestyle product shots with custom lighting environments without a second shoot.",
-        p3_eyebrow: "03 · Convert",
-        p3_title: "Convert more customers.<br/><em>One-line embed.</em>",
-        p3_desc: "Embed live 3D Gaussian Splats directly into your product pages with a single snippet. Reduce returns and boost conversion.",
-        p3_b1: "One-line embed on Shopify, WooCommerce, Adobe Commerce, and custom sites",
-        p3_b2: "Mobile-first optimization for instant loading without lag",
-        p3_b3: "76% of consumers now expect 3D product experiences online (Adobe, 2023)",
-        p3_b4: "Enterprise-grade hosting and encryption supported",
-        roi_1_title: "Conversion Uplift",
-        roi_1_sub: "Significantly higher conversion rates for shoppers interacting with 3D models",
-        roi_2_title: "Reduced Return Rate",
-        roi_2_sub: "Fewer returns due to accurate scale, texture, and material visualization",
-        roi_3_title: "Engagement Boost",
-        roi_3_sub: "Substantially increased dwell time on product pages",
-        arch_eyebrow: "Live 3DGS Gallery",
+        stat_1_lbl: "Typical Optical Capture",
+        stat_2_lbl: "Turnaround to Live 3D",
+        stat_3_lbl: "Web-Optimized SOG Payload",
+        stat_4_lbl: "Pure Browser WebGL Performance",
+        bento_eyebrow: "CORE ARCHITECTURE",
+        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
+        bento_desc: "Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.",
+        b1_title: "360° Multi-Angle Helical Trajectory Engine",
+        b1_desc: "Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.",
+        b2_title: "Ultra-Light SOG Compression",
+        b2_desc: "Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.",
+        b3_title: "1:1 Real-Scale Spatial AR",
+        b3_desc: "Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.",
+        b4_title: "Sub-Millimeter Neural Radiance",
+        b4_desc: "Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.",
+        b5_title: "Global Low-Latency Edge Delivery",
+        b5_desc: "Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.",
+        proto_eyebrow: "OPERATIONAL PROTOCOL",
+        proto_title: "Six Steps to a Perfect<br /><em>3D Capture Protocol</em>",
+        proto_desc: "Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.",
+        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
+        calc_title: "Interactive 3DGS<br /><em>Business ROI Calculator</em>",
+        calc_desc: "Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.",
+        calc_l1: "Monthly Store Visitors",
+        calc_l2: "Average Order Value (AOV)",
+        calc_l3: "Current Product Return Rate",
+        calc_r1_lbl: "🚀 Projected Annual Revenue Uplift",
+        calc_r2_lbl: "📉 Projected Annual Saved Return Costs",
+        embed_eyebrow: "ONE-LINE INTEGRATION",
+        embed_title: "Embed Anywhere With<br /><em>A Single Line of Code</em>",
+        embed_desc: "Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.",
+        arch_eyebrow: "LIVE 3D REEL",
         arch_title: "Curated 3D Deliverables Reel",
         arch_btn_all: "Launch 3D Showroom ↗",
-        fcta_title: "Ready to capture your first 3D digital twin?",
-        fcta_desc: "Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3D model will be ready in ~1 hour.",
+        fcta_title: "Ready to create your first 3D digital twin?",
+        fcta_desc: "Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.",
         fcta_btn_primary: "Book a Demo / Inquire →",
         fcta_btn_sec: "Explore Showroom"
       },
       ko: {
-        ann_text: "⚡ Points & Reality 3DGS 엔진 — 영상 또는 사진으로 1시간 만에 실물과 100% 동일한 3D 디지털 트윈 생성",
-        ann_cta: "3D 쇼룸 열기 →",
-        nav_how: "작동 원리 (How It Works)",
-        nav_create: "제작 산출물 (Create)",
-        nav_convert: "매출 전환 (Convert)",
-        nav_gallery: "3D 갤러리",
+        top_status: "Points & Reality 3DGS — 영상으로 1시간 만에 60+ FPS 3D 디지털 트윈 생성",
+        top_cta: "3D 쇼룸 열기 →",
+        nav_stage: "3D 인터랙티브",
+        nav_bento: "핵심 기술",
+        nav_protocol: "6단계 촬영 가이드",
+        nav_roi: "ROI 계산기",
+        nav_embed: "코드 1줄 연동",
         nav_showroom: "[ 3D 쇼룸 ↗ ]",
-        btn_inquire: "도입 문의 / 데모",
-        hero_eyebrow: "3D Gaussian Splatting & AI 스튜디오",
-        hero_h1: "Capture. Create.<br/><em>Convert.</em>",
-        hero_desc: "단 한 번의 스마트폰/카메라 촬영으로 약 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 생성합니다. 전용 프로그램 없이 웹 브라우저에서 60+ FPS로 회전·확대·공간 배치가 가능합니다.",
+        btn_inquire: "도입 문의 →",
+        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.",
         hero_btn_explore: "공식 3D 쇼룸 열기 ↗",
-        hero_btn_how: "작동 원리 보기 ↓",
-        hero_val_title: "e커머스 및 산업용 차세대 3D 솔루션",
-        hero_val_desc: "무겁고 디테일이 뭉개지는 기존 3D 폴리곤 모델링의 한계를 넘어, 실물의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽하게 재현하여 고객 구매 전환율을 극대화합니다.",
-        stat_1_lbl: "평균 촬영 소요 시간",
+        hero_btn_how: "6단계 워크플로우 보기 ↓",
+        hero_val_title: "e커머스 & 자동차 산업용 차세대 3D 솔루션",
+        hero_val_desc: "기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.",
+        stat_1_lbl: "평균 광학 촬영 시간",
         stat_2_lbl: "3D 모델 완성 시간",
         stat_3_lbl: "웹 최적화 SOG 용량",
-        stat_4_lbl: "브라우저 구동 성능",
-        p1_eyebrow: "01 · Capture",
-        p1_title: "제품을 간편하게 촬영하세요.<br/><em>어떤 장소, 어떤 카메라든 가능합니다.</em>",
-        p1_desc: "고가의 전문 3D 스캐너나 거대한 스튜디오가 필요하지 않습니다. 스마트폰이나 DSLR 카메라로 제품 주위를 3분간 둘러보며 촬영하여 업로드하면 모든 준비가 끝납니다.",
-        p1_b1: "스마트폰 4K 카메라, DSLR, 미러리스 모두 완벽 지원",
-        p1_b2: "단 3분 분량의 동영상 또는 80~150장의 사진만으로 캡처 가능",
-        p1_b3: "자동차, 럭셔리 제품, 가구, 의류, 건축 공간 등 모든 카테고리 적용",
-        p1_b4: "초기 스튜디오 셋업 비용 0원",
-        p1_box_title: "손쉬운 3분 광학 촬영",
-        p1_box_desc: "피사체를 중심에 두고 일정한 속도로 3~4개의 궤적(아이레벨, 45도 상단, 디테일 클로즈업)을 부드럽게 걸으며 녹화합니다.",
-        steps_eyebrow: "Capture Guidelines",
-        steps_title: "완벽한 3D 캡처를 위한 6단계",
-        s1_name: "Object Setup",
-        s1_desc: "제품 주위를 360도 원활하게 걸어 다닐 수 있는 공간에 피사체를 배치합니다. 촬영 중 제품이 움직이지 않도록 고정합니다.",
-        s1_tip: "Tip: 허리 높이의 받침대에 놓으면 촬영이 매우 수월합니다.",
-        s2_name: "Soft Lighting",
-        s2_desc: "강한 직사광선 대신 부드럽고 균일하게 퍼진 확산광(Diffused Light)이나 흐린 날의 자연광이 가장 이상적입니다.",
-        s2_tip: "Tip: 그림자가 강하게 지지 않는 균일한 환경을 추천합니다.",
-        s3_name: "Camera Settings",
-        s3_desc: "4K 해상도로 설정하고, 노출(Exposure)과 초점(Focus), 화이트 밸런스를 고정(Lock)하여 일관된 톤을 유지합니다.",
-        s3_tip: "Tip: 최신 iPhone 및 Android 스마트폰으로도 최고 퀄리티 구현.",
-        s4_name: "Smooth Movement",
-        s4_desc: "흔들림이나 급격한 움직임을 피하고, 1바퀴당 약 40초 정도의 일정한 속도로 천천히 걷습니다.",
-        s4_tip: "Tip: 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이 활용.",
-        s5_name: "Multi-Loop Coverage",
-        s5_desc: "3~4개의 서로 다른 높이(수평, 45도 상단, 하단)에서 궤적을 촬영하여 사각지대 없이 모든 표면을 담아냅니다.",
-        s5_tip: "Tip: 상단 45도 탑다운 패스가 포함되면 디테일이 극대화됩니다.",
-        s6_name: "Pipeline Upload",
-        s6_desc: "동영상을 Points & Reality 파이프라인에 업로드하면, AI 뉴럴 엔진이 약 1시간 만에 3D 모델을 자동 생성합니다.",
-        s6_tip: "Tip: 다각도 고해상도 영상을 복수 업로드하여 품질 향상 가능.",
-        p2_eyebrow: "02 · Create",
-        p2_title: "단 한 번의 캡처로<br/><em>모든 디지털 에셋을 생성합니다.</em>",
-        p2_desc: "단 1번의 3분 촬영으로 완성된 초고화질 디지털 트윈 하나에서, 고객의 시선을 사로잡는 모든 상업용 에셋을 즉시 추출하여 활용할 수 있습니다.",
-        p2_b1: "웹 브라우저에서 60+ FPS로 부드럽게 구동되는 인터랙티브 3D 모델",
-        p2_b2: "스마트폰 공간 내 1:1 실물 크기 증강현실(AR) 배치 기능",
-        p2_b3: "인터랙티브 3D 핫스팟(소재, 특징, 치수 설명 핀) 내장",
-        p2_b4: "재촬영 없는 무제한 AI 스튜디오 배경 합성 및 라이프스타일 컷 생성",
-        p2_b5: "단일 파일 배포가 가능한 표준 SOG / PLY 파일 패키징",
-        p2_box_title: "완벽한 올인원 디지털 자산",
-        p2_box_desc: "3D 모델 뷰어, 공간 AR, 마케팅용 제품 렌더링 컷, 3D 기술 사양 시트까지 추가 제작 비용 없이 단 하나의 에셋으로 해결됩니다.",
-        d1_title: "60+ FPS Web 3D Viewer",
-        d1_desc: "별도 앱 설치 없이 모바일과 PC 웹에서 즉시 360도 회전, 확대, 내부 탐색이 가능한 초경량(4~18MB) 뷰어를 제공합니다.",
-        d2_title: "1:1 Real-Scale AR",
-        d2_desc: "iOS 및 Android 스마트폰으로 실제 내 방, 매장, 차고에 실물 크기 3D 모델을 즉시 배치해볼 수 있습니다.",
-        d3_title: "3D Hotspots & Annotations",
-        d3_desc: "특정 부품, 소재 질감, 치수 스펙을 클릭하면 상세 설명이 펼쳐지는 인터랙티브 설명 핀을 자유롭게 추가합니다.",
-        d4_title: "AI Studio Imagery",
-        d4_desc: "추가 화보 촬영 없이 3D 디지털 트윈을 활용해 스튜디오 조명 변경 및 원하는 배경 환경으로 제품 사진을 무제한 생성합니다.",
-        p3_eyebrow: "03 · Convert",
-        p3_title: "더 많은 고객을 구매로 전환하세요.<br/><em>코드 1줄로 웹사이트 삽입.</em>",
-        p3_desc: "HTML 코드 한 줄로 기존 쇼핑몰(Shopify, WooCommerce 등)이나 공식 웹사이트에 3D 뷰어를 즉시 삽입할 수 있습니다. 소비자의 구매 확신을 높여 반품을 줄이고 매출을 극대화합니다.",
-        p3_b1: "Shopify, WooCommerce, BigCommerce, Adobe Commerce 원라인 임베드",
-        p3_b2: "모바일 우선(Mobile-First) 최적화로 버벅임 없는 로딩 속도",
-        p3_b3: "76%의 소비자가 온라인 쇼핑 시 3D 인터랙티브 경험을 기대 (Adobe 리포트)",
-        p3_b4: "독립 호스팅 및 보안 암호화 지원",
-        roi_1_title: "구매 전환율 대폭 상승",
-        roi_1_sub: "3D 인터랙션을 경험한 고객의 구매 전환율 대폭 상승",
-        roi_2_title: "반품률 감소 효과",
-        roi_2_sub: "치수 및 실제 질감 확인을 통한 단순 변심 반품 감소",
-        roi_3_title: "고객 체류 시간 증가",
-        roi_3_sub: "상세 페이지 체류 시간 및 브랜드 몰입도 증가",
-        arch_eyebrow: "Live 3DGS Gallery",
+        stat_4_lbl: "브라우저 WebGL 성능",
+        bento_eyebrow: "CORE ARCHITECTURE",
+        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
+        bento_desc: "Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.",
+        b1_title: "360° 다각도 나선형 궤적 복원",
+        b1_desc: "단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.",
+        b2_title: "초경량 SOG 압축 기술",
+        b2_desc: "수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.",
+        b3_title: "1:1 실물 크기 증강현실 (AR)",
+        b3_desc: "iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.",
+        b4_title: "실시간 반사광 & 질감 보존",
+        b4_desc: "금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.",
+        b5_title: "전 세계 180+ 엣지 즉시 배포",
+        b5_desc: "단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.",
+        proto_eyebrow: "OPERATIONAL PROTOCOL",
+        proto_title: "완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em>",
+        proto_desc: "스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.",
+        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
+        calc_title: "인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em>",
+        calc_desc: "쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.",
+        calc_l1: "월간 순 방문자 수 (Monthly Visitors)",
+        calc_l2: "평균 주문 금액 (Average Order Value)",
+        calc_l3: "현재 상품 반품률 (Current Return Rate)",
+        calc_r1_lbl: "🚀 예상 연간 추가 매출 (Annual Revenue Uplift)",
+        calc_r2_lbl: "📉 예상 연간 반품 절감액 (Saved Return Costs)",
+        embed_eyebrow: "ONE-LINE INTEGRATION",
+        embed_title: "코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em>",
+        embed_desc: "Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.",
+        arch_eyebrow: "LIVE 3D REEL",
         arch_title: "최근 제작된 3D 산출물 릴",
         arch_btn_all: "전체 3D 쇼룸 열기 ↗",
         fcta_title: "첫 번째 3D 디지털 트윈을 제작해보세요",
@@ -1774,87 +2459,55 @@
         fcta_btn_sec: "쇼룸 둘러보기"
       },
       zh: {
-        ann_text: "⚡ Points & Reality 3DGS 引擎 — 仅需一段视频或多张照片，约1小时生成超写实 3D 数字孪生",
-        ann_cta: "探索 3D 展厅 →",
-        nav_how: "运作原理",
-        nav_create: "生成资产",
-        nav_convert: "转化提升",
-        nav_gallery: "3D 作品集",
+        top_status: "Points & Reality 3DGS — 视频采集，约1小时生成 60+ FPS 超写实 3D 数字孪生",
+        top_cta: "进入 3D 展厅 →",
+        nav_stage: "3D 视口",
+        nav_bento: "核心技术",
+        nav_protocol: "6步采集指南",
+        nav_roi: "ROI 计算器",
+        nav_embed: "一行代码嵌入",
         nav_showroom: "[ 3D 展厅 ↗ ]",
-        btn_inquire: "商务咨询 / 演示",
+        btn_inquire: "预约演示 →",
         hero_eyebrow: "3D 高斯泼溅与 AI 空间工作室",
-        hero_h1: "Capture. Create.<br/><em>Convert.</em>",
-        hero_desc: "使用手机或相机拍摄一段简短视频，在约1小时内生成可嵌入网页的超逼真 3D 高斯数字孪生。无需安装任何软件，浏览器 60+ FPS 流畅渲染。",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "仅需一段3分钟的手机或相机视频，约1小时即可生成可在网页流畅运行的 3D 高斯数字孪生。无需任何插件，浏览器 60+ FPS 原生旋转缩放。",
         hero_btn_explore: "进入 3D 展厅 ↗",
-        hero_btn_how: "了解运作流程 ↓",
-        hero_val_title: "电商与工业级下一代 3D 解决方案",
-        hero_val_desc: "突破传统多边形网格粗糙失真的局限，高保真还原真实物体的高光反射、细腻材质与亚毫米级精度，显著提升买家信心。",
-        stat_1_lbl: "典型拍摄时间",
-        stat_2_lbl: "模型生成交付时间",
+        hero_btn_how: "查看 6 步采集流程 ↓",
+        hero_val_title: "电商与汽车工业级下一代 3D 方案",
+        hero_val_desc: "告别粗糙网格失真，完整还原真实金属光泽、车漆质感及亚毫米级细节，大幅提升下单信心并降低退货。",
+        stat_1_lbl: "典型光学采集耗时",
+        stat_2_lbl: "模型交付耗时",
         stat_3_lbl: "网页优化 SOG 体积",
-        stat_4_lbl: "浏览器原生渲染",
-        p1_eyebrow: "01 · 采集",
-        p1_title: "随时随地轻松拍摄.<br/><em>任何设备皆可胜任.</em>",
-        p1_desc: "无需昂贵的工作室与专业扫描仪。用手机或单反绕物拍摄3分钟视频，上传至生产管线即可完成全部输入。",
-        p1_b1: "支持 iPhone、Android、单反及微单相机",
-        p1_b2: "仅需3分钟视频或80-150张照片",
-        p1_b3: "适用于汽车、奢侈品、家具、服饰、空间等全品类",
-        p1_b4: "零设备配置成本",
-        p1_box_title: "极简 3 分钟光学采集",
-        p1_box_desc: "以物体为中心，在3-4个不同高度（水平、俯视45度、特写）匀速环绕录制即可。",
-        steps_eyebrow: "采集指南",
-        steps_title: "拍摄完美 3D 资产的 6 个步骤",
-        s1_name: "物体布置",
-        s1_desc: "将物体置于可 360 度顺畅环绕的空间，拍摄过程中保持物体绝对静止。",
-        s1_tip: "提示：放置在齐腰高台上操作最舒适。",
-        s2_name: "柔和光线",
-        s2_desc: "使用均匀的柔光或阴天自然光，避免产生强烈阴影与过曝高光。",
-        s2_tip: "提示：均匀光线有助于获得最干净的材质。",
-        s3_name: "相机设置",
-        s3_desc: "开启 4K 分辨率，锁定曝光、对焦及白平衡以保持色彩一致。",
-        s3_tip: "提示：现代旗舰手机即可达到顶级成效。",
-        s4_name: "匀速运镜",
-        s4_desc: "保持身体平稳移动，避免抖动与快速位移，每圈环绕约 40 秒。",
-        s4_tip: "提示：脚跟过渡到脚尖步法拍摄更稳定。",
-        s5_name: "多高度覆盖",
-        s5_desc: "在 3-4 个不同高度视角录制，包含一次 45 度俯拍以覆盖所有表面。",
-        s5_tip: "提示：俯拍视点能大幅提升顶部细节。",
-        s6_name: "管线上传",
-        s6_desc: "上传至 Points & Reality 管线，AI 神经优化在约 1 小时内交付生产级模型。",
-        s6_tip: "提示：支持多角度高分辨率合并上传。",
-        p2_eyebrow: "02 · 生成",
-        p2_title: "单次采集，<br/><em>衍生全套商业数字化资产.</em>",
-        p2_desc: "仅需一次拍摄，即可从单个高保真数字孪生中生成全套面向电商与营销的互动资产。",
-        p2_b1: "无需插件、原生 60+ FPS 流畅交互的 3D 网页模型",
-        p2_b2: "支持 iOS 与 Android 的 1:1 真实空间 AR 试放体验",
-        p2_b3: "可添加材料说明、尺寸参数与亮点的互动 3D 标注针",
-        p2_b4: "无需二次布景，AI 自动生成无限棚拍与生活场景图",
-        p2_b5: "单文件独立分发的标准 SOG / PLY 格式封装",
-        p2_box_title: "全合一数字孪生资产库",
-        p2_box_desc: "3D 视口、空间 AR、营销级渲染、交互说明针，无需额外成本即可全部享有。",
-        d1_title: "60+ FPS Web 3D 视口",
-        d1_desc: "体积仅 4-18MB 的超轻量高画质 3D 视口，任何浏览器直接缩放旋转。",
-        d2_title: "1:1 空间真实 AR",
-        d2_desc: "在真实房间与桌面摆放商品，直观验证尺寸与搭配效果，打消下单疑虑。",
-        d3_title: "3D 热点标注与规格",
-        d3_desc: "点击展开材料成分与工艺细节，提供直观的数字化产品说明。",
-        d4_title: "AI 摄影棚多场景生成",
-        d4_desc: "自由更换光影与背景，快速输出无尽的产品主图与海报。",
-        p3_eyebrow: "03 · 转化",
-        p3_title: "提升客户转化率.<br/><em>一行代码轻松嵌入.</em>",
-        p3_desc: "通过一行 HTML 代码即可嵌入 Shopify、WooCommerce 及自有网站，大幅降低退货率并提升订单成交。",
-        p3_b1: "一键嵌入主流电商平台及自定义网页",
-        p3_b2: "移动端优先架构，秒级加载零卡顿",
-        p3_b3: "76% 的消费者期望在网购时获得 3D 互动体验",
-        p3_b4: "提供独立托管与加密分发支持",
-        roi_1_title: "购买转化率显著提升",
-        roi_1_sub: "3D 互动深度激发消费者的购买决策",
-        roi_2_title: "大幅降低退货率",
-        roi_2_sub: "精确的真实质感与尺寸预期避免错购",
-        roi_3_title: "大幅提高页面停留时长",
-        roi_3_sub: "沉浸式交互显著提升品牌好感度",
-        arch_eyebrow: "实时 3D 档案",
-        arch_title: "精选 3DGS 交付作品",
+        stat_4_lbl: "浏览器原生 WebGL 帧率",
+        bento_eyebrow: "CORE ARCHITECTURE",
+        bento_title: "硅谷级顶级架构<br /><em>空间 AI 平台</em>",
+        bento_desc: "结合自研 3DGS 神经渲染管线与 SOG 极度压缩算法，带来极致轻量与高画质兼备的空间电商资产。",
+        b1_title: "360° 螺旋环绕轨迹复原",
+        b1_desc: "从视频单帧自动反算相机姿态（SfM），在三维空间中构建完整的连续拍摄轨迹。",
+        b2_title: "超轻量 SOG 压缩技术",
+        b2_desc: "将原始数 GB 的 PLY 高斯数据无损压缩高达 98%，实现网页 0.5 秒极速加载。",
+        b3_title: "1:1 空间真实 AR 体验",
+        b3_desc: "原生支持 iOS QuickLook 及 Android WebXR，无需安装 App 即可在实体房间中投射实物尺寸。",
+        b4_title: "实时高光与材质反射",
+        b4_desc: "以六维神经辐射场函数计算视角相关的物理高光，告别死板贴图。",
+        b5_title: "全球 180+ 边缘节点秒级分发",
+        b5_desc: "静态包格式打包，通过全球 CDN 边缘节点实现低于 50ms 的超低延迟访问。",
+        proto_eyebrow: "OPERATIONAL PROTOCOL",
+        proto_title: "打造完美 3D 资产的<br /><em>6 步标准拍摄指南</em>",
+        proto_desc: "使用普通手机即可达成电影级 3D 采集。点击各个步骤查看具体推荐参数与注意事项。",
+        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
+        calc_title: "交互式 3DGS<br /><em>商业 ROI 收益计算器</em>",
+        calc_desc: "输入月度访客量与客单价，实时预估 3D 交互为独立站带来的销售额增长与退货节省。",
+        calc_l1: "月度独立访客数 (Monthly Visitors)",
+        calc_l2: "平均订单客单价 (AOV)",
+        calc_l3: "当前退货率 (Current Return Rate)",
+        calc_r1_lbl: "🚀 预估年度新增销售额 (Annual Revenue Uplift)",
+        calc_r2_lbl: "📉 预估年度退货节省额 (Saved Return Costs)",
+        embed_eyebrow: "ONE-LINE INTEGRATION",
+        embed_title: "一行代码<br /><em>轻松嵌入任何网站</em>",
+        embed_desc: "无缝支持 Shopify、WooCommerce、Webflow 及 React/Next.js 等各类前端框架。",
+        arch_eyebrow: "LIVE 3D REEL",
+        arch_title: "精选 3D 交付作品",
         arch_btn_all: "进入 3D 展厅 ↗",
         fcta_title: "立即打造您的首个 3D 数字孪生",
         fcta_desc: "拍摄一段3分钟视频，上传至 Points & Reality，约1小时即可体验专属 3DGS 资产。",
@@ -1862,91 +2515,59 @@
         fcta_btn_sec: "探索展厅"
       },
       mi: {
-        ann_text: "⚡ Points & Reality 3DGS Engine — Whakawhiti ataata ki te 3D matihiko i roto i te haora kotahi",
-        ann_cta: "Tirohia te Pātaka →",
-        nav_how: "Te Rerengamahi",
-        nav_create: "Ngā Hua Matihiko",
-        nav_convert: "Whakawhiti",
-        nav_gallery: "Pātaka 3D",
+        top_status: "Points & Reality 3DGS — Whakawhiti ataata ki te 3D matihiko i roto i te haora kotahi",
+        top_cta: "Tirohia te Pātaka →",
+        nav_stage: "Whakaaturanga 3D",
+        nav_bento: "Hangarau",
+        nav_protocol: "Ngā Hipanga e 6",
+        nav_roi: "Tatau ROI",
+        nav_embed: "Whakauru 1-Raina",
         nav_showroom: "[ Whakaaturanga ↗ ]",
-        btn_inquire: "Whakapā mai",
-        hero_eyebrow: "Pūkaha 3D Gaussian Splatting",
-        hero_h1: "Capture. Create.<br/><em>Convert.</em>",
-        hero_desc: "Ko te 3D Gaussian Splatting he hangarau hou e whakaatu ana i te ao tūturu me te tino mārama ki runga i te paetukutuku i roto i te haora kotahi.",
+        btn_inquire: "Whakapā mai →",
+        hero_eyebrow: "PŪKAHA 3D GAUSSIAN SPLATTING",
+        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
+        hero_desc: "Ko te 3D Gaussian Splatting he hangarau hou e whakaatu ana i te ao tūturu ki runga i te paetukutuku i roto i te haora kotahi me te 60+ FPS.",
         hero_btn_explore: "Tirohia te Whakaaturanga ↗",
-        hero_btn_how: "Pānuitia ngā tikanga ↓",
+        hero_btn_how: "Ngā Hipanga ↓",
         hero_val_title: "He hangarau 3D kairangi mō te ao matihiko",
         hero_val_desc: "He mea tere, he mea māmā ki te tirotiro i runga paetukutuku me te kore he tono tāpiri.",
-        stat_1_lbl: "Wā hopu whakaahua",
-        stat_2_lbl: "Wā hanga 3D",
-        stat_3_lbl: "Rahi kōnae SOG",
+        stat_1_lbl: "Wā Hopu Whakaahua",
+        stat_2_lbl: "Wā Hanga 3D",
+        stat_3_lbl: "Rahi Kōnae SOG",
         stat_4_lbl: "Tere WebGL",
-        p1_eyebrow: "01 · Hopu",
-        p1_title: "Hopukia tō hua.<br/><em>Ki ngā kāmera katoa.</em>",
-        p1_desc: "Kāhore he hiahia mō ngā taputapu utu nui. Hopukia he ataata 3 meneti ki tō waea pūkoro.",
-        p1_b1: "Waea pūkoro me ngā kāmera DSLR katoa",
-        p1_b2: "3 meneti noa iho te roa",
-        p1_b3: "Waka, taonga, kākahu, whare hoki",
-        p1_b4: "Kāore he utu tāpiri mō te tūāpapa",
-        p1_box_title: "Hopu Whakaahua Māmā",
-        p1_box_desc: "Hīkoi marie huri noa i te hua i roto i ngā tūnga e 3-4.",
-        steps_eyebrow: "Ture Hopu",
-        steps_title: "Ngā Hipanga e 6 ki te 3D Kairangi",
-        s1_name: "Whakarite Hua",
-        s1_desc: "Whakatūria tō hua ki tētahi wāhi e taea ai e koe te hīkoi huri noa.",
-        s1_tip: "Akiaki: Me tū ki te teitei o te hope.",
-        s2_name: "Mārama Ngāwari",
-        s2_desc: "Whakamahia te mārama marara, kaua te rā tika tonu.",
-        s2_tip: "Akiaki: He pai te rā pūkohukohu.",
-        s3_name: "Tautuhinga Kāmera",
-        s3_desc: "Tautuhia ki te 4K me te raka i te arotahi me te māramatanga.",
-        s3_tip: "Akiaki: He pai katoa ngā waea hou.",
-        s4_name: "Neke Marie",
-        s4_desc: "Hīkoi marie, kaua e ohorere te neke. ~40 hēkona mō ia porohita.",
-        s4_tip: "Akiaki: Hīkoi mai te rekereke ki te matimati.",
-        s5_name: "Kapi Whānui",
-        s5_desc: "Hopukia mai i ngā teitei rerekē kia kitea ngā taha katoa.",
-        s5_tip: "Akiaki: Me hopu mai i runga anō hoki.",
-        s6_name: "Tuku ki te Pūkaha",
-        s6_desc: "Tukua te ataata ki te pūkaha AI, ka oti te tauira i roto i te haora kotahi.",
-        s6_tip: "Akiaki: Ka taea te tuku ataata maha.",
-        p2_eyebrow: "02 · Waihanga",
-        p2_title: "Waihangatia ngā mea katoa mai i<br/><em>tētahi hopu kotahi.</em>",
-        p2_desc: "Mai i te hopu kotahi, ka puta ngā momo hua matihiko katoa mō tō pakihi.",
-        p2_b1: "Tauira 3D WebGL tere tonu ki ngā pūtirotiro katoa",
-        p2_b2: "Whakaaturanga AR ki tō ake wāhi tūturu",
-        p2_b3: "Kōrero whakamārama 3D mō ngā taonga",
-        p2_b4: "Whakaahua AI mō ngā kaupapa whakatairanga",
-        p2_b5: "Kōnae SOG/PLY mō te tohatoha motuhake",
-        p2_box_title: "Pātaka Matihiko Katoa",
-        p2_box_desc: "Tirotiro 3D, AR, me ngā whakamārama katoa i roto i te kōnae kotahi.",
-        d1_title: "Tirotiro 3D WebGL",
-        d1_desc: "He māmā ki te tirotiro, te huri me te whakanui i runga ipurangi.",
-        d2_title: "AR Tūturu 1:1",
-        d2_desc: "Whakanohoia te taonga ki tō rūma tūturu mā te waea pūkoro.",
-        d3_title: "Whakamārama 3D",
-        d3_desc: "Pāwhiritia ngā tohu hei whakaatu i ngā kōrero hangarau.",
-        d4_title: "Whakaahua AI",
-        d4_desc: "Waihangatia ngā whakaahua hou me ngā taiao rerekē.",
-        p3_eyebrow: "03 · Whakawhiti",
-        p3_title: "Whakapiki i ngā hoko.<br/><em>Tae atu ki te paetukutuku.</em>",
-        p3_desc: "Whakaurua te 3D ki tō toa ipurangi me te raina kōwhiringa kotahi.",
-        p3_b1: "Shopify, WooCommerce, me ngā paetukutuku katoa",
-        p3_b2: "Tere tonu te uta ki ngā waea pūkoro",
-        p3_b3: "76% o ngā kiritaki e hiahia ana ki te 3D ipurangi",
-        p3_b4: "Haumaru me te motuhake",
-        roi_1_title: "Pikinga Hoko",
-        roi_1_sub: "Ka nui ake te hoko a ngā kiritaki e whakamahi ana i te 3D",
-        roi_2_title: "Whakaiti Whakahoki",
-        roi_2_sub: "Ka iti ake ngā whakahoki taonga nā te mārama ki te rahi tūturu",
-        roi_3_title: "Nuinga Wā Tirotiro",
-        roi_3_sub: "Ka roa ake te noho a ngā kiritaki ki tō whārangi",
-        arch_eyebrow: "Pātaka 3D",
+        bento_eyebrow: "CORE ARCHITECTURE",
+        bento_title: "Hangarau Kairangi<br /><em>Pūhara AI Matihiko</em>",
+        bento_desc: "He hangarau hou mō te ao 3D me te hokohoko matihiko.",
+        b1_title: "Aroturuki 360° Pūmau",
+        b1_desc: "Whakahou i ngā tūnga kāmera katoa i roto i te wā tūturu.",
+        b2_title: "Whakaiti Kōnae SOG",
+        b2_desc: "Whakaitihia ngā kōnae nui ki te 12MB me te pupuri i te kounga kairangi.",
+        b3_title: "AR Tūturu 1:1",
+        b3_desc: "Whakanohoia te taonga ki tō rūma tūturu mā te waea pūkoro.",
+        b4_title: "Mārama Whakaata Tūturu",
+        b4_desc: "Whakaatuhia ngā tīrourou me ngā kirihou i roto i te pono.",
+        b5_title: "Tohanga Ao Tere Tonu",
+        b5_desc: "Tuku kōnae ki te ao katoa i roto i ngā mirihēkona.",
+        proto_eyebrow: "OPERATIONAL PROTOCOL",
+        proto_title: "Ngā Hipanga e 6 ki te<br /><em>3D Kairangi</em>",
+        proto_desc: "A pee i ēnei hipanga māmā e ono hei hanga i tō tauira 3D tuatahi.",
+        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
+        calc_title: "Tatau ROI<br /><em>Whakapiki Hoko</em>",
+        calc_desc: "Tātaihia ngā hua ka puta mai i te whakauru i te 3D ki tō toa.",
+        calc_l1: "Kaihoko ia Marama",
+        calc_l2: "Utu Toharite o te Ota",
+        calc_l3: "Ōrau Whakahoki Taonga",
+        calc_r1_lbl: "🚀 Pikinga Hoko ia Tau",
+        calc_r2_lbl: "📉 Pūtea Whakaora Whakahoki",
+        embed_eyebrow: "ONE-LINE INTEGRATION",
+        embed_title: "Whakaurua ki te<br /><em>Raina Waehere Kotahi</em>",
+        embed_desc: "He māmā te whakauru ki Shopify, WooCommerce, me ngā paetukutuku katoa.",
+        arch_eyebrow: "LIVE 3D REEL",
         arch_title: "Ngā Hua 3DGS Kairangi",
-        arch_btn_all: "Whakatuwhera Whakaaturanga ↗",
+        arch_btn_all: "Whakaaturanga ↗",
         fcta_title: "Kua rite koe mō tō 3D tuatahi?",
         fcta_desc: "Hopukia he ataata 3 meneti, tukua mai, ka oti i roto i te haora kotahi.",
-        fcta_btn_primary: "Whakapā mai / Whakaaturanga →",
+        fcta_btn_primary: "Whakapā mai →",
         fcta_btn_sec: "Tirohia te Pātaka"
       }
     };
