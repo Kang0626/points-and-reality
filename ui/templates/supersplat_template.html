@@ -104,15 +104,20 @@
               display: flex;
               flex-direction: column;
             }
-            #controlsWrap.faded-in {
-              visibility: visible;
-              opacity: 1;
+            #controlsWrap.faded-in, .points-reality-hud.faded-in {
+              visibility: visible !important;
+              opacity: 1 !important;
+              pointer-events: auto !important;
               transition: opacity 0.5s ease-out;
             }
-            #controlsWrap.faded-out {
-              visibility: hidden;
-              opacity: 0;
-              transition: visibility 0s 0.5s, opacity 0.5s ease-out;
+            #controlsWrap.faded-out, .points-reality-hud.faded-out {
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+              transition: visibility 0s 0.5s, opacity 0.5s ease-out !important;
+            }
+            .points-reality-hud {
+              transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
             }
             #controlsWrap > #timelineContainer {
               height: 30px;
@@ -100621,9 +100626,18 @@ const initUI = (global) => {
             dom.settingsPanel.classList.add('hidden');
         }
     });
-    // fade ui controls after 5 seconds of inactivity
+    // fade ui controls and text labels after inactivity
     events.on('controlsHidden:changed', (value) => {
         dom.controlsWrap.className = value ? 'faded-out' : 'faded-in';
+        document.querySelectorAll('.points-reality-hud').forEach((el) => {
+            if (value) {
+                el.classList.remove('faded-in');
+                el.classList.add('faded-out');
+            } else {
+                el.classList.remove('faded-out');
+                el.classList.add('faded-in');
+            }
+        });
     });
     // show the ui and start a timer to hide it again
     let uiTimeout = null;
@@ -100639,6 +100653,32 @@ const initUI = (global) => {
     };
     showUI();
     events.on('inputEvent', showUI);
+
+    // Natural fade out when mouse leaves viewport, fade in when returning
+    document.addEventListener('mouseleave', () => {
+        if (uiTimeout) {
+            clearTimeout(uiTimeout);
+        }
+        uiTimeout = setTimeout(() => {
+            uiTimeout = null;
+            state.controlsHidden = true;
+        }, 600);
+    });
+    document.addEventListener('mouseenter', () => {
+        showUI();
+    });
+    window.addEventListener('blur', () => {
+        if (uiTimeout) {
+            clearTimeout(uiTimeout);
+        }
+        uiTimeout = setTimeout(() => {
+            uiTimeout = null;
+            state.controlsHidden = true;
+        }, 300);
+    });
+    window.addEventListener('focus', () => {
+        showUI();
+    });
     // Animation controls
     events.on('hasAnimation:changed', (value, prev) => {
         // Start and Stop animation
