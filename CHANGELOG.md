@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.236 (Current)
+### 🔹 v2.237 (Current)
+* **Client Review Watermark 활성화 시 'Review_' 파일명 접두사 자동 연동 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **워터마크 활성화 시 `Review_` 프리픽스 자동 부여**: `Client Review Watermark` 체크 시 WebGL 모델 목록의 `Output HTML File` 컬럼 및 단일/일괄 빌드 출력 파일명에 자동으로 `'Review_'` 접두사(예: `FordEscape.html` ➔ `Review_FordEscape.html`, `index.html` ➔ `Review_index.html`)가 부여되도록 연동.
+  * **체크 해제 시 원복**: 워터마크 체크박스를 해제하면 즉시 원래 파일명으로 안전하게 원복되며, 빌드 시에도 정품 릴리즈 파일명으로 생성.
+
+### 🔹 v2.236
 * **Cloud Showroom 탭 상하 카드 위치 스왑 및 액션 버튼(Open/URL) 텍스트 잘림 해결 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **상하 카드 위치 재배치 (자연스러운 빌드➔배포 워크플로우)**: 상단에 **Card 1: `Local Package Deployment & Selective Upload` (로컬 패키지 배포 및 선택적 업로드)**를 배치하고, 하단에 **Card 2: `Live Cloud Showroom & Vercel Resources` (실시간 클라우드 쇼룸 및 자산 관리)**를 배치하여 빌드 후 배포, 배포 후 라이브 확인으로 이어지는 자연스러운 시각적 흐름 완성.
   * **Actions 컬럼 버튼 잘림 원천 해결**: 행 높이를 `36px`로 확장하고 Actions 컬럼 너비를 `160px Fixed`로 고정하여 `🌐 Open` 및 `📋 URL` 버튼이 어떤 DPI나 창 크기에서도 잘림 없이 깨끗하게 렌더링되도록 최적화.

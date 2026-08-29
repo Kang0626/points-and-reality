@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.236)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.237)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -63,7 +63,7 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
   * **퀵 프리셋 지원**: `🎯 Front View`, `📐 Quarter (3/4)`, `🚗 Side View`, `🚁 Top-Down`.
 * **STEP 3. 출력 디렉토리 및 일괄 패키징**:
   * **출력 폴더 지정**: 기본 `05_web_build` 외에 자유롭게 변경 가능.
-  * **`🛡️ 워터마크 크기 및 불투명도 조절`**: `Client Review Watermark` 체크 시 글자 크기(px) 및 불투명도(%)를 정밀하게 설정 가능.
+  * **`🛡️ 워터마크 크기 및 불투명도 조절 & Review_ 자동 네이밍`**: `Client Review Watermark` 체크 시 글자 크기(px) 및 불투명도(%)를 정밀하게 설정 가능하며, 출력 파일명 앞에 `'Review_'` 접두사가 자동 부여됨.
   * **`⚡ 선택된 모델 WebGL 일괄 빌드`**: 체크된 모든 모델을 각자의 파일명과 카메라 세팅으로 일괄 패키징.
   * **`🟢 로컬 웹 서버 상태 인디케이터`**: Card 3 상단 헤더의 컴팩트 원형 뱃지(`🟢 8080` / `⚪ Off`)로 즉시 토글.
 
@@ -159,10 +159,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.236`
+* **Current Version**: `v2.237`
 * **주요 변경 요약**:
+  * **워터마크 활성화 시 'Review_' 파일명 접두사 자동 연동 (`v2.237`)**: `Client Review Watermark` 체크 시 WebGL 모델 목록의 `Output HTML File` 컬럼 및 빌드 출력 파일명에 `'Review_'` 접두사(예: `FordEscape.html` ➔ `Review_FordEscape.html`, `index.html` ➔ `Review_index.html`)가 자동으로 적용 및 연동되며, 체크 해제 시 원래 파일명으로 안전하게 원복.
   * **Cloud Showroom 탭 상하 카드 위치 스왑 및 액션 버튼(Open/URL) 텍스트 잘림 해결 (`v2.236`)**: 상단에 Card 1(로컬 패키지 배포 및 선택적 업로드), 하단에 Card 2(실시간 클라우드 쇼룸 및 자산 관리)를 배치하여 자연스러운 빌드➔배포 워크플로우를 구성하고, 액션 테이블 행 높이를 `36px` 및 너비 `160px Fixed`로 최적화하여 `🌐 Open` 및 `📋 URL` 버튼이 잘림 없이 렌더링되도록 수정.
   * **워터마크 글자 크기 및 오퍼시티 조절 컨트롤 도입 & Tab 3 중복 Upload 버튼 정리 (`v2.235`)**: `Client Review Watermark` 옵션에 `Size (40~300 px, 기본: 140px)` 및 `Opacity (1~100 %, 기본: 6%)` 스핀박스를 추가하여 실시간 정밀 조절 기능을 제공하고, 클라우드 쇼룸 탭 신설에 따라 Tab 3 하단 액션바에서 중복되던 `Upload & Cloud Showroom` 버튼을 제거하여 빌드 중심의 간결한 UI로 최적화.
-  * **상단 네비게이션 4번째 전용 탭 'Cloud Showroom' 신설 및 로컬 서버 토글 크래시 수정 (`v2.234`)**: WebGL Build 탭 옆에 4번째 독립 탭(`Cloud Showroom` / `클라우드 쇼룸`)을 신설하여 실시간 클라우드 배포 현황 확인, 라이브 쇼룸 접속, 선택적 로컬 패키지 배포 및 원격 모델 삭제를 한곳에서 영구 관리하고, 로컬 서버 토글 시 `_start_server_sync` 누락으로 인한 앱 종료 버그를 완벽 해결.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**

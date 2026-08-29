@@ -799,6 +799,29 @@ class WebGLTab(QWidget):
                 self.lbl_watermark_size.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
                 self.lbl_watermark_opacity.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
 
+            # Dynamically update the table's Output HTML File column naming with/without Review_
+            if hasattr(self, 'table_models') and self.table_models is not None:
+                self.table_models.blockSignals(True)
+                for r in range(self.table_models.rowCount()):
+                    item = self.table_models.item(r, 2)
+                    if item:
+                        current_name = item.text().strip()
+                        src_item = self.table_models.item(r, 1)
+                        src_file = os.path.normpath(src_item.toolTip()) if src_item else ""
+                        if is_on:
+                            if not current_name.startswith("Review_"):
+                                new_name = f"Review_{current_name}"
+                                item.setText(new_name)
+                                if src_file in self.model_configs:
+                                    self.model_configs[src_file]["html_name"] = new_name
+                        else:
+                            if current_name.startswith("Review_"):
+                                new_name = current_name[7:]
+                                item.setText(new_name)
+                                if src_file in self.model_configs:
+                                    self.model_configs[src_file]["html_name"] = new_name
+                self.table_models.blockSignals(False)
+
         self.chk_watermark.stateChanged.connect(_on_chk_watermark_changed)
         
         opts_row.addWidget(self.chk_watermark)
@@ -1519,6 +1542,8 @@ class WebGLTab(QWidget):
             src_file = targets[0]
             row = target_rows[0]
             current_html_name = self.table_models.item(row, 2).text().strip() if self.table_models.item(row, 2) else f"{os.path.basename(src_file)}.html"
+            if enable_watermark and not current_html_name.startswith("Review_"):
+                current_html_name = f"Review_{current_html_name}"
             default_save_path = os.path.normpath(os.path.join(out_dir, current_html_name))
 
             save_title = "Save WebGL Viewer HTML" if self.btn_add_files.text().startswith("➕ Add") else "WebGL 뷰어 HTML 저장 위치 및 파일명 설정"
@@ -1535,6 +1560,9 @@ class WebGLTab(QWidget):
             chosen_file = os.path.normpath(chosen_file)
             out_dir = os.path.dirname(chosen_file)
             custom_html_name = os.path.basename(chosen_file)
+            if enable_watermark and not custom_html_name.startswith("Review_"):
+                custom_html_name = f"Review_{custom_html_name}"
+                chosen_file = os.path.normpath(os.path.join(out_dir, custom_html_name))
 
             # Update UI
             self.input_output_dir.setText(out_dir)
@@ -1598,6 +1626,9 @@ class WebGLTab(QWidget):
         # Get configured HTML output filename for this model
         config = self.model_configs.get(src_file, {})
         html_filename = override_html_name or config.get("html_name", f"{base_name}.html")
+        if enable_watermark and not is_preview:
+            if not html_filename.startswith("Review_"):
+                html_filename = f"Review_{html_filename}"
         if not html_filename.lower().endswith('.html'):
             html_filename += '.html'
 
