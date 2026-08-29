@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.234 (Current)
+### 🔹 v2.235 (Current)
+* **Client Review Watermark 글자 크기 및 오퍼시티 조절 컨트롤 도입 & Tab 3 중복 Upload 버튼 정리 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **워터마크 크기(Size) 및 불투명도(Opacity) 실시간 설정**: 고객 컨펌용 워터마크 입력란 옆에 `Size (40~300 px, 기본: 140px)` 및 `Opacity (1~100 %, 기본: 6%)` 스핀박스 컨트롤을 배치하고, SuperSplat 및 PLY WebGL 뷰어 생성 시 선택한 크기/불투명도가 정밀하게 반영되도록 파이프라인 연동.
+  * **Tab 3 액션바 간소화**: 클라우드 쇼룸 기능이 전용 4번째 탭(`Cloud Showroom`)으로 정식 이전됨에 따라, Tab 3 하단 액션바에서 중복되던 `Upload & Cloud Showroom` 버튼을 제거하여 빌드/폴더 열기 중심의 깔끔한 워크플로우로 최적화.
+
+### 🔹 v2.234
 * **상단 네비게이션 4번째 전용 탭 'Cloud Showroom' 정식 신설 및 로컬 서버 토글 크래시 버그 완벽 수정 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **전용 탭 4 'Cloud Showroom' 신설**: WebGL Build 탭 옆에 4번째 독립 탭(`Cloud Showroom` / `클라우드 쇼룸`)을 신설하여, 실시간 클라우드 배포 현황 확인, 라이브 쇼룸 접속, 선택적 로컬 패키지 배포 및 원격 모델 삭제를 한곳에서 영구 관리.
   * **로컬 서버 토글 버튼 크래시 수정**: `WebGLTab.toggle_preview_server` 실행 시 누락되었던 `_start_server_sync` 메서드를 표준 스레드 생명주기 안전 패턴(`try-except`, `pyqtSignal`)으로 구현하여 "Off" 버튼 클릭 시 앱이 비정상 종료되던 버그를 완전 해결.

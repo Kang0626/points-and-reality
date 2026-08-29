@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QPushButton, QComboBox, QLineEdit, QFileDialog, QFrame, 
                              QProgressBar, QApplication, QTableWidget, QTableWidgetItem, 
                              QHeaderView, QAbstractItemView, QCheckBox, QScrollArea,
-                             QInputDialog, QMessageBox)
+                             QInputDialog, QMessageBox, QSpinBox)
 from PyQt5.QtCore import Qt, pyqtSignal, QThread
 from ui.ui_components import ModernStepCard, StatusPill, ElideLeftDelegate
 from ui.tabs.dialog_web_publish import WebPublishManagerDialog
@@ -157,16 +157,22 @@ def _detect_model_format(file_path):
         return os.path.splitext(file_path)[1].lstrip('.').lower()
 
 
-def _generate_watermark_html(text="Points & Reality"):
-    """Generate clean giant repeating white watermark overlay (matching red box size, ultra-thick, tight tracking, 6% opacity, 100% full-screen coverage including all corners)."""
+def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_pct=6):
+    """Generate clean giant repeating white watermark overlay with configurable size and opacity."""
     raw_text = (text.strip() if text else "") or "Points & Reality"
+    opacity_val = max(0.01, min(1.0, float(opacity_pct) / 100.0))
+    font_size_str = f"clamp({int(font_size_px * 0.75)}px, {font_size_px / 10:.1f}vw, {int(font_size_px * 1.35)}px)"
+    gap_str = f"{int(font_size_px * 0.65)}px"
+    row_gap_str = f"{int(font_size_px * 0.55)}px"
+    offset_px = int(font_size_px * 1.1)
+
     rows_html = []
     # 12 staggered repeating rows spanning a 340vw x 340vh canvas centered on screen
     for i in range(12):
-        offset = "transform: translateX(160px);" if (i % 2 == 1) else ""
+        offset = f"transform: translateX({offset_px}px);" if (i % 2 == 1) else ""
         row = (
-            f'<div style="display:flex; justify-content:center; gap:100px; color:#ffffff; '
-            f'font-size:clamp(120px, 14vw, 220px); font-weight:900; font-family:\'Arial Black\', \'Impact\', \'Montserrat\', -apple-system, sans-serif; '
+            f'<div style="display:flex; justify-content:center; gap:{gap_str}; color:#ffffff; '
+            f'font-size:{font_size_str}; font-weight:900; font-family:\'Arial Black\', \'Impact\', \'Montserrat\', -apple-system, sans-serif; '
             f'letter-spacing:-4px; text-transform:uppercase; white-space:nowrap; {offset}">'
             f'<span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span><span>{raw_text}</span>'
             f'</div>'
@@ -175,15 +181,15 @@ def _generate_watermark_html(text="Points & Reality"):
     
     body = "\n        ".join(rows_html)
     return f'''
-    <!-- Points & Reality Giant Repeating Watermark Overlay (Full Viewport Coverage, Centered Tiling, 6% Opacity) -->
+    <!-- Points & Reality Giant Repeating Watermark Overlay (Full Viewport Coverage, Centered Tiling) -->
     <div id="points-reality-watermark" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99990; pointer-events:none; overflow:hidden; user-select:none;">
-        <div style="position:absolute; top:50%; left:50%; width:340vw; height:340vh; transform:translate(-50%, -50%) rotate(-24deg); opacity:0.06; display:flex; flex-direction:column; justify-content:center; gap:75px; align-items:center;">
+        <div style="position:absolute; top:50%; left:50%; width:340vw; height:340vh; transform:translate(-50%, -50%) rotate(-24deg); opacity:{opacity_val:.3f}; display:flex; flex-direction:column; justify-content:center; gap:{row_gap_str}; align-items:center;">
         {body}
         </div>
     </div>'''
 
 
-def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text=""):
+def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6):
     """Generate a complete 100% offline 3DGS PLY viewer HTML with custom initial camera view."""
     copy_cam_btn_html = '<button class="hud-btn" id="btn-copy-cam">📷 현재 시점 복사 (Copy View)</button>' if is_preview else ''
     copy_cam_js = f'''
@@ -206,7 +212,7 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
             }}
     ''' if is_preview else ''
 
-    watermark_html = _generate_watermark_html(watermark_text) if (not is_preview and enable_watermark) else ''
+    watermark_html = _generate_watermark_html(watermark_text, font_size_px=watermark_size, opacity_pct=watermark_opacity) if (not is_preview and enable_watermark) else ''
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -740,9 +746,9 @@ class WebGLTab(QWidget):
         dest_row.addWidget(self.btn_browse_output)
         c3_layout.addLayout(dest_row)
 
-        # Build Options Row (Client Review Watermark)
+        # Build Options Row (Client Review Watermark with Size & Opacity controls)
         opts_row = QHBoxLayout()
-        opts_row.setSpacing(12)
+        opts_row.setSpacing(10)
         
         self.chk_watermark = QCheckBox("Client Review Watermark")
         self.chk_watermark.setStyleSheet("color: #cbd5e1; font-weight: 600;")
@@ -753,18 +759,54 @@ class WebGLTab(QWidget):
         self.input_watermark_text.setEnabled(False)
         self.input_watermark_text.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 5px 10px; color: #64748b;")
         
+        self.lbl_watermark_size = QLabel("Size:")
+        self.lbl_watermark_size.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
+        
+        self.spin_watermark_size = QSpinBox()
+        self.spin_watermark_size.setRange(40, 300)
+        self.spin_watermark_size.setValue(140)
+        self.spin_watermark_size.setSuffix(" px")
+        self.spin_watermark_size.setFixedWidth(78)
+        self.spin_watermark_size.setEnabled(False)
+        self.spin_watermark_size.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 4px 6px; color: #64748b; font-weight: 600;")
+
+        self.lbl_watermark_opacity = QLabel("Opacity:")
+        self.lbl_watermark_opacity.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
+
+        self.spin_watermark_opacity = QSpinBox()
+        self.spin_watermark_opacity.setRange(1, 100)
+        self.spin_watermark_opacity.setValue(6)
+        self.spin_watermark_opacity.setSuffix(" %")
+        self.spin_watermark_opacity.setFixedWidth(68)
+        self.spin_watermark_opacity.setEnabled(False)
+        self.spin_watermark_opacity.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 4px 6px; color: #64748b; font-weight: 600;")
+
         def _on_chk_watermark_changed(state):
             is_on = (state != 0)
             self.input_watermark_text.setEnabled(is_on)
+            self.spin_watermark_size.setEnabled(is_on)
+            self.spin_watermark_opacity.setEnabled(is_on)
             if is_on:
                 self.input_watermark_text.setStyleSheet("background: #111318; border: 1px solid #3b82f6; border-radius: 4px; padding: 5px 10px; color: #f8fafc;")
+                self.spin_watermark_size.setStyleSheet("background: #111318; border: 1px solid #3b82f6; border-radius: 4px; padding: 4px 6px; color: #f8fafc; font-weight: 600;")
+                self.spin_watermark_opacity.setStyleSheet("background: #111318; border: 1px solid #3b82f6; border-radius: 4px; padding: 4px 6px; color: #f8fafc; font-weight: 600;")
+                self.lbl_watermark_size.setStyleSheet("color: #cbd5e1; font-weight: 600; font-size: 11px;")
+                self.lbl_watermark_opacity.setStyleSheet("color: #cbd5e1; font-weight: 600; font-size: 11px;")
             else:
                 self.input_watermark_text.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 5px 10px; color: #64748b;")
+                self.spin_watermark_size.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 4px 6px; color: #64748b; font-weight: 600;")
+                self.spin_watermark_opacity.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 4px 6px; color: #64748b; font-weight: 600;")
+                self.lbl_watermark_size.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
+                self.lbl_watermark_opacity.setStyleSheet("color: #64748b; font-weight: 600; font-size: 11px;")
 
         self.chk_watermark.stateChanged.connect(_on_chk_watermark_changed)
         
         opts_row.addWidget(self.chk_watermark)
         opts_row.addWidget(self.input_watermark_text, 1)
+        opts_row.addWidget(self.lbl_watermark_size)
+        opts_row.addWidget(self.spin_watermark_size)
+        opts_row.addWidget(self.lbl_watermark_opacity)
+        opts_row.addWidget(self.spin_watermark_opacity)
         c3_layout.addLayout(opts_row)
 
         # Action Buttons Row
@@ -776,17 +818,11 @@ class WebGLTab(QWidget):
         self.btn_build_web.setCursor(Qt.PointingHandCursor)
         self.btn_build_web.clicked.connect(self.build_web_package)
 
-        self.btn_upload_web = QPushButton("Upload & Cloud Showroom (Vercel)")
-        self.btn_upload_web.setObjectName("SuccessBtn")
-        self.btn_upload_web.setCursor(Qt.PointingHandCursor)
-        self.btn_upload_web.clicked.connect(self.upload_to_web)
-
         self.btn_open_web = QPushButton("Open Web Build Folder")
         self.btn_open_web.setCursor(Qt.PointingHandCursor)
         self.btn_open_web.clicked.connect(self.open_web_folder)
 
         actions_layout.addWidget(self.btn_build_web)
-        actions_layout.addWidget(self.btn_upload_web)
         actions_layout.addWidget(self.btn_open_web)
         actions_layout.addStretch()
         c3_layout.addLayout(actions_layout)
@@ -1475,6 +1511,8 @@ class WebGLTab(QWidget):
 
         enable_watermark = hasattr(self, 'chk_watermark') and self.chk_watermark.isChecked()
         watermark_text = self.input_watermark_text.text().strip() if hasattr(self, 'input_watermark_text') else ""
+        watermark_size = self.spin_watermark_size.value() if hasattr(self, 'spin_watermark_size') else 140
+        watermark_opacity = self.spin_watermark_opacity.value() if hasattr(self, 'spin_watermark_opacity') else 6
 
         # Case 1: Single Model checked -> Prompt Save File Dialog (Choose Name & Location)
         if len(targets) == 1:
@@ -1513,10 +1551,11 @@ class WebGLTab(QWidget):
             try:
                 built_name = self._build_single_model(
                     src_file, out_dir, custom_html_name, 
-                    is_preview=False, enable_watermark=enable_watermark, watermark_text=watermark_text
+                    is_preview=False, enable_watermark=enable_watermark, watermark_text=watermark_text,
+                    watermark_size=watermark_size, watermark_opacity=watermark_opacity
                 )
                 self.pill_config.set_status("1 Built", "success")
-                wm_msg = " [🛡️ Watermark Included]" if (enable_watermark and watermark_text) else ""
+                wm_msg = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
                 self.log_signal.emit(f"[SUCCESS] Successfully built WebGL package{wm_msg}:\n➔ {chosen_file}", "success")
             except Exception as e:
                 self.log_signal.emit(f"[ERROR] Failed to build {os.path.basename(src_file)}: {e}", "error")
@@ -1539,7 +1578,8 @@ class WebGLTab(QWidget):
             try:
                 self._build_single_model(
                     src_file, out_dir, 
-                    is_preview=False, enable_watermark=enable_watermark, watermark_text=watermark_text
+                    is_preview=False, enable_watermark=enable_watermark, watermark_text=watermark_text,
+                    watermark_size=watermark_size, watermark_opacity=watermark_opacity
                 )
                 success_count += 1
             except Exception as e:
@@ -1547,10 +1587,10 @@ class WebGLTab(QWidget):
 
         if success_count > 0:
             self.pill_config.set_status(f"{success_count} Built", "success")
-            wm_msg = " [🛡️ Watermark Included]" if (enable_watermark and watermark_text) else ""
+            wm_msg = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
             self.log_signal.emit(f"[SUCCESS] Successfully built {success_count} WebGL packages{wm_msg} in:\n➔ {out_dir}", "success")
 
-    def _build_single_model(self, src_file, out_dir, override_html_name=None, is_preview=False, enable_watermark=False, watermark_text=""):
+    def _build_single_model(self, src_file, out_dir, override_html_name=None, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6):
         fmt = _detect_model_format(src_file)
         src_name = os.path.basename(src_file)
         base_name, _ = os.path.splitext(src_name)
@@ -1727,7 +1767,7 @@ class WebGLTab(QWidget):
     </div>
 '''
                 if enable_watermark:
-                    overlays_html += _generate_watermark_html(watermark_text)
+                    overlays_html += _generate_watermark_html(watermark_text, font_size_px=watermark_size, opacity_pct=watermark_opacity)
 
             contents_line = f'contents: fetch("data:application/octet-stream;base64,{b64_data}"),\n                '
             final_html = template_content.replace('{{TITLE}}', display_title)
@@ -1741,14 +1781,15 @@ class WebGLTab(QWidget):
                 f.write(final_html)
 
             size_mb = os.path.getsize(html_path) / (1024 * 1024)
-            wm_tag = " [🛡️ Watermark]" if (enable_watermark and watermark_text) else ""
+            wm_tag = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
             self.log_signal.emit(f"Built SuperSplat Standalone{wm_tag}: {html_filename} ({size_mb:.1f} MB) [Cam: {cam_pos}]", "info")
             return html_filename
 
         # --- Route B: .ply / .splat / .spz Offline GaussianSplats3D Viewer ---
         html_content = _generate_ply_viewer_html(
             display_title, src_name, cam_pos, cam_target, cam_fov, 
-            is_preview=is_preview, enable_watermark=enable_watermark, watermark_text=watermark_text
+            is_preview=is_preview, enable_watermark=enable_watermark, watermark_text=watermark_text,
+            watermark_size=watermark_size, watermark_opacity=watermark_opacity
         )
         html_path = os.path.normpath(os.path.join(out_dir, html_filename))
         with open(html_path, 'w', encoding='utf-8') as f:
@@ -1988,6 +2029,10 @@ class WebGLTab(QWidget):
             self.chk_watermark.setText(t.get("tab3_chk_watermark", "Client Review Watermark"))
         if hasattr(self, 'input_watermark_text') and self.input_watermark_text is not None:
             self.input_watermark_text.setPlaceholderText(t.get("tab3_placeholder_watermark", "Watermark Text (e.g. Points & Reality)"))
+        if hasattr(self, 'lbl_watermark_size') and self.lbl_watermark_size is not None:
+            self.lbl_watermark_size.setText(t.get("tab3_lbl_watermark_size", "Size:"))
+        if hasattr(self, 'lbl_watermark_opacity') and self.lbl_watermark_opacity is not None:
+            self.lbl_watermark_opacity.setText(t.get("tab3_lbl_watermark_opacity", "Opacity:"))
         self.btn_build_web.setText(t.get("tab3_btn_build", "Build Selected WebGL Packages"))
         if hasattr(self, 'btn_upload_web') and self.btn_upload_web is not None:
             self.btn_upload_web.setText(t.get("tab3_btn_upload_web", "Upload & Cloud Showroom (Vercel)"))
