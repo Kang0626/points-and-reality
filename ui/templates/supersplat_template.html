@@ -108,16 +108,18 @@
               visibility: visible !important;
               opacity: 1 !important;
               pointer-events: auto !important;
-              transition: opacity 0.5s ease-out;
+              transform: translateY(0) !important;
+              transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
             #controlsWrap.faded-out, .points-reality-hud.faded-out {
               visibility: hidden !important;
               opacity: 0 !important;
               pointer-events: none !important;
-              transition: visibility 0s 0.5s, opacity 0.5s ease-out !important;
+              transform: translateY(-4px) !important;
+              transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s 0.45s !important;
             }
             .points-reality-hud {
-              transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+              transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
             #controlsWrap > #timelineContainer {
               height: 30px;
