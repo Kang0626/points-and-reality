@@ -754,6 +754,7 @@
         showcase_desc: "Interact with 3D Gaussian Splats directly in your web browser. Fully optimized for 60+ FPS navigation, customized camera perspectives, and client review workflows.",
         showcase_btn: "Open Interactive Viewer",
         btn_view_model: "View 3D Model →",
+        badge_review: "🛡️ Client Review",
         footer_rights: "All rights reserved.",
         footer_base: "Aotearoa New Zealand"
       },
@@ -794,6 +795,7 @@
         showcase_desc: "브라우저에서 바로 실시간 3D 가우시안 스플랫을 조작해 보세요. 초당 60FPS 이상의 부드러운 내비게이션과 시점 조정을 지원합니다.",
         showcase_btn: "인터랙티브 뷰어 열기",
         btn_view_model: "3D 모델 보기 →",
+        badge_review: "🛡️ 고객 검토용",
         footer_rights: "모든 권리 보유.",
         footer_base: "뉴질랜드 아오테아로아"
       },
@@ -834,6 +836,7 @@
         showcase_desc: "直接在浏览器中操控 3D 高斯点云模型，体验流畅的 60FPS 视角浏览与客户审阅流。",
         showcase_btn: "打开交互式浏览器",
         btn_view_model: "浏览 3D 模型 →",
+        badge_review: "🛡️ 客户审核版",
         footer_rights: "保留所有权利。",
         footer_base: "新西兰 (Aotearoa)"
       },
@@ -874,12 +877,26 @@
         showcase_desc: "Whakamātauria te tirohanga 3D i tō pūtirotiro ipurangi ināianei.",
         showcase_btn: "Tīmatahia te Tirotiro",
         btn_view_model: "Tirohia the 3D →",
+        badge_review: "🛡️ Arotake Kiritaki",
         footer_rights: "Pūmau te mana.",
         footer_base: "Aotearoa New Zealand"
       }
     };
 
     let cachedPortalModels = [];
+
+    function getCleanModelTitle(model) {
+      if (!model) return '3DGS Model';
+      let t = model.title || '';
+      if (!t && model.filename) {
+        t = model.filename;
+        if (t.toLowerCase().endsWith('.html')) t = t.slice(0, -5);
+      }
+      if (t.startsWith('Review_')) {
+        t = t.slice(7);
+      }
+      return t || '3DGS Model';
+    }
 
     function renderPortalCards(models) {
       const grid = document.getElementById('modelsGrid');
@@ -906,13 +923,19 @@
           const card = document.createElement('div');
           card.className = 'model-card';
           const isLatest = (idx === 0);
+          const isReview = !!(model.is_review || (model.filename && model.filename.startsWith('Review_')) || (model.raw_title && model.raw_title.startsWith('Review_')));
+          const reviewBadgeHtml = isReview ? `<span style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.4); color:#fbbf24;">${t.badge_review || '🛡️ Client Review'}</span>` : '';
+
           card.innerHTML = `
             <div>
               <div class="model-card-header">
-                <span class="model-badge">3DGS WebGL</span>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span class="model-badge">3DGS WebGL</span>
+                  ${reviewBadgeHtml}
+                </div>
                 <span style="font-size: 11px; color: ${isLatest ? 'var(--accent-steel)' : 'var(--text-muted)'}; font-weight: ${isLatest ? '700' : '400'};">${isLatest ? '⭐ Latest' : (model.date || 'Ready')}</span>
               </div>
-              <h3 class="model-card-title">${model.title || model.filename}</h3>
+              <h3 class="model-card-title">${getCleanModelTitle(model)}</h3>
               <div class="model-card-file">${model.filename}</div>
             </div>
             <div>

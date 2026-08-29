@@ -57,13 +57,17 @@ class VercelUploadThread(QThread):
             }
             for html_file in html_files:
                 base_name = os.path.splitext(html_file)[0]
+                is_review = base_name.startswith("Review_")
+                clean_title = base_name[7:] if is_review else base_name
                 fpath = os.path.join(target_web_dir, html_file)
                 mtime_val = os.path.getmtime(fpath)
                 manifest["models"].append({
-                    "title": base_name,
+                    "title": clean_title,
+                    "raw_title": base_name,
                     "filename": html_file,
                     "path": f"05_web_build/{html_file}",
                     "is_index": (html_file.lower() == "index.html"),
+                    "is_review": is_review,
                     "mtime": mtime_val,
                     "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
@@ -201,7 +205,7 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     </div>'''
 
 
-def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6, ground_lock=True, min_dist=0.8, max_dist=50.0):
+def _generate_ply_viewer_html(title, display_model_title, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6, ground_lock=True, min_dist=0.8, max_dist=50.0):
     """Generate a complete 100% offline 3DGS PLY viewer HTML with custom initial camera view and constraints."""
     copy_cam_btn_html = '<button class="hud-btn" id="btn-copy-cam">📷 현재 시점 복사 (Copy View)</button>' if is_preview else ''
     copy_cam_js = f'''
@@ -241,21 +245,22 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
         }}
         #hud-header {{
             position: fixed; top: 16px; left: 16px; z-index: 100;
-            background: rgba(20,22,27,0.85); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-            padding: 10px 18px; display: flex; align-items: center; gap: 14px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            background: rgba(15,23,42,0.85); backdrop-filter: blur(14px);
+            border: 1px solid rgba(56,189,248,0.35); border-radius: 10px;
+            padding: 9px 18px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 32px rgba(0,0,0,0.6);
             transition: opacity 0.5s ease, visibility 0.5s ease;
+            user-select: none;
         }}
-        .brand {{ font-size: 14px; font-weight: 800; color: #38bdf8; }}
-        .model-pill {{ font-size: 11px; background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.3); padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
-        .fps-badge {{ font-size: 11px; color: #94a3b8; font-family: monospace; }}
+        .brand {{ font-size: 14px; font-weight: 900; color: #38bdf8; letter-spacing: 0.8px; display: flex; align-items: center; gap: 6px; }}
+        .model-name {{ color: #f8fafc; font-size: 13px; font-weight: 600; letter-spacing: 0.3px; }}
+        .fps-badge {{ font-size: 11px; color: #94a3b8; font-family: monospace; margin-left: 4px; }}
         
         #hud-help {{
             position: fixed; top: 16px; right: 16px; z-index: 100;
-            background: rgba(20,22,27,0.55); backdrop-filter: blur(8px);
+            background: rgba(15,23,42,0.55); backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
-            padding: 8px 14px; font-size: 11px; color: #94a3b8;
+            padding: 8px 14px; font-size: 11.5px; color: #94a3b8;
             opacity: 0.5; transition: opacity 0.5s ease, visibility 0.5s ease;
         }}
         #hud-help:hover {{ opacity: 0.95; }}
@@ -305,7 +310,7 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
     <div id="hud-header">
         <div class="brand">✨ Points & Reality</div>
         <div style="color:#475569; font-size:13px;">|</div>
-        <div class="model-pill">{model_filename}</div>
+        <div class="model-name">{display_model_title}</div>
         <div class="fps-badge" id="lbl-fps">FPS: --</div>
     </div>
     
@@ -1771,7 +1776,10 @@ class WebGLTab(QWidget):
         if not html_filename.lower().endswith('.html'):
             html_filename += '.html'
 
-        display_title = f"Points & Reality 3DGS - {base_name}"
+        # Derive clean display model title (strip Review_ prefix for display)
+        raw_html_base, _ = os.path.splitext(html_filename)
+        display_model_title = raw_html_base[7:] if raw_html_base.startswith("Review_") else raw_html_base
+        display_title = f"Points & Reality 3DGS - {display_model_title}"
 
         # Get camera profile for this specific model
         cam_pos = config.get("pos", [0.0, 1.2, 3.8])
@@ -1936,7 +1944,7 @@ class WebGLTab(QWidget):
     <div id="points-reality-brand-header" class="points-reality-hud" style="position:fixed; top:16px; left:16px; z-index:99999; display:flex; align-items:center; gap:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(14px); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:9px 18px; box-shadow:0 10px 32px rgba(0,0,0,0.6); pointer-events:auto; font-family:'Segoe UI',-apple-system,sans-serif; user-select:none;">
         <span style="font-weight:900; font-size:14px; color:#38bdf8; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">✨ Points & Reality</span>
         <span style="color:#475569; font-size:13px;">|</span>
-        <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{base_name}</span>
+        <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{display_model_title}</span>
     </div>
 
     <!-- Controls Hint (Auto Mouse / Touch Aware) -->
@@ -1992,11 +2000,12 @@ class WebGLTab(QWidget):
             size_mb = os.path.getsize(html_path) / (1024 * 1024)
             wm_tag = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
             self.log_signal.emit(f"Built SuperSplat Standalone{wm_tag}: {html_filename} ({size_mb:.1f} MB) [Cam: {cam_pos}]", "info")
+            self._update_models_manifest(out_dir)
             return html_filename
 
         # --- Route B: .ply / .splat / .spz Offline GaussianSplats3D Viewer ---
         html_content = _generate_ply_viewer_html(
-            display_title, src_name, cam_pos, cam_target, cam_fov, 
+            display_title, display_model_title, cam_pos, cam_target, cam_fov, 
             is_preview=is_preview, enable_watermark=enable_watermark, watermark_text=watermark_text,
             watermark_size=watermark_size, watermark_opacity=watermark_opacity,
             ground_lock=ground_lock, min_dist=min_dist, max_dist=max_dist
@@ -2025,22 +2034,26 @@ class WebGLTab(QWidget):
                 "models": []
             }
             for h in html_files:
-                base = os.path.splitext(h)[0]
+                raw_base = os.path.splitext(h)[0]
+                is_review = raw_base.startswith("Review_")
+                clean_title = raw_base[7:] if is_review else raw_base
                 fpath = os.path.join(out_dir, h)
                 mtime_val = os.path.getmtime(fpath)
                 manifest["models"].append({
-                    "title": base,
+                    "title": clean_title,
+                    "raw_title": raw_base,
                     "filename": h,
                     "path": f"05_web_build/{h}",
                     "is_index": (h.lower() == "index.html"),
+                    "is_review": is_review,
                     "mtime": mtime_val,
                     "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
             manifest_file = os.path.join(out_dir, "models.json")
             with open(manifest_file, 'w', encoding='utf-8') as mf:
                 json.dump(manifest, mf, indent=2)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[WARN] Failed to update models.json: {e}")
 
     # ----------------------------------------------------------------------
     # Vercel / GitHub Web Viewer Upload & Sync Dialog

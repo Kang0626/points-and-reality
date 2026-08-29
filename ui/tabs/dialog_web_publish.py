@@ -80,14 +80,18 @@ class SelectiveVercelUploadWorker(QThread):
                 "models": []
             }
             for h in all_repo_htmls:
-                b = os.path.splitext(h)[0]
+                raw_base = os.path.splitext(h)[0]
+                is_review = raw_base.startswith("Review_")
+                clean_title = raw_base[7:] if is_review else raw_base
                 fpath = os.path.join(target_web_dir, h)
                 mtime_val = os.path.getmtime(fpath) if os.path.exists(fpath) else time.time()
                 manifest["models"].append({
-                    "title": b,
+                    "title": clean_title,
+                    "raw_title": raw_base,
                     "filename": h,
                     "path": f"05_web_build/{h}",
                     "is_index": (h.lower() == "index.html"),
+                    "is_review": is_review,
                     "mtime": mtime_val,
                     "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
@@ -154,14 +158,18 @@ class CloudFileDeleteWorker(QThread):
                 "models": []
             }
             for h in all_repo_htmls:
-                b = os.path.splitext(h)[0]
+                raw_base = os.path.splitext(h)[0]
+                is_review = raw_base.startswith("Review_")
+                clean_title = raw_base[7:] if is_review else raw_base
                 fpath = os.path.join(target_web_dir, h)
                 mtime_val = os.path.getmtime(fpath) if os.path.exists(fpath) else time.time()
                 manifest["models"].append({
-                    "title": b,
+                    "title": clean_title,
+                    "raw_title": raw_base,
                     "filename": h,
                     "path": f"05_web_build/{h}",
                     "is_index": (h.lower() == "index.html"),
+                    "is_review": is_review,
                     "mtime": mtime_val,
                     "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })

@@ -314,6 +314,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
     .stage-title {
@@ -321,6 +322,21 @@
       font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
+    }
+
+    .review-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
 
     .stage-controls {
@@ -639,6 +655,7 @@
         <div class="stage-title-wrap">
           <span style="font-size: 13px; font-weight: 700; color: var(--accent-steel); text-transform: uppercase;" data-i18n="active_stage_badge">Active Stage:</span>
           <span id="activeModelTitle" class="stage-title">Interactive 3DGS Engine Preview</span>
+          <span id="activeStageReviewBadge" class="review-badge-pill" style="display:none;" data-i18n="badge_review">🛡️ Client Review</span>
         </div>
         <div class="stage-controls">
           <a id="btnOpenStandalone" href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" style="font-size: 12px; padding: 6px 14px;" data-i18n="btn_open_standalone">
@@ -701,6 +718,7 @@
         loading_models: "Scanning Deliverables...",
         active_models_suffix: "Active Model(s)",
         active_stage_badge: "Active Stage:",
+        badge_review: "🛡️ Client Review",
         btn_open_standalone: "↗ Open Full Window",
         badge_latest: "⭐ Latest Deliverable",
         filter_all: "All Deliverables",
@@ -727,6 +745,7 @@
         loading_models: "산출물 검색 중...",
         active_models_suffix: "개 활성 모델",
         active_stage_badge: "현재 뷰어:",
+        badge_review: "🛡️ 고객 검토용",
         btn_open_standalone: "↗ 전체 화면 창 열기",
         badge_latest: "⭐ 최신 모델",
         filter_all: "전체 모델",
@@ -753,6 +772,7 @@
         loading_models: "正在扫描成果...",
         active_models_suffix: "个活动模型",
         active_stage_badge: "当前模型:",
+        badge_review: "🛡️ 客户审核版",
         btn_open_standalone: "↗ 打开全屏窗口",
         badge_latest: "⭐ 最新模型",
         filter_all: "全部交付成果",
@@ -779,6 +799,7 @@
         loading_models: "E kimi ana i ngā rawa...",
         active_models_suffix: "ngā Rawa Hohe",
         active_stage_badge: "Tirohanga Ināianei:",
+        badge_review: "🛡️ Arotake Kiritaki",
         btn_open_standalone: "↗ Whakatuwhera Whānui",
         badge_latest: "⭐ Hou Rawa",
         filter_all: "Ngā Rawa Katoa",
@@ -800,7 +821,21 @@
     let currentFilter = 'all';
     let currentActiveModel = null;
 
-    // 3. Sorting Utility (Newest First)
+    // 3. Model Title Formatter (100% matched with Viewer internal HUD)
+    function getCleanModelTitle(model) {
+      if (!model) return '3DGS Model';
+      let t = model.title || '';
+      if (!t && model.filename) {
+        t = model.filename;
+        if (t.toLowerCase().endsWith('.html')) t = t.slice(0, -5);
+      }
+      if (t.startsWith('Review_')) {
+        t = t.slice(7);
+      }
+      return t || '3DGS Model';
+    }
+
+    // 4. Sorting Utility (Newest First)
     function sortModelsNewestFirst(models) {
       if (!Array.isArray(models)) return [];
       return [...models].sort((a, b) => {
@@ -811,7 +846,7 @@
       });
     }
 
-    // 4. Multilingual Switching
+    // 5. Multilingual Switching
     function applyLanguage(lang) {
       const selected = translations[lang] || translations.en;
       document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -837,16 +872,22 @@
       }
     }
 
-    // 5. Active Stage Controller
+    // 6. Active Stage Controller
     function setActiveStage(model) {
       if (!model || !model.path) return;
       currentActiveModel = model;
 
       const stageIframe = document.getElementById('stageIframe');
       const activeTitle = document.getElementById('activeModelTitle');
+      const activeReviewBadge = document.getElementById('activeStageReviewBadge');
       const btnStandalone = document.getElementById('btnOpenStandalone');
 
-      if (activeTitle) activeTitle.textContent = model.title || model.filename || '3DGS Model';
+      const isReview = !!(model.is_review || (model.filename && model.filename.startsWith('Review_')) || (model.raw_title && model.raw_title.startsWith('Review_')));
+
+      if (activeTitle) activeTitle.textContent = getCleanModelTitle(model);
+      if (activeReviewBadge) {
+        activeReviewBadge.style.display = isReview ? 'inline-flex' : 'none';
+      }
       if (stageIframe) stageIframe.src = model.path;
       if (btnStandalone) btnStandalone.href = model.path;
 
@@ -860,7 +901,7 @@
       });
     }
 
-    // 6. Card Grid Renderer (With Event Delegation)
+    // 7. Card Grid Renderer (With Event Delegation)
     function renderCards(models) {
       const grid = document.getElementById('showroomGrid');
       if (!grid) return;
@@ -887,7 +928,9 @@
         const isSog = (m.filename || '').toLowerCase().includes('.sog');
         const ext = isSog ? 'SOG / SuperSplat' : 'PLY / WebGL';
         const isLatest = (idx === 0 && currentFilter === 'all');
+        const isReview = !!(m.is_review || (m.filename && m.filename.startsWith('Review_')) || (m.raw_title && m.raw_title.startsWith('Review_')));
         const dateBadge = isLatest ? (t.badge_latest || '⭐ Latest') : (m.date ? m.date : (m.is_index ? 'Primary Index' : '3DGS Model'));
+        const reviewHtml = isReview ? `<span class="review-badge-pill" style="font-size: 10px; padding: 2px 6px;">${t.badge_review || '🛡️ Client Review'}</span>` : '';
 
         const card = document.createElement('div');
         card.className = 'asset-card';
@@ -900,10 +943,13 @@
         card.innerHTML = `
           <div>
             <div class="asset-header">
-              <span class="asset-format-badge">${ext}</span>
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span class="asset-format-badge">${ext}</span>
+                ${reviewHtml}
+              </div>
               <span class="asset-date" style="${isLatest ? 'color: var(--accent-steel); font-weight: 700; background: rgba(56, 189, 248, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3);' : ''}">${dateBadge}</span>
             </div>
-            <h3 class="asset-title">${m.title || m.filename}</h3>
+            <h3 class="asset-title">${getCleanModelTitle(m)}</h3>
             <div class="asset-filename">${m.filename}</div>
           </div>
           <div class="asset-actions">
