@@ -915,10 +915,10 @@
         
         // Sort models newest-first
         models.sort((a, b) => {
-          if (a.mtime !== undefined && b.mtime !== undefined) {
+          if (a.mtime !== undefined && b.mtime !== undefined && a.mtime !== b.mtime) {
             return b.mtime - a.mtime;
           }
-          return 0;
+          return (b.filename || b.title || '').localeCompare(a.filename || a.title || '', undefined, { numeric: true, sensitivity: 'base' });
         });
 
         if (models.length > 0) {

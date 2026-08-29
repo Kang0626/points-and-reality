@@ -811,7 +811,14 @@
       applyLanguage(e.target.value);
     });
 
-    let allLoadedModels = [];
+    function sortModelsNewestFirst(models) {
+      return [...models].sort((a, b) => {
+        if (a.mtime !== undefined && b.mtime !== undefined && a.mtime !== b.mtime) {
+          return b.mtime - a.mtime;
+        }
+        return (b.filename || b.title || '').localeCompare(a.filename || a.title || '', undefined, { numeric: true, sensitivity: 'base' });
+      });
+    }
 
     async function initShowroom() {
       const countLabel = document.getElementById('modelCountLabel');
@@ -820,15 +827,7 @@
         const res = await fetch('05_web_build/models.json?v=' + Date.now());
         if (!res.ok) throw new Error('No models.json manifest');
         const data = await res.json();
-        allLoadedModels = data.models || [];
-
-        // Sort allLoadedModels newest-first (by mtime descending)
-        allLoadedModels.sort((a, b) => {
-          if (a.mtime !== undefined && b.mtime !== undefined) {
-            return b.mtime - a.mtime;
-          }
-          return 0;
-        });
+        allLoadedModels = sortModelsNewestFirst(data.models || []);
 
         if (allLoadedModels.length > 0) {
           countLabel.textContent = `${allLoadedModels.length} Active Model(s)`;
@@ -872,12 +871,7 @@
       const t = translations[currentLang] || translations.en;
 
       // Ensure models are sorted newest-first
-      const sorted = [...models].sort((a, b) => {
-        if (a.mtime !== undefined && b.mtime !== undefined) {
-          return b.mtime - a.mtime;
-        }
-        return 0;
-      });
+      const sorted = sortModelsNewestFirst(models);
 
       sorted.forEach((m, idx) => {
         const ext = m.filename.toLowerCase().includes('.sog') ? 'SOG' : 'PLY / WebGL';
