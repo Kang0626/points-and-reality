@@ -141,33 +141,37 @@ class PointsAndRealityController(QMainWindow):
         self.tab_bar.setDrawBase(False)
         self.tab_bar.setExpanding(False)
         self.tab_bar.setUsesScrollButtons(False)
+        self.tab_bar.setMinimumHeight(36)
         self.tab_bar.addTab("Capture & Ingest")
         self.tab_bar.addTab("Splat Cleanup")
         self.tab_bar.addTab("WebGL Build")
         self.tab_bar.setStyleSheet("""
             QTabBar {
                 background-color: transparent;
+                min-height: 36px;
             }
             QTabBar::tab { 
-                background-color: #15171d; 
-                color: #8892b0; 
-                min-height: 28px;
-                padding: 3px 16px; 
-                border: 1px solid #22252e;
-                border-radius: 4px;
-                margin-right: 4px;
+                background-color: #171922; 
+                color: #94a3b8; 
+                min-height: 32px;
+                height: 32px;
+                padding: 0px 18px; 
+                border: 1px solid #282d3c;
+                border-radius: 5px;
+                margin-right: 6px;
                 font-weight: 600;
                 font-size: 12px;
             }
             QTabBar::tab:hover { 
-                background-color: #1e2129; 
-                color: #e2e8f0; 
-                border-color: #323846;
+                background-color: #202636; 
+                color: #f1f5f9; 
+                border-color: #3b465c;
             }
             QTabBar::tab:selected { 
-                background-color: #283344; 
+                background-color: #1d4ed8; 
                 color: #ffffff; 
-                border: 1px solid #3d4f68;
+                border: 1px solid #3b82f6;
+                font-weight: 700;
             }
         """)
         tier2_layout.addWidget(self.tab_bar)

@@ -546,6 +546,7 @@ class WebGLTab(QWidget):
         self.table_models.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_models.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_models.verticalHeader().setVisible(False)
+        self.table_models.verticalHeader().setDefaultSectionSize(30)
         self.table_models.setMinimumHeight(130)
         self.table_models.itemSelectionChanged.connect(self.on_table_selection_changed)
         self.table_models.itemChanged.connect(self._on_table_item_changed)
@@ -909,11 +910,37 @@ class WebGLTab(QWidget):
         item_cam.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         self.table_models.setItem(row, 3, item_cam)
 
-        # Col 4: Action Button (Inline Preview)
-        btn_row_preview = QPushButton(self.current_translations.get("tab3_btn_row_preview", "🌐 Preview"))
-        btn_row_preview.setStyleSheet("padding: 2px 8px; font-size: 11px; background-color: #0284c7; color: white; border-radius: 4px;")
+        # Col 4: Action Button (Inline Preview in compact cell container)
+        preview_cell = QWidget()
+        preview_layout = QHBoxLayout(preview_cell)
+        preview_layout.setContentsMargins(6, 2, 6, 2)
+        preview_layout.setAlignment(Qt.AlignCenter)
+
+        btn_row_preview = QPushButton(self.current_translations.get("tab3_btn_row_preview", "Preview"))
+        btn_row_preview.setCursor(Qt.PointingHandCursor)
+        btn_row_preview.setStyleSheet("""
+            QPushButton {
+                background-color: #0284c7;
+                border: 1px solid #38bdf8;
+                border-radius: 3px;
+                color: #ffffff;
+                font-size: 10.5px;
+                font-weight: 600;
+                min-height: 20px;
+                max-height: 22px;
+                padding: 1px 12px;
+            }
+            QPushButton:hover {
+                background-color: #0ea5e9;
+                border-color: #7dd3fc;
+            }
+            QPushButton:pressed {
+                background-color: #0369a1;
+            }
+        """)
         btn_row_preview.clicked.connect(lambda _, p=norm_path: self.preview_single_model(p))
-        self.table_models.setCellWidget(row, 4, btn_row_preview)
+        preview_layout.addWidget(btn_row_preview)
+        self.table_models.setCellWidget(row, 4, preview_cell)
 
         self.table_models.blockSignals(False)
         self._update_queue_pill()
@@ -1902,8 +1929,12 @@ class WebGLTab(QWidget):
 
         # Row Action buttons in table
         for r in range(self.table_models.rowCount()):
-            btn = self.table_models.cellWidget(r, 4)
-            if isinstance(btn, QPushButton):
-                btn.setText(t.get("tab3_btn_row_preview", "Preview"))
+            cell_widget = self.table_models.cellWidget(r, 4)
+            if isinstance(cell_widget, QPushButton):
+                cell_widget.setText(t.get("tab3_btn_row_preview", "Preview"))
+            elif cell_widget:
+                btn = cell_widget.findChild(QPushButton)
+                if btn:
+                    btn.setText(t.get("tab3_btn_row_preview", "Preview"))
 
         self.on_table_selection_changed()

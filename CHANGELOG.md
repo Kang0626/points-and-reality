@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.226 (Current)
+### 🔹 v2.227 (Current)
+* **메인 탭바 폰트 높이/선명도 개선, 전 탭 체크박스 스타일 통일 및 WebGL Preview 버튼 충돌 해결 ([`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`section_ingest.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_ingest.py), [`tab_cleanup.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_cleanup.py), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py))**:
+  * **전체 탭바 텍스트 높이(36px / 32px) 확보 및 선명한 로열 블루 컬러 적용**: `self.tab_bar.setMinimumHeight(36)` 및 `QTabBar::tab` 높이 `32px` 고정으로 글자 하단 잘림을 완전히 해소하고, 선택 탭에 선명한 스튜디오 로열 블루(`#1d4ed8`) 적용.
+  * **전체 탭 파일선택 체크박스 디자인 100% 통일 및 고시인성 블루 체크 적용**: 탭별로 상이하던 체크박스 인라인 스타일을 전면 제거하고, 전역 QSS 기반 선명한 슬레이트 테두리(`#64748b`) 및 체크 시 선명한 로열 블루(`#2563eb`) + 고대비 화이트 체크마크로 일괄 통일.
+  * **WebGL 모델 목록 Preview 버튼 셀 마진/크기 최적화**: Preview 버튼을 전용 컨테이너 셀 위젯(`preview_cell`)에 패딩과 함께 격리 배치하고 높이를 `20~22px`로 최적화하여 인접 행 간의 버튼 침범 및 겹침 현상 완벽 해결.
+
+### 🔹 v2.226
 * **전체 UI 텍스트 상하/좌우 잘림(Font Clipping) 전면 수정 및 High-DPI 대응 ([`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py), [`section_project.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_project.py))**:
   * **탭바 텍스트 하단 잘림 해결**: `QTabBar::tab`에 명시적 `min-height: 28px;` 및 여유 있는 패딩(`padding: 3px 16px;`)을 적용하여 'g', 'p', 'y' 등 글자 디센더가 잘리던 문제 해결.
   * **프로젝트 디렉토리 콤보박스 텍스트 잘림 해결**: `QComboBox` 및 내부 `QLineEdit`에 `min-height: 28px / 22px` 및 적정 패딩을 부여하여 폰트 상하가 눌리던 현상 완벽 수정.

@@ -93,6 +93,7 @@ class CleanupTab(QWidget):
         self.table_ply.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_ply.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.table_ply.verticalHeader().setVisible(False)
+        self.table_ply.verticalHeader().setDefaultSectionSize(28)
         c1_layout.addWidget(self.table_ply)
 
         self.card_input.setContentLayout(c1_layout)

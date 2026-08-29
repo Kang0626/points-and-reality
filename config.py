@@ -1,4 +1,4 @@
-APP_VERSION = "v2.226"
+APP_VERSION = "v2.227"
 
 # Points & Reality 표준 프로젝트 서브폴더 구조
 PROJECT_SUBFOLDERS = [
@@ -10,7 +10,7 @@ PROJECT_SUBFOLDERS = [
     "05_web_build"
 ]
 
-# Points & Reality 전문 스튜디오 다크 테마 (Pro Studio Low-Saturation Neutral Dark QSS)
+# Points & Reality 전문 스튜디오 다크 테마 (Pro Studio High-Visibility Unified Dark QSS)
 DARK_THEME_CSS = """
 QMainWindow, QWidget { 
     background-color: #101215; 
@@ -28,30 +28,33 @@ QTableCornerButton::section {
 QTabBar {
     background-color: transparent;
     qproperty-drawBase: 0;
+    min-height: 38px;
 }
 
 QTabBar::tab { 
-    background-color: #15171d; 
-    color: #8892b0; 
-    min-height: 28px;
-    padding: 3px 16px; 
-    border: 1px solid #22252e;
-    border-radius: 4px;
-    margin-right: 4px;
+    background-color: #171922; 
+    color: #94a3b8; 
+    min-height: 32px;
+    height: 32px;
+    padding: 0px 18px; 
+    border: 1px solid #282d3c;
+    border-radius: 5px;
+    margin-right: 6px;
     font-weight: 600;
     font-size: 12px;
 }
 
 QTabBar::tab:hover { 
-    background-color: #1e2129; 
-    color: #e2e8f0; 
-    border-color: #323846;
+    background-color: #202636; 
+    color: #f1f5f9; 
+    border-color: #3b465c;
 }
 
 QTabBar::tab:selected { 
-    background-color: #283344; 
+    background-color: #1d4ed8; 
     color: #ffffff; 
-    border: 1px solid #3d4f68;
+    border: 1px solid #3b82f6;
+    font-weight: 700;
 }
 
 /* --- Standard Buttons --- */
@@ -84,7 +87,7 @@ QPushButton:disabled {
     color: #475569;
 }
 
-/* --- Primary Action Buttons (Low-Saturation Studio Slate Navy) --- */
+/* --- Primary Action Buttons (Studio Navy Slate) --- */
 QPushButton#PrimaryBtn, QPushButton[objectName="PrimaryBtn"] {
     background-color: #283344;
     border: 1px solid #3d4f68;
@@ -105,7 +108,7 @@ QPushButton#PrimaryBtn:pressed, QPushButton[objectName="PrimaryBtn"]:pressed {
     color: #cbd5e1;
 }
 
-/* --- Success Action Buttons (Low-Saturation Studio Sage Olive) --- */
+/* --- Success Action Buttons (Studio Sage Olive) --- */
 QPushButton#SuccessBtn, QPushButton[objectName="SuccessBtn"] {
     background-color: #24352c;
     border: 1px solid #375344;
@@ -126,7 +129,7 @@ QPushButton#SuccessBtn:pressed, QPushButton[objectName="SuccessBtn"]:pressed {
     color: #b7e1cd;
 }
 
-/* --- Danger Action Buttons (Low-Saturation Studio Muted Crimson) --- */
+/* --- Danger Action Buttons (Studio Muted Crimson) --- */
 QPushButton#DangerBtn, QPushButton[objectName="DangerBtn"] {
     background-color: #3a2224;
     border: 1px solid #573336;
@@ -210,7 +213,7 @@ QComboBox::down-arrow:hover {
 QComboBox QAbstractItemView {
     background-color: #14161c;
     border: 1px solid #282c37;
-    selection-background-color: #283344;
+    selection-background-color: #1d4ed8;
     selection-color: #ffffff;
     color: #cbd5e1;
     padding: 4px;
@@ -228,14 +231,14 @@ QTableWidget {
     gridline-color: #15171d; 
     selection-background-color: #1e2430;
     selection-color: #ffffff;
-    font-size: 11px;
+    font-size: 11.5px;
     outline: none;
 }
 
 QHeaderView::section { 
     background-color: #14161c; 
     padding: 5px 8px; 
-    min-height: 24px;
+    min-height: 26px;
     border: none;
     border-bottom: 1px solid #20232c;
     border-right: 1px solid #181a21;
@@ -249,7 +252,7 @@ QHeaderView::section:hover {
     color: #e2e8f0;
 }
 
-/* --- Unified CheckBoxes --- */
+/* --- Unified High-Visibility CheckBoxes --- */
 QCheckBox {
     margin: 0px;
     padding: 0px;
@@ -263,25 +266,25 @@ QCheckBox:focus {
     border: none;
 }
 QCheckBox::indicator {
-    width: 15px;
-    height: 15px;
-    background-color: #14161c;
-    border: 1px solid #333846;
+    width: 16px;
+    height: 16px;
+    background-color: #161922;
+    border: 1.5px solid #64748b;
     border-radius: 3px;
     outline: none;
 }
 QCheckBox::indicator:hover {
-    border: 1px solid #4f586d;
-    background-color: #1a1d25;
+    border: 1.5px solid #93c5fd;
+    background-color: #1e2433;
 }
 QCheckBox::indicator:checked {
-    background-color: #283344;
-    border: 1px solid #3d4f68;
+    background-color: #2563eb;
+    border: 1.5px solid #60a5fa;
     image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
 }
 QCheckBox::indicator:checked:hover {
-    background-color: #324056;
-    border: 1px solid #51698a;
+    background-color: #1d4ed8;
+    border: 1.5px solid #93c5fd;
 }
 
 /* --- Progress Bar --- */
@@ -316,7 +319,7 @@ QScrollBar::handle:vertical {
 QScrollBar::handle:vertical:hover {
     background: #333846;
 }
-QScrollBar:horizontal {
+QScrollBar::horizontal {
     background: #0b0c0f;
     height: 7px;
     margin: 0px;
