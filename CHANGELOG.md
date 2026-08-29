@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.231 (Current)
+### 🔹 v2.232 (Current)
+* **3단계 검증 체크리스트(Quality Gate) 현재 프로세스 기반 전면 고도화 ([`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
+  * **디스크 실반영 2중 검증 체계화**: 코드 누락 검증 외에도 수정 툴의 덮어쓰기 누락을 방어하기 위한 `view_file`/`git diff` 실반영 확인 절차 명문화.
+  * **High-DPI 텍스트 래스터라이징 무왜곡 원칙 수립**: 폰트 가중치(`font-weight: 600`) 일관성 유지 및 앰퍼샌드(`&&`) 이스케이프 강제 규칙 추가.
+  * **비동기 스레드 및 디바운스 생명주기 안전성 가이드 강화**: UI 블로킹 방지를 위한 `QThread`/`subprocess.Popen` 비동기 패턴 및 다중 클릭 방지 가드 표준화.
+
+### 🔹 v2.231
 * **3DGS 트레이너 런처 버튼 재배치 실반영 및 버튼 텍스트 'Launch Trainer' 간소화 ([`section_launcher.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_launcher.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **트레이너 드롭다운 우측 일렬 액션바 실반영**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측(`top_row`)으로 완전히 재배치하고 하단 중복 행을 제거하여 즉시 1클릭 실행 가능한 직관적 UX 구축.
   * **버튼 텍스트 간소화**: 다국어 사전(EN/KO) 및 위젯 텍스트를 직관적인 `Launch Trainer`(트레이너 실행)로 간소화.

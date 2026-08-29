@@ -94,22 +94,25 @@ Points & Reality Pipeline/
 
 ## 🛡️ 4. 개발 및 코드 수정 3단계 검증 체크리스트 (Quality Gate)
 
-모든 코드 수정 및 리팩토링 시 다음 3단계 검증 체크리스트를 필수적으로 통과해야 합니다.
+모든 코드 수정, UI 리팩토링 및 기능 추가 시 다음 3단계 검증 체크리스트를 필수적으로 통과해야 합니다.
 
-### 1️⃣ 누락 검증 (Omission Verification)
-> **"수정 전의 기존 코드에 있던 모든 함수와 변수(예: `log_signal`, `init_ui`, 시그널 핸들러, 설정값 등)가 새 코드에 100% 포함되었는가?"**
-* 리팩토링이나 UI 컴포넌트 재배치 시, 기존에 작동하던 메서드, 시그널 바인딩, 슬롯, 예외 처리 블록이 누락 없이 보존되었는지 전수 확인.
-* 변경된 컴포넌트를 참조하는 다른 모듈(예: 다국어 번역 `update_language`, 메인 컨트롤러 이벤트)의 참조가 깨지지 않았는지 교차 검증.
+### 1️⃣ 누락 및 파일 디스크 실반영 검증 (Omission & Disk-Sync Verification)
+> **"기존 코드의 모든 함수·시그널·설정값이 100% 보존되었는가? 그리고 수정 사항이 실제 디스크 파일에 온전히 기록되었는가?"**
+* **코드 자산 100% 보존**: 리팩토링이나 컴포넌트 재배치 시 기존 메서드, 시그널(`log_signal`), 슬롯 핸들러, 설정값(`QSettings`), 프리셋 입출력(`get_preset_data`/`set_preset_data`), 예외 처리 블록이 누락 없이 보존되었는지 전수 확인.
+* **디스크 실반영 2중 검증**: 부분 교체 툴(`replace_file_content`) 시 덮어쓰기 오류가 없었는지 `view_file` 또는 `git diff`로 확인하고, 필요 시 전체 쓰기(`write_to_file`)로 실제 디스크에 완벽히 반영되었는지 교차 검증.
+* **다국어 사전(KO/EN) 1:1 동기화**: `ui_translations.py` 사전 키와 각 탭 위젯(`update_language`) 간의 명칭 및 단축키 이스케이프(`&&`) 동기화 확인.
 
-### 2️⃣ 생명주기(Lifecycle) 검증 (Lifecycle Safety)
-> **"초기화 시점(`__init__`)에 발생하는 이벤트(`resizeEvent`, `showEvent` 등)로 인해 아직 생성되지 않은 위젯에 접근하여 발생하는 크래시(`AttributeError`) 방어 코드(`hasattr` 등)를 넣었는가?"**
-* UI 위젯 생성 순서에 따른 종속성 문제를 차단.
-* 위젯이 완전히 인스턴스화되기 전에 호출될 수 있는 이벤트 핸들러에는 반드시 `hasattr(self, 'widget_name')` 또는 `is not None` 가드를 배치하여 런타임 크래시를 원천 차단.
+### 2️⃣ 생명주기 및 런타임 안전성 검증 (Lifecycle & Runtime Safety)
+> **"초기화 시점 및 동적 이벤트 발생 시 미생성 위젯 접근 크래시 방어(`hasattr`)와 비동기 안전성을 확보했는가?"**
+* **초기화 순서 방어**: `__init__`, `update_language`, `resizeEvent`, `showEvent` 등 초기화 직후 호출되는 로직에 반드시 `hasattr(self, 'widget_name')` 또는 `is not None` 가드를 배치하여 `AttributeError` 원천 차단.
+* **비동기 스레드 및 UI 블로킹 방지**: 비디오 프레임 추출, 로컬 HTTP 웹서버, 외부 훈련 엔진(`RealityCapture`, `Postshot`, `Lichtfeld Studio`) 구동은 반드시 `QThread` 또는 `subprocess.Popen` 비동기로 실행하여 메인 UI 프리징 방지.
+* **이중 실행 방어 (Debounce Guard)**: 런처 버튼 및 외부 프로세스 호출 버튼에 디바운스(`QTimer.singleShot`) 가드를 적용하여 중복 프로세스 생성 차단.
 
-### 3️⃣ 정공법 검증 (Standard/Official Pattern Verification)
-> **"프레임워크(Qt 등)의 렌더링 엔진을 억지로 속이거나 무력화하는 꼼수(Hack, ProxyStyle 덮어쓰기 등)를 사용하지 않고, 공식 API와 순정 속성만으로 해결했는가?"**
-* 임시방편의 하드코딩이나 불안정한 오버라이드 대신, 프레임워크가 공식적으로 권장하는 표준 레이아웃(`QHBoxLayout(alignment=Qt.AlignCenter)`), 공식 속성(`setFocusPolicy(Qt.NoFocus)`), 표준 QSS 명세(`outline: none; border: none;`)를 준수.
-* OS 간 크로스 플랫폼(Windows, macOS, Linux) 호환성과 High DPI 환경에서도 왜곡 없이 일관된 렌더링을 보장.
+### 3️⃣ 정공법 렌더링 및 High-DPI 무왜곡 검증 (Standard Pattern & High-DPI Anti-Clipping)
+> **"프레임워크의 결함 있는 렌더러를 억지로 패치하지 않고, 표준 순정 컴포넌트와 폰트 가중치 일치화로 텍스트 잘림을 원천 차단했는가?"**
+* **표준 정공법 채택**: 버그가 있는 네이티브 `QTabBar` 페인팅 대신, 픽셀 단위 렌더링이 정확한 `QButtonGroup + QPushButton` 세그먼트 탭바와 같은 Qt 순정 API 표준 패턴 사용.
+* **폰트 가중치(Font-Weight) 일관성 유지**: 마우스 오버(`:hover`)나 활성화(`:checked`) 시 `font-weight: 700(Bold)`으로 급격히 전환되면 Windows DirectWrite 폰트 래스터라이저 오차로 글자 외곽이 잘리므로, `font-weight: 600`을 일관되게 유지하고 배경색/테두리로 활성 상태 표현.
+* **앰퍼샌드(`&`) Mnemonic 이스케이프**: Qt 버튼 및 레이블에서 `&`가 단축키 밑줄로 파싱되어 누락되지 않도록 `&&` 이스케이프 규칙 준수.
 
 ---
 
@@ -122,16 +125,17 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 * **Minor Release (`v2.X00` / `+0.100`)**: 
   * 새로운 탭 추가, 핵심 엔진(SuperSplat, Houdini, AI Trainer) 연동, 대형 기능군 신규 도입.
 * **Patch / Revision (`v2.20X` / `+0.001`)**: 
-  * **0.001 단위로 버전업 (`+0.001`)**: UI/UX 레이아웃 개선, 버그 픽스, 컴포넌트 정밀 튜닝, 단축 워크플로우 최적화 등 모든 코드 수정 시 `0.001` 단위로 순차 증가 (예: `v2.200` ➔ `v2.201` ➔ `v2.205` ➔ `v2.206` ➔ `v2.207` ➔ `v2.208` ➔ `v2.209` 등).
+  * **0.001 단위로 버전업 (`+0.001`)**: UI/UX 레이아웃 개선, 버그 픽스, 컴포넌트 정밀 튜닝, 단축 워크플로우 최적화 등 모든 코드 수정 시 `0.001` 단위로 순차 증가 (예: `v2.228` ➔ `v2.229` ➔ `v2.230` ➔ `v2.231` ➔ `v2.232` 등).
 * **버전 동기화 원칙 (Version Synchronization)**:
-  * 버전 변경 시 [`config.py`](file:///d:/SPLATIAL/Postshot_Pipeline/config.py)의 `APP_VERSION`, [`README.md`](file:///d:/SPLATIAL/Postshot_Pipeline/README.md)의 헤더 타이틀, [`CHANGELOG.md`](file:///d:/SPLATIAL/Postshot_Pipeline/CHANGELOG.md)의 히스토리 내역을 반드시 동시에 일치시켜 갱신.
+  * 버전 변경 시 [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py)의 `APP_VERSION`, [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md)의 헤더 타이틀, [`CHANGELOG.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/CHANGELOG.md)의 히스토리 내역을 반드시 동시에 일치시켜 갱신.
 
 ---
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.231`
+* **Current Version**: `v2.232`
 * **주요 변경 요약**:
+  * **3단계 검증 체크리스트(Quality Gate) 실시간 프로세스 기반 전면 개편 (`v2.232`)**: 디스크 실반영 2중 검증, 폰트 가중치 일관성(High-DPI 텍스트 잘림 방지), 앰퍼샌드 Mnemonic 이스케이프 및 스레드 생명주기 안전 규칙을 공식 가이드라인으로 수립.
   * **3DGS 트레이너 런처 버튼 재배치 및 'Launch Trainer' 간소화 (`v2.231`)**: `Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 콤보박스 바로 우측으로 이동 배치하여 드롭다운 선택 즉시 1클릭 실행 가능한 동선 최적화 및 텍스트 간소화 완료.
   * **상단 메인 탭바 폰트 잘림 근본적 영구 해결 및 High-DPI 완벽 대응 (`v2.228~v2.229`)**: 네이티브 `QTabBar`를 세그먼트 버튼 그룹(`QButtonGroup` + `QPushButton`)으로 전면 교체하고 가중치를 `font-weight: 600`으로 고정하여 어떤 해상도/배율에서도 폰트 잘림 없는 깨끗한 렌더링 보장.
   * **프로젝트 디렉토리 최근 5개 히스토리 드롭다운 및 스튜디오 저채도 테마 개편 (`v2.225`)**: 작업 폴더 최근 목록 선택 기능 및 눈의 피로를 덜어주는 슬레이트 네이비/세이지 올리브 전문 스튜디오 테마 적용.
