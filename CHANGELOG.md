@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.238 (Current)
+### 🔹 v2.239 (Current)
+* **SuperSplat 뷰어 Orbit 기본 모드 고정, 디바이스별(마우스/터치) 조작 가이드 자동 감지 및 툴바 간소화 & MIT 라이선스 공식 표기 ([`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **기본 궤도(Orbit) 카메라 고정 및 디바이스 자동 감지**: 뷰어 실행 시 Orbit 카메라 모드로 자동 시작되며, 사용자의 디바이스 환경(PC/마우스 vs 모바일/태블릿 터치)을 런타임에 자동 감지하여 상단 조작 안내(`🖱️ Left/Right/Wheel` ↔ `👆 1-Finger/✌️ 2-Finger`)를 동적으로 전환.
+  * **하단 우측 툴바 불필요 아이콘 숨김 및 전체화면 버튼만 보존**: 불필요한 Orbit/Fly 전환, Info, Settings 아이콘을 숨기고, 사용자가 가장 필요로 하는 **`⛶ 전체화면(Fullscreen)`** 버튼만 우측 하단에 단독 유지하여 압도적인 시각적 몰입감 제공.
+  * **저작권 및 오픈소스 라이선스(MIT) 법적 안전성 확보**: 중앙 하단에 초슬림 글래스모피즘 **`⚡ Powered by PlayCanvas & SuperSplat`** (PLY 뷰어: `Three.js & GaussianSplats3D`) 공식 어트리뷰션 뱃지를 배치하여 MIT 라이선스 준수 및 저작권 분쟁 소지를 완벽하게 예방.
+
+### 🔹 v2.238
 * **Cloud Showroom 탭 배포 버튼 텍스트 간소화('▼ 쇼룸으로 업로드') 및 중앙 정렬 배치 ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **버튼 텍스트 간소화 및 직관적 방향 아이콘**: 기존의 길었던 `"🚀 Upload Selected Packages to Vercel"` 문구를 하향 화살표와 간결한 문구인 **`"▼ 쇼룸으로 업로드"`** (영문: `"▼ Upload to Showroom"`)로 개편하여 시각적 전달력 극대화.
   * **하단 중앙 정렬 배치**: 우측 치우침에서 벗어나 상단 로컬 패키지 카드(Card 1)와 하단 클라우드 쇼룸 카드(Card 2)의 정중앙에 배치하여, 로컬 모델이 하단 클라우드 쇼룸으로 내려가는 흐름을 명확히 시각화.

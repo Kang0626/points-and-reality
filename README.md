@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.238)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.239)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
@@ -63,7 +63,8 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
   * **퀵 프리셋 지원**: `🎯 Front View`, `📐 Quarter (3/4)`, `🚗 Side View`, `🚁 Top-Down`.
 * **STEP 3. 출력 디렉토리 및 일괄 패키징**:
   * **출력 폴더 지정**: 기본 `05_web_build` 외에 자유롭게 변경 가능.
-  * **`🛡️ 워터마크 크기 및 불투명도 조절 & Review_ 자동 네이밍`**: `Client Review Watermark` 체크 시 글자 크기(px) 및 불투명도(%)를 정밀하게 설정 가능하며, 출력 파일명 앞에 `'Review_'` 접두사가 자동 부여됨.
+  * **`🛡️ 워터마크 크기/불투명도 & Review_ 자동 네이밍`**: `Client Review Watermark` 체크 시 글자 크기(px) 및 불투명도(%)를 정밀하게 설정 가능하며, 출력 파일명 앞에 `'Review_'` 접두사가 자동 부여됨.
+  * **`🚀 Orbit 카메라 기본 고정 & 디바이스(마우스/터치) 자동 감지`**: 뷰어 실행 시 Orbit 카메라로 시작하며 모바일/데스크톱 조작 가이드 자동 전환 및 불필요한 컨트롤러를 가리고 전체화면만 깔끔하게 노출.
   * **`⚡ 선택된 모델 WebGL 일괄 빌드`**: 체크된 모든 모델을 각자의 파일명과 카메라 세팅으로 일괄 패키징.
   * **`🟢 로컬 웹 서버 상태 인디케이터`**: Card 3 상단 헤더의 컴팩트 원형 뱃지(`🟢 8080` / `⚪ Off`)로 즉시 토글.
 
@@ -159,10 +160,10 @@ Points & Reality 파이프라인은 시맨틱 버저닝(Semantic Versioning)을 
 
 ## 📋 6. 버전 및 릴리즈 내역 (Release Information)
 
-* **Current Version**: `v2.238`
+* **Current Version**: `v2.239`
 * **주요 변경 요약**:
+  * **SuperSplat 뷰어 Orbit 모드 기본 고정, 디바이스(마우스/터치) 자동 감지 및 툴바 간소화 & MIT 라이선스 공식 표기 (`v2.239`)**: Orbit 카메라를 뷰어 기본 모드로 고정하고, 런타임 디바이스 감지를 통해 데스크톱 마우스와 모바일 터치 조작 힌트를 자동 분기하며, 하단 툴바의 불필요한 4개 아이콘을 숨기고 전체화면 버튼만 보존. 아울러 중앙 하단에 초슬림 `⚡ Powered by PlayCanvas & SuperSplat` 공식 어트리뷰션 뱃지를 추가하여 저작권 및 라이선스 분쟁을 완벽 예방.
   * **Cloud Showroom 탭 배포 버튼 텍스트 간소화('▼ 쇼룸으로 업로드') 및 중앙 정렬 배치 (`v2.238`)**: 기존의 긴 업로드 문구를 하향 화살표와 함께 간결한 **`"▼ 쇼룸으로 업로드"`** (영문: `"▼ Upload to Showroom"`)로 개편하고, 로컬 카드와 클라우드 카드 사이 중앙에 배치하여 직관적인 데이터 이동 흐름 완성.
   * **워터마크 활성화 시 'Review_' 파일명 접두사 자동 연동 (`v2.237`)**: `Client Review Watermark` 체크 시 WebGL 모델 목록의 `Output HTML File` 컬럼 및 빌드 출력 파일명에 `'Review_'` 접두사(예: `FordEscape.html` ➔ `Review_FordEscape.html`, `index.html` ➔ `Review_index.html`)가 자동으로 적용 및 연동되며, 체크 해제 시 원래 파일명으로 안전하게 원복.
-  * **Cloud Showroom 탭 상하 카드 위치 스왑 및 액션 버튼(Open/URL) 텍스트 잘림 해결 (`v2.236`)**: 상단에 Card 1(로컬 패키지 배포 및 선택적 업로드), 하단에 Card 2(실시간 클라우드 쇼룸 및 자산 관리)를 배치하여 자연스러운 빌드➔배포 워크플로우를 구성하고, 액션 테이블 행 높이를 `36px` 및 너비 `160px Fixed`로 최적화하여 `🌐 Open` 및 `📋 URL` 버튼이 잘림 없이 렌더링되도록 수정.
 
 > 📄 **전체 세부 릴리즈 히스토리 및 버전별 상세 변경 내역은 [CHANGELOG.md (전체 내역 보기)](./CHANGELOG.md) 파일에서 확인하실 수 있습니다.**

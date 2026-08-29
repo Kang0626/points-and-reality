@@ -297,6 +297,14 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
         🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom
     </div>
 
+    <!-- Engine Attribution (MIT License Compliance) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:20px; left:16px; z-index:100; display:flex; align-items:center; gap:6px; background:rgba(20,22,27,0.75); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:5px 14px; font-size:11px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none;">
+        <span style="opacity:0.8;">Powered by</span>
+        <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; font-weight:600;">Three.js</a>
+        <span style="opacity:0.4;">&</span>
+        <a href="https://github.com/mkkellogg/GaussianSplats3D" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; font-weight:600;">GaussianSplats3D</a>
+    </div>
+
     <div id="hud-controls">
         {copy_cam_btn_html}
         <button class="hud-btn" id="btn-reset">🎥 Reset View</button>
@@ -403,6 +411,12 @@ def _generate_ply_viewer_html(title, model_filename, cam_pos=[0, 1.2, 3.8], cam_
                     document.exitFullscreen();
                 }}
             }});
+
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+            const hudHelp = document.getElementById('hud-help');
+            if (hudHelp && isTouch) {{
+                hudHelp.innerHTML = '👆 <span>1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span>2-Finger:</span> Pan & Zoom';
+            }}
 
             let lastTime = performance.now();
             let frameCount = 0;
@@ -1785,7 +1799,7 @@ class WebGLTab(QWidget):
     </script>
 '''
             else:
-                # Final Release / Delivery Mode: Brand Header + Hint (No Copy Button)
+                # Final Release / Delivery Mode: Brand Header + Dynamic Touch/Mouse Hint + MIT License Attribution
                 overlays_html = f'''
     <!-- Points & Reality Final Branding Header -->
     <div id="points-reality-brand-header" style="position:fixed; top:16px; left:16px; z-index:99999; display:flex; align-items:center; gap:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(14px); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:9px 18px; box-shadow:0 10px 32px rgba(0,0,0,0.6); pointer-events:auto; font-family:'Segoe UI',-apple-system,sans-serif; user-select:none;">
@@ -1793,9 +1807,41 @@ class WebGLTab(QWidget):
         <span style="color:#475569; font-size:13px;">|</span>
         <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{display_title}</span>
     </div>
+
+    <!-- Controls Hint (Auto Mouse / Touch Aware) -->
     <div id="points-reality-controls-hint" style="position:fixed; top:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.75); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 14px; font-size:11.5px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none;">
         🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom
     </div>
+
+    <!-- Engine Attribution (MIT License & Compliance) -->
+    <div id="points-reality-engine-credit" style="position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:99999; display:flex; align-items:center; gap:6px; background:rgba(15,23,42,0.75); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:5px 16px; font-size:11px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:auto; user-select:none; box-shadow:0 4px 16px rgba(0,0,0,0.4);">
+        <span style="opacity:0.8;">Powered by</span>
+        <a href="https://playcanvas.com" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; font-weight:600;">PlayCanvas</a>
+        <span style="opacity:0.4;">&</span>
+        <a href="https://github.com/playcanvas/supersplat" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; font-weight:600;">SuperSplat</a>
+    </div>
+
+    <script>
+        (function() {{
+            function updateControlHints() {{
+                const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+                const hintEl = document.getElementById('points-reality-controls-hint');
+                if (hintEl) {{
+                    if (isTouch) {{
+                        hintEl.innerHTML = '👆 <span style="color:#e2e8f0; font-weight:600;">1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span style="color:#e2e8f0; font-weight:600;">2-Finger:</span> Pan & Zoom';
+                    }} else {{
+                        hintEl.innerHTML = '🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom';
+                    }}
+                }}
+            }}
+            window.addEventListener('resize', updateControlHints);
+            if (document.readyState === 'loading') {{
+                document.addEventListener('DOMContentLoaded', updateControlHints);
+            }} else {{
+                updateControlHints();
+            }}
+        }})();
+    </script>
 '''
                 if enable_watermark:
                     overlays_html += _generate_watermark_html(watermark_text, font_size_px=watermark_size, opacity_pct=watermark_opacity)

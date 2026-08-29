@@ -204,6 +204,11 @@
             #controlsWrap > #buttonsContainer .controlButton.toggle.right:not(.active) {
               background-position: 200% 0%;
             }
+
+            /* Hide camera modes, info and settings, keeping ONLY Fullscreen */
+            #orbitCamera, #flyCamera, #info, #settings, #settingsPanel, #infoPanel {
+              display: none !important;
+            }
             
             /* settingsPanel */
             #settingsPanel {
@@ -103153,6 +103158,15 @@ export { main };
                 ]);
 
                 const viewer = await main(appElement.app, cameraElement.entity, settingsJson, config);
+                window.viewerInstance = viewer;
+
+                // Ensure Orbit Camera is explicitly active by default
+                try {
+                    const orbitBtn = document.getElementById('orbitCamera');
+                    if (orbitBtn && !orbitBtn.classList.contains('active')) {
+                        orbitBtn.click();
+                    }
+                } catch(e) {}
             });
         </script>
     
