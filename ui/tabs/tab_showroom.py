@@ -74,18 +74,23 @@ class ShowroomUploadWorker(QThread):
             # 3. Update models.json manifest in repo
             self.progress_signal.emit("Updating cloud models manifest...", 70)
             all_repo_htmls = [f for f in os.listdir(target_web_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
+            all_repo_htmls.sort(key=lambda f: os.path.getmtime(os.path.join(target_web_dir, f)) if os.path.exists(os.path.join(target_web_dir, f)) else 0, reverse=True)
             manifest = {
                 "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "total_models": len(all_repo_htmls),
                 "models": []
             }
-            for h in sorted(all_repo_htmls):
+            for h in all_repo_htmls:
                 b = os.path.splitext(h)[0]
+                fpath = os.path.join(target_web_dir, h)
+                mtime_val = os.path.getmtime(fpath) if os.path.exists(fpath) else time.time()
                 manifest["models"].append({
                     "title": b,
                     "filename": h,
                     "path": f"05_web_build/{h}",
-                    "is_index": (h.lower() == "index.html")
+                    "is_index": (h.lower() == "index.html"),
+                    "mtime": mtime_val,
+                    "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
             with open(os.path.join(target_web_dir, "models.json"), "w", encoding="utf-8") as mf:
                 json.dump(manifest, mf, indent=2)
@@ -143,18 +148,23 @@ class ShowroomDeleteWorker(QThread):
 
             # Update models.json manifest
             all_repo_htmls = [f for f in os.listdir(target_web_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
+            all_repo_htmls.sort(key=lambda f: os.path.getmtime(os.path.join(target_web_dir, f)) if os.path.exists(os.path.join(target_web_dir, f)) else 0, reverse=True)
             manifest = {
                 "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "total_models": len(all_repo_htmls),
                 "models": []
             }
-            for h in sorted(all_repo_htmls):
+            for h in all_repo_htmls:
                 b = os.path.splitext(h)[0]
+                fpath = os.path.join(target_web_dir, h)
+                mtime_val = os.path.getmtime(fpath) if os.path.exists(fpath) else time.time()
                 manifest["models"].append({
                     "title": b,
                     "filename": h,
                     "path": f"05_web_build/{h}",
-                    "is_index": (h.lower() == "index.html")
+                    "is_index": (h.lower() == "index.html"),
+                    "mtime": mtime_val,
+                    "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
             with open(os.path.join(target_web_dir, "models.json"), "w", encoding="utf-8") as mf:
                 json.dump(manifest, mf, indent=2)

@@ -47,20 +47,25 @@ class VercelUploadThread(QThread):
                     else:
                         shutil.copy2(s, d)
 
-            # Generate/update models.json manifest in target_web_dir
-            html_files = [f for f in os.listdir(target_web_dir) if f.lower().endswith('.html')]
+            # Generate/update models.json manifest in target_web_dir (sorted newest first)
+            html_files = [f for f in os.listdir(target_web_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
+            html_files.sort(key=lambda f: os.path.getmtime(os.path.join(target_web_dir, f)), reverse=True)
             manifest = {
                 "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "total_models": len(html_files),
                 "models": []
             }
-            for html_file in sorted(html_files):
+            for html_file in html_files:
                 base_name = os.path.splitext(html_file)[0]
+                fpath = os.path.join(target_web_dir, html_file)
+                mtime_val = os.path.getmtime(fpath)
                 manifest["models"].append({
                     "title": base_name,
                     "filename": html_file,
                     "path": f"05_web_build/{html_file}",
-                    "is_index": (html_file.lower() == "index.html")
+                    "is_index": (html_file.lower() == "index.html"),
+                    "mtime": mtime_val,
+                    "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
             
             manifest_path = os.path.join(target_web_dir, "models.json")
@@ -2007,24 +2012,29 @@ class WebGLTab(QWidget):
         return html_filename
 
     def _update_models_manifest(self, out_dir):
-        """Automatically create/update models.json manifest in the output folder."""
+        """Automatically create/update models.json manifest in the output folder (sorted newest-first)."""
         try:
             out_dir = os.path.normpath(out_dir)
             if not os.path.exists(out_dir):
                 return
-            html_files = [f for f in os.listdir(out_dir) if f.lower().endswith('.html')]
+            html_files = [f for f in os.listdir(out_dir) if f.lower().endswith('.html') and f.lower() not in ["showroom.html", "gallery.html"]]
+            html_files.sort(key=lambda f: os.path.getmtime(os.path.join(out_dir, f)), reverse=True)
             manifest = {
                 "updated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "total_models": len(html_files),
                 "models": []
             }
-            for h in sorted(html_files):
+            for h in html_files:
                 base = os.path.splitext(h)[0]
+                fpath = os.path.join(out_dir, h)
+                mtime_val = os.path.getmtime(fpath)
                 manifest["models"].append({
                     "title": base,
                     "filename": h,
                     "path": f"05_web_build/{h}",
-                    "is_index": (h.lower() == "index.html")
+                    "is_index": (h.lower() == "index.html"),
+                    "mtime": mtime_val,
+                    "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime_val))
                 })
             manifest_file = os.path.join(out_dir, "models.json")
             with open(manifest_file, 'w', encoding='utf-8') as mf:

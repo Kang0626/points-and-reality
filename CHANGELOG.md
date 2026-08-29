@@ -8,9 +8,10 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 ## 🚀 Version Details
 
 ### 🔹 v2.247 (Current)
-* **Tab 3 WebGL 모듈 QDoubleSpinBox 임포트 누락 핫픽스 (`v2.247`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
-  * **PyQt5 QDoubleSpinBox 임포트 추가**: Tab 3 카메라 거리 제약(Min/Max Distance) 위젯에 사용된 `QDoubleSpinBox`가 모듈 상단 `PyQt5.QtWidgets` import 목록에서 누락되어 앱 시작 시 발생하던 `NameError: name 'QDoubleSpinBox' is not defined` 런타임 오류 즉시 해결.
-  * **초기화 및 탭 전환 전수 검증 통과**: 앱 부팅, 탭 스택 전환, 언어 전환(KO/EN), 위젯 세팅 변경 전 과정 무결성 검증 완료.
+* **Tab 3 WebGL 모듈 QDoubleSpinBox 임포트 핫픽스 및 쇼룸/포털 최신 파일 우선 정렬 전수 반영 (`v2.247`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html), [`showroom.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/showroom.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **PyQt5 QDoubleSpinBox 임포트 추가**: Tab 3 카메라 거리 제약(Min/Max Distance) 위젯에 사용된 `QDoubleSpinBox`가 모듈 상단 `PyQt5.QtWidgets` import 목록에서 누락되어 앱 시작 시 발생하던 `NameError` 런타임 오류 즉시 해결.
+  * **쇼룸 배포 다이얼로그 & 웹 포털 정렬 일원화**: `dialog_web_publish.py`의 로컬/클라우드 파일 목록, `index.html` 및 `showroom.html`의 모델 카드 렌더링에 모두 최신 파일 우선(`mtime` 내림차순) 정렬과 최신 배포 뱃지(`⭐ Latest`)를 100% 동기화 적용.
+  * **3단계 품질 게이트 전수 통과**: `py_compile` 컴파일, UI 라이프사이클 및 위젯 안전성 검증 완료.
 
 ### 🔹 v2.246
 * **Tab 3 WebGL 뷰어 지면 하단 회전 방지(Ground Lock) 및 최소/최대 접근 거리 제한 기능 추가 (`v2.246`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:

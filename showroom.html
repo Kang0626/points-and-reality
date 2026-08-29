@@ -698,6 +698,7 @@
         loading_models: "Scanning Deliverables...",
         active_stage_badge: "Active Stage:",
         btn_open_standalone: "↗ Open Full Window",
+        badge_latest: "⭐ Latest Deliverable",
         filter_all: "All Deliverables",
         filter_sog: "SuperSplat (.sog)",
         filter_ply: "GaussianSplats (.ply)",
@@ -722,6 +723,7 @@
         loading_models: "산출물 검색 중...",
         active_stage_badge: "현재 뷰어:",
         btn_open_standalone: "↗ 전체 화면 창 열기",
+        badge_latest: "⭐ 최신 모델",
         filter_all: "전체 모델",
         filter_sog: "SuperSplat (.sog)",
         filter_ply: "GaussianSplats (.ply)",
@@ -746,6 +748,7 @@
         loading_models: "正在扫描成果...",
         active_stage_badge: "当前模型:",
         btn_open_standalone: "↗ 打开全屏窗口",
+        badge_latest: "⭐ 最新模型",
         filter_all: "全部交付成果",
         filter_sog: "SuperSplat (.sog)",
         filter_ply: "GaussianSplats (.ply)",
@@ -770,6 +773,7 @@
         loading_models: "E kimi ana i ngā rawa...",
         active_stage_badge: "Tirohanga Ināianei:",
         btn_open_standalone: "↗ Whakatuwhera Whānui",
+        badge_latest: "⭐ Hou Rawa",
         filter_all: "Ngā Rawa Katoa",
         filter_sog: "SuperSplat (.sog)",
         filter_ply: "GaussianSplats (.ply)",
@@ -793,6 +797,9 @@
       });
       document.documentElement.lang = lang;
       localStorage.setItem('pr_preferred_lang', lang);
+      if (allLoadedModels.length > 0) {
+        renderCards(allLoadedModels);
+      }
     }
 
     const langSelect = document.getElementById('langSelect');
@@ -807,11 +814,7 @@
     let allLoadedModels = [];
 
     async function initShowroom() {
-      const grid = document.getElementById('showroomGrid');
       const countLabel = document.getElementById('modelCountLabel');
-      const stageIframe = document.getElementById('stageIframe');
-      const activeTitle = document.getElementById('activeModelTitle');
-      const btnStandalone = document.getElementById('btnOpenStandalone');
 
       try {
         const res = await fetch('05_web_build/models.json?v=' + Date.now());
@@ -819,12 +822,20 @@
         const data = await res.json();
         allLoadedModels = data.models || [];
 
+        // Sort allLoadedModels newest-first (by mtime descending)
+        allLoadedModels.sort((a, b) => {
+          if (a.mtime !== undefined && b.mtime !== undefined) {
+            return b.mtime - a.mtime;
+          }
+          return 0;
+        });
+
         if (allLoadedModels.length > 0) {
           countLabel.textContent = `${allLoadedModels.length} Active Model(s)`;
           
-          // Set first model as active stage
-          const first = allLoadedModels.find(m => m.is_index) || allLoadedModels[0];
-          setActiveStage(first);
+          // Set latest model as active stage (always the newest file)
+          const latestModel = allLoadedModels[0];
+          setActiveStage(latestModel);
 
           renderCards(allLoadedModels);
         } else {
@@ -860,8 +871,18 @@
       const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
       const t = translations[currentLang] || translations.en;
 
-      models.forEach(m => {
+      // Ensure models are sorted newest-first
+      const sorted = [...models].sort((a, b) => {
+        if (a.mtime !== undefined && b.mtime !== undefined) {
+          return b.mtime - a.mtime;
+        }
+        return 0;
+      });
+
+      sorted.forEach((m, idx) => {
         const ext = m.filename.toLowerCase().includes('.sog') ? 'SOG' : 'PLY / WebGL';
+        const isLatest = (idx === 0);
+        const dateBadge = isLatest ? (t.badge_latest || '⭐ Latest') : (m.date ? m.date : (m.is_index ? 'Primary Index' : '3DGS Model'));
         const card = document.createElement('div');
         card.className = 'asset-card';
         card.setAttribute('data-path', m.path);
@@ -869,7 +890,7 @@
           <div>
             <div class="asset-header">
               <span class="asset-format-badge">${ext}</span>
-              <span class="asset-date">${m.is_index ? 'Primary Index' : '3DGS Model'}</span>
+              <span class="asset-date" style="${isLatest ? 'color: var(--accent-steel); font-weight: 700; background: rgba(56, 189, 248, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3);' : ''}">${dateBadge}</span>
             </div>
             <h3 class="asset-title">${m.title}</h3>
             <div class="asset-filename">${m.filename}</div>
@@ -889,7 +910,6 @@
 
     function showDemoFallback() {
       const countLabel = document.getElementById('modelCountLabel');
-      const grid = document.getElementById('showroomGrid');
       const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
       const t = translations[currentLang] || translations.en;
 

@@ -911,27 +911,37 @@
         const res = await fetch('05_web_build/models.json?v=' + Date.now());
         if (!res.ok) throw new Error('No models manifest');
         const data = await res.json();
+        const models = data.models || [];
         
-        if (data.models && data.models.length > 0) {
+        // Sort models newest-first
+        models.sort((a, b) => {
+          if (a.mtime !== undefined && b.mtime !== undefined) {
+            return b.mtime - a.mtime;
+          }
+          return 0;
+        });
+
+        if (models.length > 0) {
           grid.innerHTML = '';
           const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
           const t = translations[currentLang] || translations.en;
           
-          // Set primary target to first model or index
-          const primaryModel = data.models.find(m => m.is_index) || data.models[0];
+          // Set primary target to latest model (newest first)
+          const primaryModel = models[0];
           const primaryUrl = primaryModel.path;
           navBtn.href = primaryUrl;
           heroBtn.href = primaryUrl;
           mainBtn.href = primaryUrl;
 
-          data.models.forEach(model => {
+          models.forEach((model, idx) => {
             const card = document.createElement('div');
             card.className = 'model-card';
+            const isLatest = (idx === 0);
             card.innerHTML = `
               <div>
                 <div class="model-card-header">
                   <span class="model-badge">3DGS WebGL</span>
-                  <span style="font-size: 11px; color: var(--text-muted);">Ready</span>
+                  <span style="font-size: 11px; color: ${isLatest ? 'var(--accent-steel)' : 'var(--text-muted)'}; font-weight: ${isLatest ? '700' : '400'};">${isLatest ? '⭐ Latest' : (model.date || 'Ready')}</span>
                 </div>
                 <h3 class="model-card-title">${model.title}</h3>
                 <div class="model-card-file">${model.filename}</div>
