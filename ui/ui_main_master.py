@@ -139,7 +139,7 @@ class PointsAndRealityController(QMainWindow):
         self.tab_btn_group = QButtonGroup(self)
         self.tab_btn_group.setExclusive(True)
 
-        self.btn_tab_capture = QPushButton("Capture & Ingest")
+        self.btn_tab_capture = QPushButton("Capture && Ingest")
         self.btn_tab_capture.setCheckable(True)
         self.btn_tab_capture.setChecked(True)
         self.btn_tab_capture.setCursor(Qt.PointingHandCursor)
@@ -162,7 +162,7 @@ class PointsAndRealityController(QMainWindow):
                 border-radius: 5px;
                 min-height: 32px;
                 height: 32px;
-                padding: 0px 20px;
+                padding: 2px 20px;
                 font-weight: 600;
                 font-size: 12px;
                 text-align: center;
@@ -176,7 +176,7 @@ class PointsAndRealityController(QMainWindow):
                 background-color: #1d4ed8;
                 color: #ffffff;
                 border: 1px solid #3b82f6;
-                font-weight: 700;
+                font-weight: 600;
             }
         """
 
@@ -413,9 +413,13 @@ class PointsAndRealityController(QMainWindow):
         t = TRANSLATIONS.get(lang, TRANSLATIONS["EN"])
         self.btn_lang.setText(lang)
         
-        self.btn_tab_capture.setText(t.get("tab_capture", "Capture & Ingest"))
-        self.btn_tab_cleanup.setText(t.get("tab_cleanup", "Splat Cleanup"))
-        self.btn_tab_webgl.setText(t.get("tab_webgl", "WebGL Build"))
+        t_capture = t.get("tab_capture", "Capture & Ingest")
+        t_cleanup = t.get("tab_cleanup", "Splat Cleanup")
+        t_webgl = t.get("tab_webgl", "WebGL Build")
+        
+        self.btn_tab_capture.setText(t_capture.replace("&", "&&") if "&&" not in t_capture else t_capture)
+        self.btn_tab_cleanup.setText(t_cleanup.replace("&", "&&") if "&&" not in t_cleanup else t_cleanup)
+        self.btn_tab_webgl.setText(t_webgl.replace("&", "&&") if "&&" not in t_webgl else t_webgl)
         
         self.lbl_log_title.setText(t.get('log_title', 'Console & Activity Log'))
         self.btn_clear_log.setText(t.get("btn_clear_log", "Clear"))

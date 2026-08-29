@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.228 (Current)
+### 🔹 v2.229 (Current)
+* **선택(Checked) 탭 폰트 가중치(Font-weight) 일치화 및 앰퍼샌드(&) 이스케이프 수정 ([`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
+  * **선택 시 글자 잘림 완벽 해결**: 활성 탭(`QPushButton:checked`)에서 `font-weight: 700(Bold)`으로 변경될 때 Windows DirectWrite 폰트 래스터라이저가 가로/세로 어드밴스 너비를 초과하여 글자를 뭉개던 현상을 `font-weight: 600` 고정 및 여유 있는 패딩(`padding: 2px 20px;`)으로 수정.
+  * **앰퍼샌드(`&`) 단축키 파싱 방지**: `Capture & Ingest`에서 `&`가 Windows 단축키(Mnemonic)로 오인되어 밑줄/누락되던 문제를 `&&` 이스케이프 처리로 완벽 해결.
+
+### 🔹 v2.228
 * **메인 상단 네비게이션 탭을 QTabBar에서 세그먼트 버튼 그룹(QButtonGroup + QPushButton)으로 전면 교체하여 폰트 잘림 근본적 영구 해결 ([`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
   * **근본 원인 제거**: Windows High-DPI 환경에서 QSS와 충돌하여 텍스트 상하단 및 첫 글자 좌측을 잘라내던 결함 있는 네이티브 `QTabBar` 페인팅 엔진을 완전히 걷어냄.
   * **전문가용 세그먼트 버튼 탭 적용**: 픽셀 정밀도로 텍스트를 수직/수평 정중앙 정렬하는 독점적 `QPushButton` 그룹(`Capture & Ingest`, `Splat Cleanup`, `WebGL Build`)을 구축하여, 어떤 해상도/배율에서도 단 1픽셀의 글자 잘림 없이 시원하고 선명한 텍스트 렌더링 및 또렷한 로열 블루 활성 상태를 완벽하게 보장.
