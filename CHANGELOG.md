@@ -7,7 +7,14 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.247 (Current)
+### 🔹 v2.248 (Current)
+* **웹 쇼룸(showroom.html & index.html) JavaScript ReferenceError 런타임 크래시 핫픽스 및 이벤트 위임 렌더링 엔진 고도화 (`v2.248`) ([`showroom.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/showroom.html), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **전역 변수 스코프 및 초기화 순서 정상화**: `showroom.html` 시작 시 `applyLanguage()` 호출 과정에서 발생하던 `Uncaught ReferenceError: allLoadedModels is not defined` 오류를 최상단 전역 상태 변수 명시 및 방어 로직으로 완전 해결 (페이지가 `Scanning Deliverables...` 상태 및 검은 화면으로 영구 정지되던 핵심 원인 해소).
+  * **표준 이벤트 위임(Event Delegation) 기반 카드 인터랙션 구축**: 취약한 인라인 `onclick='setActiveStage(...)'` 패턴을 제거하고 그리드 레벨의 `data-idx` 기반 이벤트 리스너를 도입하여 안전한 3D 스테이지 로드 보장.
+  * **다국어 실시간 전환 및 메타데이터 동기화**: 언어 전환(EN/KO/ZH/MI) 시 모델 개수 라벨(`N Active Models` / `N개 활성 모델`), 카드 그리드, 활성 스테이지 타이틀이 즉각 동기화되도록 라이프사이클 최적화.
+  * **UI 고대비 스타일 보강**: `.page-title` 컬러 토큰(`color: var(--text-primary); text-shadow: ...`)을 명시하여 모든 브라우저 및 다크 테마 배경에서 최상의 가독성 확보.
+
+### 🔹 v2.247
 * **Tab 3 WebGL 모듈 QDoubleSpinBox 임포트 핫픽스 및 쇼룸/포털 최신 파일 우선 정렬 전수 반영 (`v2.247`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`dialog_web_publish.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/dialog_web_publish.py), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html), [`showroom.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/showroom.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **PyQt5 QDoubleSpinBox 임포트 추가**: Tab 3 카메라 거리 제약(Min/Max Distance) 위젯에 사용된 `QDoubleSpinBox`가 모듈 상단 `PyQt5.QtWidgets` import 목록에서 누락되어 앱 시작 시 발생하던 `NameError` 런타임 오류 즉시 해결.
   * **쇼룸 배포 다이얼로그 & 웹 포털 정렬 일원화**: `dialog_web_publish.py`의 로컬/클라우드 파일 목록, `index.html` 및 `showroom.html`의 모델 카드 렌더링에 모두 최신 파일 우선(`mtime` 내림차순) 정렬과 최신 배포 뱃지(`⭐ Latest`)를 100% 동기화 적용.

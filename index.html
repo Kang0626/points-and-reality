@@ -710,7 +710,7 @@
     <div class="footer-meta">
       <span data-i18n="footer_base">Aotearoa New Zealand</span>
       <span>•</span>
-      <span>Points & Reality 3DGS Pipeline v2.222</span>
+      <span>Points & Reality 3DGS Pipeline v2.248</span>
     </div>
   </footer>
 
@@ -873,11 +873,64 @@
         showcase_title: "Tirohia te 3DGS i te Ipurangi",
         showcase_desc: "Whakamātauria te tirohanga 3D i tō pūtirotiro ipurangi ināianei.",
         showcase_btn: "Tīmatahia te Tirotiro",
-        btn_view_model: "Tirohia te 3D →",
+        btn_view_model: "Tirohia the 3D →",
         footer_rights: "Pūmau te mana.",
         footer_base: "Aotearoa New Zealand"
       }
     };
+
+    let cachedPortalModels = [];
+
+    function renderPortalCards(models) {
+      const grid = document.getElementById('modelsGrid');
+      const navBtn = document.getElementById('navViewerBtn');
+      const heroBtn = document.getElementById('heroViewerBtn');
+      const mainBtn = document.getElementById('showcaseMainBtn');
+      if (!grid) return;
+
+      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
+      const t = translations[currentLang] || translations.en;
+
+      if (models.length > 0) {
+        grid.style.display = 'grid';
+        grid.innerHTML = '';
+        
+        // Set primary target to latest model (newest first)
+        const primaryModel = models[0];
+        const primaryUrl = primaryModel.path;
+        if (navBtn) navBtn.href = primaryUrl;
+        if (heroBtn) heroBtn.href = primaryUrl;
+        if (mainBtn) mainBtn.href = primaryUrl;
+
+        models.forEach((model, idx) => {
+          const card = document.createElement('div');
+          card.className = 'model-card';
+          const isLatest = (idx === 0);
+          card.innerHTML = `
+            <div>
+              <div class="model-card-header">
+                <span class="model-badge">3DGS WebGL</span>
+                <span style="font-size: 11px; color: ${isLatest ? 'var(--accent-steel)' : 'var(--text-muted)'}; font-weight: ${isLatest ? '700' : '400'};">${isLatest ? '⭐ Latest' : (model.date || 'Ready')}</span>
+              </div>
+              <h3 class="model-card-title">${model.title || model.filename}</h3>
+              <div class="model-card-file">${model.filename}</div>
+            </div>
+            <div>
+              <a href="${model.path}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width: 100%; justify-content: center;">
+                ${t.btn_view_model || 'View 3D Model →'}
+              </a>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } else {
+        grid.style.display = 'none';
+        const fallback = 'ui/templates/supersplat_template.html';
+        if (navBtn) navBtn.href = fallback;
+        if (heroBtn) heroBtn.href = fallback;
+        if (mainBtn) mainBtn.href = fallback;
+      }
+    }
 
     function applyLanguage(lang) {
       const selected = translations[lang] || translations.en;
@@ -889,29 +942,22 @@
       });
       document.documentElement.lang = lang;
       localStorage.setItem('pr_preferred_lang', lang);
+
+      if (cachedPortalModels.length > 0) {
+        renderPortalCards(cachedPortalModels);
+      }
     }
-
-    const langSelect = document.getElementById('langSelect');
-    const savedLang = localStorage.getItem('pr_preferred_lang') || 'en';
-    langSelect.value = savedLang;
-    applyLanguage(savedLang);
-
-    langSelect.addEventListener('change', (e) => {
-      applyLanguage(e.target.value);
-    });
 
     // Auto-discover models from 05_web_build/models.json
     async function loadWebBuildModels() {
-      const grid = document.getElementById('modelsGrid');
-      const navBtn = document.getElementById('navViewerBtn');
-      const heroBtn = document.getElementById('heroViewerBtn');
-      const mainBtn = document.getElementById('showcaseMainBtn');
-
       try {
-        const res = await fetch('05_web_build/models.json?v=' + Date.now());
+        let res = await fetch('05_web_build/models.json?v=' + Date.now());
+        if (!res.ok) {
+          res = await fetch('/05_web_build/models.json?v=' + Date.now());
+        }
         if (!res.ok) throw new Error('No models manifest');
         const data = await res.json();
-        const models = data.models || [];
+        const models = Array.isArray(data.models) ? data.models : [];
         
         // Sort models newest-first
         models.sort((a, b) => {
@@ -921,54 +967,26 @@
           return (b.filename || b.title || '').localeCompare(a.filename || a.title || '', undefined, { numeric: true, sensitivity: 'base' });
         });
 
-        if (models.length > 0) {
-          grid.innerHTML = '';
-          const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
-          const t = translations[currentLang] || translations.en;
-          
-          // Set primary target to latest model (newest first)
-          const primaryModel = models[0];
-          const primaryUrl = primaryModel.path;
-          navBtn.href = primaryUrl;
-          heroBtn.href = primaryUrl;
-          mainBtn.href = primaryUrl;
-
-          models.forEach((model, idx) => {
-            const card = document.createElement('div');
-            card.className = 'model-card';
-            const isLatest = (idx === 0);
-            card.innerHTML = `
-              <div>
-                <div class="model-card-header">
-                  <span class="model-badge">3DGS WebGL</span>
-                  <span style="font-size: 11px; color: ${isLatest ? 'var(--accent-steel)' : 'var(--text-muted)'}; font-weight: ${isLatest ? '700' : '400'};">${isLatest ? '⭐ Latest' : (model.date || 'Ready')}</span>
-                </div>
-                <h3 class="model-card-title">${model.title}</h3>
-                <div class="model-card-file">${model.filename}</div>
-              </div>
-              <div>
-                <a href="${model.path}" target="_blank" class="btn-primary" style="width: 100%; justify-content: center;">
-                  ${t.btn_view_model || 'View 3D Model →'}
-                </a>
-              </div>
-            `;
-            grid.appendChild(card);
-          });
-        } else {
-          grid.style.display = 'none';
-          navBtn.href = 'ui/templates/supersplat_template.html';
-          heroBtn.href = 'ui/templates/supersplat_template.html';
-          mainBtn.href = 'ui/templates/supersplat_template.html';
-        }
+        cachedPortalModels = models;
+        renderPortalCards(models);
       } catch (err) {
-        grid.style.display = 'none';
-        navBtn.href = 'ui/templates/supersplat_template.html';
-        heroBtn.href = 'ui/templates/supersplat_template.html';
-        mainBtn.href = 'ui/templates/supersplat_template.html';
+        console.warn('[Portal] models.json fetch notice:', err.message);
+        renderPortalCards([]);
       }
     }
 
-    loadWebBuildModels();
+    document.addEventListener('DOMContentLoaded', () => {
+      const langSelect = document.getElementById('langSelect');
+      const savedLang = localStorage.getItem('pr_preferred_lang') || 'en';
+      if (langSelect) {
+        langSelect.value = savedLang;
+        langSelect.addEventListener('change', (e) => {
+          applyLanguage(e.target.value);
+        });
+      }
+      applyLanguage(savedLang);
+      loadWebBuildModels();
+    });
   </script>
 </body>
 </html>
