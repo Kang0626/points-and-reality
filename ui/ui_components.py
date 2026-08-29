@@ -32,16 +32,16 @@ class StatusPill(QFrame):
         self.lbl_text.setText(text)
         
         colors = {
-            "idle": ("#64748b", "#232732", "#15181f"),
-            "running": ("#38bdf8", "#0284c7", "#0c4a6e"),
-            "success": ("#34d399", "#059669", "#064e3b"),
-            "warning": ("#fbbf24", "#d97706", "#78350f"),
-            "error": ("#f87171", "#dc2626", "#7f1d1d"),
-            "ready": ("#38bdf8", "#0369a1", "#082f49")
+            "idle": ("#717a8c", "#22252e", "#14161c"),
+            "running": ("#8ab4f8", "#2c3e55", "#161e2b"),
+            "success": ("#81c995", "#283e32", "#14211a"),
+            "warning": ("#fdd663", "#4d3d22", "#231c10"),
+            "error": ("#f28b82", "#4a2424", "#231313"),
+            "ready": ("#8ab4f8", "#2c3e55", "#161e2b")
         }
         dot_color, border_color, bg_color = colors.get(status_type, colors["idle"])
         
-        self.dot.setStyleSheet(f"color: {dot_color}; font-size: 9px;")
+        self.dot.setStyleSheet(f"color: {dot_color}; font-size: 8.5px;")
         self.lbl_text.setStyleSheet(f"color: {dot_color}; font-weight: 600; font-size: 11px;")
         self.setStyleSheet(f"""
             QFrame {{

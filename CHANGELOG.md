@@ -7,7 +7,13 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.224 (Current)
+### 🔹 v2.225 (Current)
+* **프로젝트 디렉토리 최근 목록(최대 5개) 드롭다운 히스토리 및 저채도(Low-Saturation) 스튜디오 룩앤필 적용 ([`section_project.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_project.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py), [`section_ingest.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_ingest.py))**:
+  * **최근 프로젝트 디렉토리 히스토리(최대 5개) 드롭다운**: 단일 텍스트 입력창 대신 편집 가능한 콤보박스(`QComboBox`)를 적용하여 최근에 선택 및 생성한 작업 디렉토리를 최대 5개까지 드롭다운으로 표시하고, 1클릭으로 즉시 작업 공간 전환 가능.
+  * **저채도(Low-Saturation) 전문 스튜디오 컬러 팔레트 전면 개편**: 고채도/형광 버튼 컬러를 눈의 피로가 적은 차분한 슬레이트 네이비(`#283344`, `#324056`), 세이지 올리브(`#24352c`), 뮤티드 크림슨(`#3a2224`)으로 재조정하여 VFX/3D 스튜디오 수준의 고급스럽고 매트한 룩앤필 구현.
+  * **QComboBox 드롭다운 화살표 SVG 정돈**: 윈도우 기본 붉은색 마커/화살표 대신 정갈한 미니멀 슬레이트 그레이 SVG 화살표 적용.
+
+### 🔹 v2.224
 * **데스크톱 앱(PyQt5) UI/UX 전면 개편: AI틱한 네온/이모지 배제 및 전문가용 프로덕션 스튜디오 스타일 구축 ([`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`ui_translations.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_translations.py), [`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`ui_components.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_components.py))**:
   * **불필요한 이모지 및 장식적 요소 100% 제거**: 버튼, 타이틀, 카드 헤더, 테이블 헤더, 콘솔창 등에 남발되던 이모지(`✨`, `🚀`, `🎬`, `⚡`, `📂`, `💾`, `🗑`, `🎯`, `📐`, `🚗`, `🚁`, `🛡️`, `📟` 등)를 전면 제거하고 직관적이고 정갈한 프로페셔널 텍스트로 정돈.
   * **하이엔드 스튜디오 다크 테마(Pro Studio Neutral Dark QSS)**: 인위적이고 유치한 네온 사이언 테두리와 형광 컬러를 배제하고, Houdini/Nuke/Resolve 스타일의 정밀 슬레이트 차콜 팔레트(`#101216`, `#15181f`, `#232732`, `#2563eb`)로 전면 개편.
