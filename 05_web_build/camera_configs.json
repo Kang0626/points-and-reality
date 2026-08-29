@@ -1,6 +1,51 @@
 {
+  "D:\\SPLATIAL\\Works\\MyScan_02\\03_postshot_exports\\FordEscape01.ply": {
+    "html_name": "FordEscape01.html",
+    "pos": [
+      0.0,
+      6.0,
+      0.1
+    ],
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fov": 55.0,
+    "label": "Top-Down"
+  },
+  "D:\\SPLATIAL\\Works\\MyScan_02\\03_postshot_exports\\FordEscape02.ply": {
+    "html_name": "FordEscape02.html",
+    "pos": [
+      0.0,
+      1.2,
+      3.8
+    ],
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fov": 50,
+    "label": "Front View"
+  },
+  "D:\\SPLATIAL\\Works\\MyScan_02\\02_tracking_alignment\\FordEscape01.ply": {
+    "html_name": "FordEscape01.html",
+    "pos": [
+      0.0,
+      1.2,
+      3.8
+    ],
+    "target": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "fov": 50,
+    "label": "Front View"
+  },
   "D:\\SPLATIAL\\Works\\MyScan_02\\02_tracking_alignment\\fordEscape01.sog": {
-    "html_name": "fordEscape01.html",
+    "html_name": "index_review_ver01.html",
     "pos": [
       -0.56,
       8.427,
