@@ -7,9 +7,14 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.242 (Current)
+### 🔹 v2.243 (Current)
+* **엔진 어트리뷰션 뱃지 초경량 무반응 순수 텍스트 라벨 전환 및 전체화면 버튼 밀착 수직 중앙 정렬 (`v2.243`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **초경량 무반응 순수 텍스트 라벨 (`pointer-events: none;`)**: 불필요한 하이퍼링크(`<a>`), 링크 색상 및 호버 반응을 모두 제거하고 마우스 이벤트가 3D 씬으로 바로 통과되도록 처리하여 조작 방해를 원천 차단.
+  * **전체화면 버튼 수직 중앙 정렬 (`bottom: 24px; right: 60px; height: 24px;`)**: 전체화면 버튼과 완벽하게 수직 중앙(`y = 36px`)을 일치시키고 4px 여백으로 밀착시켜 조화롭고 완성도 높은 단일 툴바 클러스터 디자인 구현.
+
+### 🔹 v2.242
 * **엔진 어트리뷰션 뱃지 전체화면 버튼 좌측 정렬 재배치 및 워터마크 행간-자간 2:1 황금비 최적화 ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
-  * **전체화면 버튼 좌측 독립 정렬 (`bottom: 22px; right: 66px;`)**: 우측 하단 전체화면(`Fullscreen`) 버튼과 겹치지 않도록 전체화면 버튼 바로 좌측 라인에 완벽한 수직 중앙 정렬로 배치하여 UI 겹침 현상을 원천 해소.
+  * **전체화면 버튼 좌측 독립 정렬**: 우측 하단 전체화면(`Fullscreen`) 버튼과 겹치지 않도록 전체화면 버튼 바로 좌측 라인에 배치하여 UI 겹침 현상을 원천 해소.
   * **워터마크 행간:자간 2:1 황금비율 적용**: 기존의 과도하게 넓었던 행간을 개편하여, 수평 어간(`word_gap`) 대비 행간(`row_gap = word_gap * 2`)을 정확히 2배로 유지하고 `line-height: 0.95` 및 18행 캔버스 풀 커버리지를 적용하여 세련되고 밀도 높은 컨펌용 워터마크 완성.
 
 ### 🔹 v2.241
