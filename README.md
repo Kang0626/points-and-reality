@@ -1,4 +1,4 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.244)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.245)
 
 Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 

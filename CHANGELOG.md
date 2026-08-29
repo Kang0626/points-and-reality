@@ -7,7 +7,11 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.244 (Current)
+### 🔹 v2.245 (Current)
+* **쇼룸 배포 테이블 최신 파일 우선 정렬 (`v2.245`) ([`tab_showroom.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_showroom.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **Local Package 및 Live Cloud 테이블 정렬 기준 변경**: 기존 알파벳순(`sorted(files)`) → 파일 수정시간 내림차순(`os.path.getmtime`, `reverse=True`)으로 전환하여 가장 최근 빌드/배포 파일이 항상 테이블 최상단에 위치.
+
+### 🔹 v2.244
 * **뷰어 HUD 오버레이 4대 개선 — 브랜드 타이틀, 조작 가이드, 어트리뷰션 Fade 동기화, 워터마크 읽기 순서 교정 (`v2.244`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`supersplat_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/supersplat_template.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **브랜드/모델 타이틀 중복 해소**: `✨ Points & Reality | {모델파일명}` 형식으로 통일. 기존 `display_title`(Points & Reality 3DGS - ...) 중복 삽입 문제를 `base_name` 직접 참조로 교정.
   * **조작 가이드 시야 방해 최소화**: 배경 투명도를 `0.55`로 낮추고, 초기 `opacity: 0.5` + 호버 시 `0.95` 복원. 4초 비활동 시 자동 페이드아웃 적용.
