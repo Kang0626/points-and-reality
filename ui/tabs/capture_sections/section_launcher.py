@@ -60,7 +60,7 @@ class LauncherWidget(ModernStepCard):
         trainer_card_layout.setContentsMargins(10, 8, 10, 8)
         trainer_card_layout.setSpacing(8)
 
-        # Trainer selector top row
+        # Trainer selector & action top row
         top_row = QHBoxLayout()
         top_row.setSpacing(8)
 
@@ -71,7 +71,17 @@ class LauncherWidget(ModernStepCard):
         self.combo_trainer.addItems(["Postshot (Jawset)", "Lichtfeld Studio"])
         self.combo_trainer.setCurrentText(self.settings.value("selected_trainer", "Postshot (Jawset)"))
         self.combo_trainer.currentTextChanged.connect(self.on_trainer_changed)
-        self.combo_trainer.setMinimumWidth(180)
+        self.combo_trainer.setMinimumWidth(160)
+
+        self.btn_launch_trainer = QPushButton("Auto-Load && Launch Trainer")
+        self.btn_launch_trainer.setObjectName("SuccessBtn")
+        self.btn_launch_trainer.setCursor(Qt.PointingHandCursor)
+        self.btn_launch_trainer.clicked.connect(self.launch_selected_trainer)
+
+        self.btn_open_exports = QPushButton("Open Exports (03_splats_exports)")
+        self.btn_open_exports.setCursor(Qt.PointingHandCursor)
+        self.btn_open_exports.setToolTip("Open folder where trained 3DGS splats (.ply/.sog) are saved")
+        self.btn_open_exports.clicked.connect(self.open_exports_folder)
 
         self.btn_refresh = QPushButton("Refresh")
         self.btn_refresh.setCursor(Qt.PointingHandCursor)
@@ -79,6 +89,8 @@ class LauncherWidget(ModernStepCard):
 
         top_row.addWidget(self.lbl_target)
         top_row.addWidget(self.combo_trainer)
+        top_row.addWidget(self.btn_launch_trainer)
+        top_row.addWidget(self.btn_open_exports)
         top_row.addStretch()
         top_row.addWidget(self.btn_refresh)
         trainer_card_layout.addLayout(top_row)
@@ -167,27 +179,6 @@ class LauncherWidget(ModernStepCard):
         self.stack.addWidget(lf_widget) # Index 1
 
         trainer_card_layout.addWidget(self.stack)
-
-        # Launch Trainer Button Row
-        bottom_launch_row = QHBoxLayout()
-        self.btn_launch_trainer = QPushButton("Auto-Load & Launch Trainer")
-        self.btn_launch_trainer.setObjectName("SuccessBtn")
-        self.btn_launch_trainer.setCursor(Qt.PointingHandCursor)
-        self.btn_launch_trainer.clicked.connect(self.launch_selected_trainer)
-
-        self.btn_open_exports = QPushButton("Open Exports Folder")
-        self.btn_open_exports.setCursor(Qt.PointingHandCursor)
-        self.btn_open_exports.setToolTip("Open folder where trained 3DGS splats (.ply/.sog) are saved")
-        self.btn_open_exports.clicked.connect(self.open_exports_folder)
-
-        lbl_export_hint = QLabel("➔ Target: [ 03_splats_exports ]")
-        lbl_export_hint.setStyleSheet("color: #64748b; font-weight: 500; font-size: 11px;")
-
-        bottom_launch_row.addWidget(self.btn_launch_trainer)
-        bottom_launch_row.addWidget(self.btn_open_exports)
-        bottom_launch_row.addWidget(lbl_export_hint)
-        bottom_launch_row.addStretch()
-        trainer_card_layout.addLayout(bottom_launch_row)
 
         main_layout.addWidget(trainer_card)
         self.setContentLayout(main_layout)
@@ -333,7 +324,8 @@ class LauncherWidget(ModernStepCard):
         self.btn_copy_frames_path.setText(t.get("btn_copy_frames_path", "Copy Frames Path"))
         self.lbl_target.setText(t.get("lbl_target", "Target Trainer:"))
         self.btn_refresh.setText(t.get("btn_refresh", "Refresh"))
-        self.btn_launch_trainer.setText(t.get("btn_launch_trainer", "Auto-Load & Launch Trainer"))
+        t_trainer = t.get("btn_launch_trainer", "Auto-Load & Launch Trainer")
+        self.btn_launch_trainer.setText(t_trainer.replace("&", "&&") if "&&" not in t_trainer else t_trainer)
         if hasattr(self, 'btn_open_exports') and self.btn_open_exports is not None:
             self.btn_open_exports.setText(t.get("btn_open_exports", "Open Exports (03_splats_exports)"))
 

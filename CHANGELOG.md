@@ -7,7 +7,12 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.229 (Current)
+### 🔹 v2.230 (Current)
+* **3DGS 트레이너 런처 버튼 및 내보내기 폴더 UX/레이아웃 직관적 재배치 ([`section_launcher.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/capture_sections/section_launcher.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
+  * **원클릭 연속 액션 워크플로우 구현**: 하단에 고립되어 있어 시선 이동이 어색하던 `Auto-Load & Launch Trainer` 및 `Open Exports` 버튼을 `Target Trainer` 드롭다운의 바로 우측으로 이동 배치하여, 트레이너 엔진 선택 즉시 1클릭으로 실행할 수 있도록 UX 대폭 개선.
+  * **불필요한 하단 중복 행 제거**: 런처 버튼이 상단 액션바로 통합됨에 따라 하단 여백을 정돈하고, 카드 레이아웃의 컴팩트함과 가독성 대폭 향상.
+
+### 🔹 v2.229
 * **선택(Checked) 탭 폰트 가중치(Font-weight) 일치화 및 앰퍼샌드(&) 이스케이프 수정 ([`ui_main_master.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/ui_main_master.py), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py))**:
   * **선택 시 글자 잘림 완벽 해결**: 활성 탭(`QPushButton:checked`)에서 `font-weight: 700(Bold)`으로 변경될 때 Windows DirectWrite 폰트 래스터라이저가 가로/세로 어드밴스 너비를 초과하여 글자를 뭉개던 현상을 `font-weight: 600` 고정 및 여유 있는 패딩(`padding: 2px 20px;`)으로 수정.
   * **앰퍼샌드(`&`) 단축키 파싱 방지**: `Capture & Ingest`에서 `&`가 Windows 단축키(Mnemonic)로 오인되어 밑줄/누락되던 문제를 `&&` 이스케이프 처리로 완벽 해결.
