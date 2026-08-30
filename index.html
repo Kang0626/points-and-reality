@@ -581,6 +581,147 @@
       transform: translateY(0) !important;
     }
 
+
+    /* ── Inquire & Contact UI ── */
+    .nav-btn-inquire {
+      color: #fff !important;
+      background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(129, 140, 248, 0.22));
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      font-weight: 600; font-size: 12px;
+      padding: 6px 14px; border-radius: 8px;
+      text-decoration: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all .25s var(--ease-spring);
+    }
+    .nav-btn-inquire:hover {
+      background: linear-gradient(135deg, rgba(167, 139, 250, 0.45), rgba(129, 140, 248, 0.45));
+      border-color: var(--c-accent);
+      box-shadow: 0 0 16px rgba(167, 139, 250, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-inquire {
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
+      color: #fff !important;
+      border: none;
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.3);
+    }
+    .btn-inquire:hover {
+      box-shadow: 0 0 36px rgba(139, 92, 246, 0.55);
+      transform: translateY(-2px);
+    }
+
+    /* Contact Card Section */
+    .contact-card-box {
+      background: linear-gradient(135deg, rgba(24, 24, 32, 0.75), rgba(15, 15, 20, 0.92));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      border-radius: 20px;
+      padding: 56px 36px;
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-card-box::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .contact-actions {
+      display: flex; gap: 14px; justify-content: center; align-items: center;
+      flex-wrap: wrap; margin-top: 28px;
+    }
+    .email-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 10px;
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono); font-size: 13px;
+      cursor: pointer; transition: all .2s;
+    }
+    .email-chip:hover {
+      border-color: var(--c-accent); color: #fff; background: var(--c-surface-hover);
+    }
+
+    /* Modal Overlay & Dialog */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s var(--ease-spring);
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-dialog {
+      background: #111116;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      max-width: 500px; width: 100%;
+      padding: 32px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.15);
+      position: relative;
+      transform: translateY(20px) scale(0.96);
+      transition: transform .3s var(--ease-spring);
+    }
+    .modal-overlay.active .modal-dialog {
+      transform: translateY(0) scale(1);
+    }
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      color: var(--c-text-2); cursor: pointer;
+      display: grid; place-items: center; font-size: 16px;
+      transition: all .2s;
+    }
+    .modal-close:hover {
+      color: #fff; border-color: var(--c-border-hover); background: var(--c-surface-hover);
+    }
+    .modal-title {
+      font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.02em;
+    }
+    .modal-desc {
+      font-size: 13px; color: var(--c-text-2); margin-bottom: 24px; line-height: 1.5;
+    }
+    .form-group {
+      margin-bottom: 16px; text-align: left;
+    }
+    .form-label {
+      display: block; font-size: 12px; font-weight: 500; color: var(--c-text-2);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 10px 14px; border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04); border: 1px solid var(--c-border);
+      color: #fff; font-family: var(--font); font-size: 13px;
+      outline: none; transition: border-color .2s, background .2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--c-accent); background: rgba(255, 255, 255, 0.07);
+    }
+    .form-textarea {
+      resize: vertical; min-height: 80px;
+    }
+    .toast-feedback {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+      padding: 10px 20px; border-radius: 100px;
+      background: #22c55e; color: #000; font-size: 13px; font-weight: 600;
+      opacity: 0; pointer-events: none; z-index: 100000;
+      transition: all .3s var(--ease-spring);
+      box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
+    }
+    .toast-feedback.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
     /* ── Responsive ── */
     @media(max-width:640px) {
       .hero { padding: 100px 20px 40px; }
@@ -615,6 +756,7 @@
       <a href="#tech" class="nav-link" data-i18n="nav_tech">Technology</a>
       <a href="#work" class="nav-link" data-i18n="nav_work">Work</a>
       <a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
+      <button onclick="openContactModal()" class="nav-btn-inquire" data-i18n="nav_inquire">💬 Inquire</button>
       <select class="lang" id="langSelect" aria-label="Language">
         <option value="en" selected>EN</option>
         <option value="ko">한국어</option>
@@ -643,6 +785,7 @@
 
   <div class="hero-actions hero-cta-group">
     <a href="#stage" class="btn btn-primary" data-i18n="hero_cta1">Explore Live 3D ↓</a>
+    <button onclick="openContactModal()" class="btn btn-inquire" data-i18n="hero_cta_inquire">Get a Quote 💬</button>
     <a href="showroom.html" class="btn btn-ghost" data-i18n="hero_cta2">Open Showroom ↗</a>
   </div>
 </section>
@@ -801,6 +944,80 @@
   </div>
 </section>
 
+<!-- ═══ Contact & Collaboration Section ═══ -->
+<section id="contact" style="padding: 100px 0 60px;">
+  <div class="wrap">
+    <div class="contact-card-box reveal-on-scroll">
+      <div class="eyebrow" style="justify-content: center; margin-bottom: 14px;">
+        <span class="pulse"></span>
+        <span data-i18n="contact_badge">Start a Project</span>
+      </div>
+      <h2 style="font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -.03em; margin-bottom: 12px;" data-i18n="contact_h2">
+        Let's capture your reality in 3D
+      </h2>
+      <p style="font-size: 15px; color: var(--c-text-2); max-width: 580px; margin: 0 auto 24px; line-height: 1.6;" data-i18n="contact_p">
+        Whether you need high-fidelity <span class="nowrap">3D Gaussian Splatting</span> for architecture, commercial real estate, heritage archives, or custom <span class="nowrap">WebGL 3D viewers</span> — let's build together.
+      </p>
+      <div class="contact-actions">
+        <button onclick="openContactModal()" class="btn btn-inquire" style="padding: 14px 32px; font-size: 15px;" data-i18n="contact_btn_quote">
+          Request a Quote 💬
+        </button>
+        <div class="email-chip" onclick="copyContactEmail()" title="Click to copy email">
+          <span>✉</span>
+          <span id="contactEmailText">contact@pointsandreality.com</span>
+          <span style="font-size: 10px; opacity: 0.6;">(Copy)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Global Interactive Contact Modal ═══ -->
+<div id="contactModal" class="modal-overlay" onclick="handleModalBackdrop(event)">
+  <div class="modal-dialog">
+    <button class="modal-close" onclick="closeContactModal()" aria-label="Close modal">✕</button>
+    <div class="eyebrow" style="margin-bottom: 8px;">
+      <span class="pulse"></span>
+      <span data-i18n="modal_badge">Inquiry & Collaboration</span>
+    </div>
+    <h3 class="modal-title" data-i18n="modal_title">Get in touch with us</h3>
+    <p class="modal-desc" data-i18n="modal_desc">Tell us about your project or required 3DGS deliverables. We will get back to you within 24 hours.</p>
+
+    <form id="contactForm" onsubmit="submitContactForm(event)">
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_name">Name / Company</label>
+        <input type="text" id="formName" class="form-input" placeholder="e.g. Alex Kim / Studio Reality" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_email">Email Address</label>
+        <input type="email" id="formEmail" class="form-input" placeholder="alex@company.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_type">Inquiry Type</label>
+        <select id="formType" class="form-select">
+          <option value="3DGS Drone / Handheld Optical Scan">3DGS Space Capture / Scanning</option>
+          <option value="Custom WebGL / Showroom Integration">Custom WebGL Showroom / Embedding</option>
+          <option value="Enterprise Pipeline Collaboration">Enterprise Pipeline Collaboration</option>
+          <option value="Other Inquiries">General / Other Inquiries</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" data-i18n="form_message">Project Details</label>
+        <textarea id="formMessage" class="form-textarea" placeholder="Tell us about the location, scale, intended platform, or timeline..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-inquire" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px; font-size: 14px;" data-i18n="form_submit">
+        Send Inquiry 🚀
+      </button>
+    </form>
+  </div>
+</div>
+
+<div id="toastFeedback" class="toast-feedback">Copied to clipboard! ✓</div>
+
 <!-- ═══ Footer ═══ -->
 <footer>
   <div class="footer-inner">
@@ -809,6 +1026,7 @@
       <li><a href="#stage" data-i18n="nav_stage">Stage</a></li>
       <li><a href="#tech" data-i18n="nav_tech">Technology</a></li>
       <li><a href="#work" data-i18n="nav_work">Work</a></li>
+      <li><a href="#contact" onclick="openContactModal(event)" data-i18n="nav_inquire">Inquire</a></li>
       <li><a href="showroom.html" data-i18n="nav_showroom">Showroom ↗</a></li>
     </ul>
   </div>
@@ -1151,11 +1369,11 @@ loadModels();
 /* ═══ i18n ═══ */
 const i18n = {
   en: {
-    nav_stage:"Stage", nav_tech:"Technology", nav_work:"Work", nav_faq:"FAQ", nav_showroom:"Showroom ↗",
+    nav_stage:"Stage", nav_tech:"Technology", nav_work:"Work", nav_faq:"FAQ", nav_inquire:"💬 Inquire", nav_showroom:"Showroom ↗",
     hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
     hero_h1:'Reality captured in <em>millions of light</em>',
     hero_p:"We reconstruct physical spaces into photorealistic <span class=\"nowrap\">3D Gaussian Splats</span> — streamed instantly in your browser at <span class=\"nowrap\">60+ FPS</span>, <span class=\"nowrap\">zero plugins required</span>.",
-    hero_cta1:"Explore Live 3D ↓", hero_cta2:"Open Showroom ↗",
+    hero_cta1:"Explore Live 3D ↓", hero_cta_inquire:"Get a Quote 💬", hero_cta2:"Open Showroom ↗",
     tech_label:"Technology", tech_h2:"Not polygons.<br>Pure radiance fields.", tech_p:"<span class=\"nowrap\">3D Gaussian Splatting</span> models light itself — millions of anisotropic ellipsoids that capture reflection, transparency, and geometry simultaneously.",
     f1_h:"Photorealistic", f1_p:"Sub-millimeter fidelity. True reflections, glass transparency, and micro-geometry — <span class=\"nowrap\">no manual texturing</span> or retopology required.",
     f2_h:"Instant WebGL", f2_p:"Hardware-accelerated rendering at <span class=\"nowrap\">60+ FPS</span>. Runs natively in Safari, Chrome, and Edge — <span class=\"nowrap\">zero installations</span>, <span class=\"nowrap\">zero plugins</span>.",
@@ -1168,14 +1386,26 @@ const i18n = {
     faq_label:"FAQ", faq_h2:"Common questions",
     q1:"How is <span class=\"nowrap\">3DGS</span> different from traditional <span class=\"nowrap\">3D models</span>?", a1:"Unlike polygon meshes that require manual retopology and texture baking, <span class=\"nowrap\">3D Gaussian Splatting</span> captures radiance directly as millions of light-emitting ellipsoids — achieving photorealistic quality with <span class=\"nowrap\">zero manual work</span>.",
     q2:"Do viewers need to install anything?", a2:"No. Everything renders through standard <span class=\"nowrap\">WebGL 2.0</span> — works in any modern browser on desktop and mobile with <span class=\"nowrap\">zero plugins</span> or apps.",
-    q3:"Can I embed the 3D viewer on my own site?", a3:"Yes — every deliverable includes a standalone URL and responsive iframe code ready for Shopify, WordPress, or any custom site."
+    q3:"Can I embed the 3D viewer on my own site?", a3:"Yes — every deliverable includes a standalone URL and responsive iframe code ready for Shopify, WordPress, or any custom site.",
+    contact_badge:"Start a Project",
+    contact_h2:"Let's capture your reality in 3D",
+    contact_p:"Whether you need high-fidelity <span class=\"nowrap\">3D Gaussian Splatting</span> for architecture, commercial real estate, heritage archives, or custom <span class=\"nowrap\">WebGL 3D viewers</span> — let's build together.",
+    contact_btn_quote:"Request a Quote 💬",
+    modal_badge:"Inquiry & Collaboration",
+    modal_title:"Get in touch with us",
+    modal_desc:"Tell us about your project or required 3DGS deliverables. We will get back to you within 24 hours.",
+    form_name:"Name / Company",
+    form_email:"Email Address",
+    form_type:"Inquiry Type",
+    form_message:"Project Details",
+    form_submit:"Send Inquiry 🚀"
   },
   ko: {
-    nav_stage:"스테이지", nav_tech:"기술", nav_work:"포트폴리오", nav_faq:"FAQ", nav_showroom:"쇼룸 ↗",
+    nav_stage:"스테이지", nav_tech:"기술", nav_work:"포트폴리오", nav_faq:"FAQ", nav_inquire:"💬 견적 문의", nav_showroom:"쇼룸 ↗",
     hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
     hero_h1:'현실을 <em>수백만 개의 빛</em>으로 복원합니다',
     hero_p:"물리적 공간을 실사 수준의 <span class=\"nowrap\">3D Gaussian Splat</span>으로 재구성합니다. 설치 없이 브라우저에서 <span class=\"nowrap\">60+ FPS</span>로 즉시 체험하세요.",
-    hero_cta1:"실시간 3D 체험 ↓", hero_cta2:"쇼룸 열기 ↗",
+    hero_cta1:"실시간 3D 체험 ↓", hero_cta_inquire:"견적 및 협업 문의 💬", hero_cta2:"쇼룸 열기 ↗",
     tech_label:"핵심 기술", tech_h2:"폴리곤이 아닙니다.<br>순수한 광선 필드입니다.", tech_p:"<span class=\"nowrap\">3DGS</span>는 빛 자체를 모델링합니다 — 반사, 투명도, 형상을 동시에 포착하는 수백만 개의 비등방 타원체.",
     f1_h:"포토리얼리스틱", f1_p:"서브밀리미터 정밀도. 실제 반사광, 유리 투명도, 미세 형상 — 수작업 텍스처링이나 리토폴로지 없이 구현됩니다.",
     f2_h:"즉각적인 WebGL", f2_p:"하드웨어 가속 렌더링으로 <span class=\"nowrap\">60+ FPS</span>. Safari, Chrome, Edge에서 설치 없이 네이티브 실행.",
@@ -1188,14 +1418,26 @@ const i18n = {
     faq_label:"FAQ", faq_h2:"자주 묻는 질문",
     q1:"<span class=\"nowrap\">3DGS</span>는 기존 <span class=\"nowrap\">3D 모델</span>과 어떻게 다른가요?", a1:"폴리곤 메쉬처럼 수작업 리토폴로지와 텍스처 베이킹이 필요 없습니다. <span class=\"nowrap\">3DGS</span>는 수백만 개의 빛 방출 타원체로 직접 광선을 캡처하여 포토리얼리스틱 품질을 달성합니다.",
     q2:"뷰어가 뭔가 설치해야 하나요?", a2:"아니요. 표준 <span class=\"nowrap\">WebGL 2.0</span>으로 렌더링 — 데스크톱과 모바일의 모든 최신 브라우저에서 바로 작동합니다.",
-    q3:"내 사이트에 3D 뷰어를 넣을 수 있나요?", a3:"네 — 모든 결과물에는 Shopify, WordPress 등 어디서나 바로 사용 가능한 iframe 코드가 포함됩니다."
+    q3:"내 사이트에 3D 뷰어를 넣을 수 있나요?", a3:"네 — 모든 결과물에는 Shopify, WordPress 등 어디서나 바로 사용 가능한 iframe 코드가 포함됩니다.",
+    contact_badge:"프로젝트 시작하기",
+    contact_h2:"공간의 가치를 3D로 복원해보세요",
+    contact_p:"건축, 상업 공간, 문화재 아카이빙을 위한 초고화질 <span class=\"nowrap\">3D Gaussian Splatting</span> 촬영 및 맞춤형 <span class=\"nowrap\">WebGL 3D 뷰어</span> 구축 — 언제든 문의해 주세요.",
+    contact_btn_quote:"견적 및 협업 문의 💬",
+    modal_badge:"견적 및 프로젝트 문의",
+    modal_title:"프로젝트 문의하기",
+    modal_desc:"원하시는 공간 스캔 규모나 WebGL 뷰어 요구사항을 알려주시면 24시간 이내에 상세히 안내해 드립니다.",
+    form_name:"성함 / 회사명",
+    form_email:"이메일 주소",
+    form_type:"문의 유형",
+    form_message:"프로젝트 세부 내용",
+    form_submit:"문의 보내기 🚀"
   },
   zh: {
-    nav_stage:"舞台", nav_tech:"技术", nav_work:"作品", nav_faq:"常见问题", nav_showroom:"展厅 ↗",
+    nav_stage:"舞台", nav_tech:"技术", nav_work:"作品", nav_faq:"常见问题", nav_inquire:"💬 咨询报价", nav_showroom:"展厅 ↗",
     hero_badge:"<span class=\"nowrap\">3D 高斯泼溅</span>",
     hero_h1:'以 <em>数百万道光</em> 重现现实',
     hero_p:"将物理空间重建为照片级真实感 <span class=\"nowrap\">3D 高斯泼溅</span> — 零安装，浏览器内 <span class=\"nowrap\">60+ FPS</span> 即时体验。",
-    hero_cta1:"体验实时 3D ↓", hero_cta2:"进入展厅 ↗",
+    hero_cta1:"体验实时 3D ↓", hero_cta_inquire:"获取报价 💬", hero_cta2:"进入展厅 ↗",
     tech_label:"核心技术", tech_h2:"不是多边形。<br>纯粹的光场。", tech_p:"<span class=\"nowrap\">3DGS</span> 直接对光进行建模 — 数百万各向异性椭球同时捕捉反射、透明度和几何。",
     f1_h:"照片级真实感", f1_p:"亚毫米精度。真实反射、玻璃透明、微观几何 — 无需手动贴图或重拓扑。",
     f2_h:"即时 WebGL", f2_p:"硬件加速渲染 <span class=\"nowrap\">60+ FPS</span>。Safari、Chrome、Edge 原生运行，零安装。",
@@ -1208,14 +1450,26 @@ const i18n = {
     faq_label:"常见问题", faq_h2:"常见问题解答",
     q1:"<span class=\"nowrap\">3DGS</span> 与传统 <span class=\"nowrap\">3D 模型</span>有何不同？", a1:"无需手动重拓扑和贴图烘焙。<span class=\"nowrap\">3DGS</span> 以数百万发光椭球直接捕捉光线，实现照片级质量。",
     q2:"查看者需要安装什么吗？", a2:"不需要。通过标准 <span class=\"nowrap\">WebGL 2.0</span> 渲染，任何现代浏览器即开即用。",
-    q3:"能嵌入我自己的网站吗？", a3:"可以 — 每个交付物都包含独立 URL 和响应式 iframe 代码。"
+    q3:"能嵌入我自己的网站吗？", a3:"可以 — 每个交付物都包含独立 URL 和响应式 iframe 代码。",
+    contact_badge:"开启项目",
+    contact_h2:"用 3D 重新定义您的现实",
+    contact_p:"无论是建筑、商业地产、文化遗产的高保真 <span class=\"nowrap\">3D 高斯泼溅</span>拍摄，还是定制 <span class=\"nowrap\">WebGL 3D 展厅</span> — 欢迎随时与我们携手合作。",
+    contact_btn_quote:"咨询报价 💬",
+    modal_badge:"项目咨询与合作",
+    modal_title:"联系我们",
+    modal_desc:"告诉我们您的项目需求或所需的 3DGS 交付成果，我们将在 24 小时内为您回复。",
+    form_name:"姓名 / 公司名称",
+    form_email:"电子邮箱",
+    form_type:"咨询类型",
+    form_message:"项目详情",
+    form_submit:"提交咨询 🚀"
   },
   mi: {
-    nav_stage:"Whakaari", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_showroom:"Whare Whakaatu ↗",
+    nav_stage:"Whakaari", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_inquire:"💬 Pātai Utu", nav_showroom:"Whare Whakaatu ↗",
     hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
     hero_h1:'Te ao tūturu i roto i <em>ngā miriona o te mārama</em>',
     hero_p:"Ka hanga anō i ngā wāhi kikokiko hei <span class=\"nowrap\">3D Gaussian Splats</span> — ka tere kitea i roto i tō pūtirotiro i te <span class=\"nowrap\">60+ FPS</span>.",
-    hero_cta1:"Whakaari 3D ↓", hero_cta2:"Whare Whakaatu ↗",
+    hero_cta1:"Whakaari 3D ↓", hero_cta_inquire:"Pātai Utu 💬", hero_cta2:"Whare Whakaatu ↗",
     tech_label:"Hangarau", tech_h2:"Ehara i te polygon.<br>He papa mārama.", tech_p:"Ka tauira te <span class=\"nowrap\">3DGS</span> i te mārama anō — ngā miriona o ngā kōpiri e hopu ana i te whakaata me te āhua.",
     f1_h:"Pono ki te Ao", f1_p:"Tino tika. Whakaata tūturu, tirohanga karaihe — kāore he mahi ā-ringa.",
     f2_h:"WebGL Tere", f2_p:"<span class=\"nowrap\">60+ FPS</span> mā te GPU. Kāore he tāutanga.",
@@ -1228,7 +1482,19 @@ const i18n = {
     faq_label:"Pātai", faq_h2:"Ngā pātai auau",
     q1:"He aha te rerekē o te <span class=\"nowrap\">3DGS</span>?", a1:"Ka hopu i te mārama mā ngā kōpiri — kāore he mahi ā-ringa.",
     q2:"Me tāuta he tono?", a2:"Kāo. <span class=\"nowrap\">WebGL 2.0</span> i roto i ngā pūtirotiro katoa.",
-    q3:"Ka taea te whakauru ki taku paetukutuku?", a3:"Āe — mā te waehere iframe kotahi."
+    q3:"Ka taea te whakauru ki taku paetukutuku?", a3:"Āe — mā te waehere iframe kotahi.",
+    contact_badge:"Tīmatahia he Kaupapa",
+    contact_h2:"Hangaia tō ao ki te 3D",
+    contact_p:"Me he hiahia koe ki te 3D Gaussian Splatting mō te hoahoanga me ngā taonga tuku iho — whakapā mai.",
+    contact_btn_quote:"Pātai Utu 💬",
+    modal_badge:"Pātai & Mahi Tahi",
+    modal_title:"Whakapā mai",
+    modal_desc:"Korerotia mai tō kaupapa, ka whakautu mātou i roto i te 24 hāora.",
+    form_name:"Ingoa / Kamupene",
+    form_email:"Īmēra",
+    form_type:"Momo Pātai",
+    form_message:"Ngā taipitopito kaupapa",
+    form_submit:"Tuku Pātai 🚀"
   }
 };
 
@@ -1242,6 +1508,65 @@ function setLang(lang) {
 }
 
 document.getElementById('langSelect').addEventListener('change', e => setLang(e.target.value));
+
+/* ═══ Contact Modal Controller ═══ */
+function openContactModal(e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById('contactModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeContactModal() {
+  const modal = document.getElementById('contactModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function handleModalBackdrop(e) {
+  if (e.target && e.target.id === 'contactModal') {
+    closeContactModal();
+  }
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeContactModal();
+});
+
+function showToast(msg) {
+  const toast = document.getElementById('toastFeedback');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function copyContactEmail() {
+  const email = "contact@pointsandreality.com";
+  navigator.clipboard.writeText(email).then(() => {
+    showToast("Email copied: " + email + " ✓");
+  }).catch(() => {
+    showToast("Email: " + email);
+  });
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  const name = document.getElementById('formName').value.trim();
+  const email = document.getElementById('formEmail').value.trim();
+  const type = document.getElementById('formType').value;
+  const msg = document.getElementById('formMessage').value.trim();
+
+  const subject = encodeURIComponent(`[Inquiry] ${type} - ${name}`);
+  const body = encodeURIComponent(`Name / Company: ${name}\nEmail: ${email}\nType: ${type}\n\nProject Details:\n${msg}`);
+
+  // Launch user's default email client
+  window.location.href = `mailto:contact@pointsandreality.com?subject=${subject}&body=${body}`;
+
+  showToast("Opening email client... 🚀");
+  setTimeout(() => {
+    closeContactModal();
+    document.getElementById('contactForm').reset();
+  }, 1000);
+}
 </script>
 
 </body>
