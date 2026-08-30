@@ -1,0 +1,51 @@
+# ==========================================
+# Points & Reality — Vercel Deployment Ignore
+# Only deploy frontend web static assets
+# ==========================================
+
+# Python Desktop App & Backend Source
+*.py
+*.pyw
+__pycache__/
+ui/
+config.py
+houdini_builder.py
+main.pyw
+ui_layout.py
+utils.py
+
+# Heavy Pipeline Processing Folders
+00_raw_footage/
+01_extracted_frames/
+02_camera_alignment/
+03_splats_exports/
+04_splats_cleaned/
+Works/
+
+# Windows Batch & Shell Scripts
+*.bat
+*.cmd
+*.ps1
+*.sh
+
+# C / Temporary compile artifacts
+*.c
+*.obj
+*.o
+*.ini
+test_chunk.int.c
+test_exact.cpp4.int.c
+cudafe_wrapper.obj
+imgui.ini
+
+# Node modules & Package locks (not needed for static web deployment)
+node_modules/
+package.json
+package-lock.json
+
+# Documentation & Git files
+.git/
+.gitignore
+CHANGELOG.md
+README.md
+gallery.html

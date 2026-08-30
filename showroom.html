@@ -3,1074 +3,1029 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Showroom & Deliverables | Points & Reality</title>
-  <meta name="description" content="Explore high-fidelity 3D Gaussian Splatting models and spatial computing deliverables reconstructed by Points & Reality Studio.">
+  <title>Showroom — Points & Reality</title>
+  <meta name="description" content="Browse and interact with photorealistic 3D Gaussian Splatting deliverables. Zero-install, 60+ FPS WebGL.">
+  <meta name="theme-color" content="#09090b">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="libs/motion.js"></script>
+  <script src="libs/motion-engine.js"></script>
+
   <style>
+    /* ═══ Same design tokens as index.html ═══ */
     :root {
-      --bg-primary: #090a0d;
-      --bg-surface: #121418;
-      --bg-surface-raised: #181b22;
-      --bg-card: rgba(24, 27, 34, 0.75);
-      --border-subtle: #232730;
-      --border-medium: #323846;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-steel: #38bdf8;
-      --accent-deep: #0284c7;
-      --font-display: 'Space Grotesk', -apple-system, sans-serif;
-      --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      --c-bg: #09090b;
+      --c-surface: rgba(255,255,255,0.03);
+      --c-surface-hover: rgba(255,255,255,0.06);
+      --c-border: rgba(255,255,255,0.07);
+      --c-border-hover: rgba(255,255,255,0.16);
+      --c-text: #fafafa;
+      --c-text-2: rgba(255,255,255,0.55);
+      --c-text-3: rgba(255,255,255,0.3);
+      --c-accent: #a78bfa;
+      --c-accent2: #818cf8;
+      --c-glow: rgba(139,92,246,0.15);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --ease: cubic-bezier(.4,0,.2,1);
+      --ease-spring: cubic-bezier(.16,1,.3,1);
+      --r: 12px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: var(--font-body);
+      font-family: var(--font);
+      background: var(--c-bg);
+      color: var(--c-text);
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
-    /* Architectural Grid Overlay */
-    .grid-overlay {
+    h1, h2, h3, h4, .page-title {
+      text-wrap: balance;
+      word-break: keep-all;
+    }
+
+    p, .page-desc, .card-desc {
+      text-wrap: pretty;
+      word-break: keep-all;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    /* ═════════════ FIXED VIDEO BACKGROUND (odd.global style) ═════════════ */
+    .video-bg-container {
       position: fixed;
       inset: 0;
-      background-size: 64px 64px;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      width: 100vw;
+      height: 100vh;
+      z-index: -10;
+      overflow: hidden;
       pointer-events: none;
-      z-index: 0;
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 48px;
-      background: rgba(9, 10, 13, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
+    .video-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.32;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      text-decoration: none;
+    .video-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.1) 0%, #09090b 95%);
     }
 
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      background: #ffffff;
-      color: #000000;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 15px;
-      letter-spacing: -0.5px;
+
+    /* Scroll progress */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 1px; width: 0%;
+      background: linear-gradient(90deg, var(--c-accent2), var(--c-accent));
+      z-index: 9999; pointer-events: none;
     }
 
-    .brand-text {
-      display: flex;
-      flex-direction: column;
+    /* Ambient particles */
+    #particles {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
 
-    .brand-name {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text-primary);
-      text-transform: uppercase;
+    /* ═══ NAV (identical to index) ═══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .3s var(--ease), border-color .3s var(--ease);
     }
 
-    .brand-tagline {
-      font-size: 10.5px;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      font-weight: 500;
+    nav.scrolled {
+      background: rgba(9,9,11,0.82);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid var(--c-border);
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 18px;
+    .nav-inner {
+      width: 100%; max-width: 1180px;
+      display: flex; align-items: center; justify-content: space-between;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      list-style: none;
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--c-text);
+    }
+
+    .logo-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 13px; color: #fff;
+    }
+
+    .logo span { font-weight: 700; font-size: 14px; letter-spacing: -.02em; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 6px;
     }
 
     .nav-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 500;
-      transition: var(--transition-smooth);
+      color: var(--c-text-2); text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      padding: 6px 12px; border-radius: 8px;
+      transition: color .2s, background .2s;
     }
 
-    .nav-link:hover, .nav-link.active {
-      color: var(--text-primary);
+    .nav-link:hover { color: var(--c-text); background: var(--c-surface-hover); }
+    .nav-link.active { color: var(--c-accent); }
+
+    .nav-cta {
+      color: var(--c-bg); background: var(--c-text);
+      font-weight: 600; font-size: 13px;
+      padding: 7px 16px; border-radius: 8px;
+      text-decoration: none; margin-left: 8px;
+      transition: opacity .2s;
     }
 
-    .nav-link.active {
-      font-weight: 700;
-      color: var(--accent-steel);
+    .nav-cta:hover { opacity: .85; }
+
+    select.lang {
+      appearance: none; -webkit-appearance: none;
+      background: transparent; border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono);
+      font-size: 11px; font-weight: 500;
+      padding: 5px 10px 5px 10px; border-radius: 6px;
+      cursor: pointer; outline: none;
     }
 
-    /* Language Switcher */
-    .lang-selector-wrap {
-      position: relative;
+    select.lang option {
+      background: #09090b;
+      color: var(--c-text);
     }
 
-    .lang-select {
-      appearance: none;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      color: var(--text-primary);
-      font-family: var(--font-body);
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 7px 30px 7px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      outline: none;
-      transition: var(--transition-smooth);
+    @media(max-width:768px) {
+      .nav-link { display: none; }
     }
 
-    .lang-select:hover, .lang-select:focus {
-      border-color: var(--text-secondary);
-      background: var(--bg-surface-raised);
-    }
-
-    .lang-arrow {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      font-size: 9px;
-      color: var(--text-muted);
-    }
-
-    .btn-primary {
-      background: var(--text-primary);
-      color: var(--bg-primary);
-      padding: 8px 18px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid var(--text-primary);
-      transition: var(--transition-smooth);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover {
-      background: #e2e8f0;
-      border-color: #e2e8f0;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      padding: 8px 18px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid var(--border-medium);
-      transition: var(--transition-smooth);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-surface-raised);
-      border-color: var(--text-secondary);
-      transform: translateY(-1px);
-    }
-
+    /* ═══ MAIN LAYOUT ═══ */
     main {
-      position: relative;
-      z-index: 10;
-      flex: 1;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 40px 32px 100px;
-      width: 100%;
+      position: relative; z-index: 2; flex: 1;
+      max-width: 1180px; width: 100%;
+      margin: 0 auto; padding: 80px 24px 60px;
     }
 
-    /* Page Header */
-    .page-header {
-      padding: 20px 0 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 36px;
+    /* ═══ PAGE HEADER ═══ */
+    .page-head {
+      padding: 40px 0 48px;
+      border-bottom: 1px solid var(--c-border);
+      margin-bottom: 40px;
+      display: flex; justify-content: space-between;
+      align-items: flex-end; flex-wrap: wrap; gap: 20px;
     }
 
-    .page-eyebrow {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent-steel);
-      font-weight: 700;
-      margin-bottom: 6px;
+    .page-label {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      color: var(--c-accent); letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 10px;
     }
 
-    .page-title {
-      font-family: var(--font-display);
+    .page-head h1 {
       font-size: clamp(30px, 4vw, 44px);
-      font-weight: 700;
-      letter-spacing: -1px;
-      line-height: 1.2;
-      color: var(--text-primary);
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      font-weight: 800; letter-spacing: -.035em; line-height: 1.1;
     }
 
     .page-desc {
-      font-size: 15px;
-      color: var(--text-secondary);
-      max-width: 620px;
-      margin-top: 8px;
+      font-size: 15px; color: var(--c-text-2); max-width: 540px; margin-top: 10px;
     }
 
-    .status-count-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--text-secondary);
+    .count-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--c-text-2);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
+    .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; box-shadow: 0 0 8px #22c55e;
+      animation: pulse 2s infinite;
     }
 
-    /* Interactive 3D Stage Section */
-    .stage-section {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      border-radius: 14px;
-      overflow: hidden;
-      margin-bottom: 48px;
-      display: flex;
-      flex-direction: column;
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: .4; }
     }
 
-    .stage-header {
-      padding: 16px 24px;
-      background: var(--bg-surface-raised);
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+    /* ═══ STAGE (macOS window chrome) ═══ */
+    .stage-container {
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid var(--c-border);
+      background: #000;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04),
+        0 40px 80px -20px rgba(0,0,0,.8),
+        0 0 60px rgba(139,92,246,.06);
+      margin-bottom: 56px;
     }
 
-    .stage-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+    .stage-chrome {
+      height: 44px; padding: 0 16px;
+      background: rgba(255,255,255,.03);
+      border-bottom: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: space-between;
     }
 
-    .stage-title {
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
+    .stage-dots {
+      display: flex; gap: 6px;
     }
 
-    .review-badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: #fbbf24;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    .stage-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.08);
     }
 
-    .stage-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .stage-label {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--c-text-3); display: flex; align-items: center; gap: 8px;
     }
 
-    .stage-frame-container {
-      position: relative;
-      width: 100%;
-      height: 560px;
-      background: #000000;
+    .stage-actions { display: flex; gap: 6px; }
+
+    .stage-btn {
+      background: none; border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono); font-size: 10px;
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: all .2s;
     }
 
-    .stage-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
+    .stage-btn:hover {
+      background: var(--c-surface-hover); color: var(--c-text);
+      border-color: var(--c-border-hover);
     }
 
-    .stage-loading {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(9, 10, 13, 0.85);
-      color: var(--text-secondary);
-      font-size: 14px;
-      gap: 12px;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+    .stage-viewport {
+      width: 100%; height: clamp(400px, 56vh, 640px);
+      background: #000; position: relative;
     }
 
-    /* Filter & Search Bar */
+    .stage-viewport iframe {
+      width: 100%; height: 100%; border: none; display: block;
+    }
+
+    .stage-footer {
+      height: 40px; padding: 0 16px;
+      background: rgba(255,255,255,.02);
+      border-top: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .stage-hint {
+      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .kbd {
+      display: inline-flex; padding: 2px 6px; border-radius: 4px;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
+      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+    }
+
+    /* ═══ FILTER BAR ═══ */
     .filter-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 28px;
     }
 
-    .filter-pills {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
 
     .filter-pill {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: var(--transition-smooth);
+      background: transparent; border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono); font-size: 11px;
+      font-weight: 500; padding: 5px 14px; border-radius: 8px;
+      cursor: pointer; transition: all .2s var(--ease);
     }
 
-    .filter-pill:hover, .filter-pill.active {
-      border-color: var(--accent-steel);
-      color: var(--text-primary);
-      background: var(--bg-surface-raised);
+    .filter-pill:hover {
+      background: var(--c-surface-hover);
+      border-color: var(--c-border-hover); color: var(--c-text);
     }
 
     .filter-pill.active {
-      background: rgba(56, 189, 248, 0.1);
-      border-color: var(--accent-steel);
-      color: var(--accent-steel);
+      background: rgba(139,92,246,.15);
+      border-color: rgba(139,92,246,.3);
+      color: var(--c-accent);
     }
 
-    /* Model Cards Grid */
-    .grid-3 {
+    .filter-note {
+      font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
+    }
+
+    /* ═══ MODEL CARDS GRID ═══ */
+    .model-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .asset-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-      transition: var(--transition-smooth);
-      position: relative;
-    }
-
-    .asset-card:hover {
-      border-color: var(--border-medium);
-      background: var(--bg-surface-raised);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-
-    .asset-card.active-stage {
-      border-color: var(--accent-steel);
-      background: var(--bg-surface-raised);
-    }
-
-    .asset-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .asset-format-badge {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: var(--accent-steel);
-      text-transform: uppercase;
-    }
-
-    .asset-date {
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .asset-title {
-      font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 8px 0 4px;
-    }
-
-    .asset-filename {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .asset-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-stage {
-      flex: 1;
-      justify-content: center;
-      background: var(--text-primary);
-      color: var(--bg-primary);
-      border: 1px solid var(--text-primary);
-      padding: 7px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-stage:hover {
-      background: #e2e8f0;
-    }
-
-    .btn-fullscreen {
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      border: 1px solid var(--border-medium);
-      padding: 7px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: var(--transition-smooth);
-    }
-
-    .btn-fullscreen:hover {
-      background: var(--bg-surface-raised);
-      border-color: var(--text-secondary);
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      background: var(--bg-surface);
-      border: 1px dashed var(--border-medium);
-      border-radius: 12px;
-      color: var(--text-secondary);
-    }
-
-    .empty-icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-      color: var(--text-muted);
-    }
-
-    footer {
-      position: relative;
-      z-index: 10;
-      margin-top: auto;
-      border-top: 1px solid var(--border-subtle);
-      background: var(--bg-surface);
-      padding: 40px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 20px;
-      color: var(--text-muted);
-      font-size: 13px;
     }
 
-    .footer-meta {
-      display: flex;
-      align-items: center;
-      gap: 24px;
+    .model-card {
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: 14px; overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: all .35s var(--ease-spring);
+      position: relative;
     }
 
-    @media (max-width: 900px) {
-      header {
-        padding: 16px 24px;
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-      }
-      .nav-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .stage-frame-container {
-        height: 380px;
-      }
-      footer {
-        padding: 24px;
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .model-card:hover {
+      border-color: var(--c-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,.7), 0 0 30px rgba(139,92,246,.05);
+    }
+
+    .model-card.active-stage {
+      border-color: rgba(139,92,246,.4);
+      box-shadow: 0 0 30px rgba(139,92,246,.1);
+    }
+
+    .card-body {
+      padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .card-header-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .card-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+    .tag {
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      padding: 2px 8px; border-radius: 4px;
+      background: var(--c-surface); color: var(--c-text-2);
+    }
+
+    .tag-accent {
+      background: rgba(139,92,246,.12); color: var(--c-accent);
+      border: 1px solid rgba(139,92,246,.2);
+    }
+
+    .tag-review {
+      background: rgba(245,158,11,.12); color: #fbbf24;
+      border: 1px solid rgba(245,158,11,.25);
+    }
+
+    .card-date {
+      font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
+    }
+
+    .card-title {
+      font-size: 16px; font-weight: 700; letter-spacing: -.02em;
+    }
+
+    .card-file {
+      font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .card-actions {
+      display: flex; gap: 8px; margin-top: 4px;
+    }
+
+    .btn-view {
+      flex: 1; display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 8px 14px; border-radius: 8px;
+      background: #fff; color: #09090b; font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer; font-family: var(--font);
+      transition: all .2s var(--ease-spring);
+    }
+
+    .btn-view:hover { opacity: .85; transform: translateY(-1px); }
+
+    .btn-open {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 4px; padding: 8px 14px; border-radius: 8px;
+      background: transparent; color: var(--c-text);
+      border: 1px solid var(--c-border); font-size: 12px; font-weight: 600;
+      text-decoration: none; font-family: var(--font);
+      transition: all .2s var(--ease);
+    }
+
+    .btn-open:hover {
+      background: var(--c-surface-hover);
+      border-color: var(--c-border-hover);
+    }
+
+    /* ═══ EMPTY STATE ═══ */
+    .empty-state {
+      grid-column: 1 / -1; text-align: center;
+      padding: 60px 20px;
+      border: 1px dashed var(--c-border); border-radius: 14px;
+      color: var(--c-text-2);
+    }
+
+    .empty-state h3 { font-size: 17px; margin-bottom: 8px; color: var(--c-text); }
+    .empty-state p { font-size: 14px; max-width: 440px; margin: 0 auto; }
+
+    /* ═══ FOOTER (identical to index) ═══ */
+    footer {
+      border-top: 1px solid var(--c-border);
+      padding: 40px 24px; margin-top: auto;
+    }
+
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-copy { font-size: 13px; color: var(--c-text-3); }
+
+    .footer-links { display: flex; gap: 20px; list-style: none; }
+
+    .footer-links a {
+      font-size: 13px; color: var(--c-text-3); text-decoration: none;
+      transition: color .2s;
+    }
+
+    .footer-links a:hover { color: var(--c-text); }
+
+    /* ═══ Responsive ═══ */
+    @media(max-width:640px) {
+      .page-head { flex-direction: column; align-items: flex-start; }
+      .stage-container { border-radius: 12px; }
+      .stage-viewport { height: 360px; }
+      .model-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
+
 <body>
-  <div class="grid-overlay"></div>
 
-  <!-- Header -->
-  <header>
-    <a href="index.html" class="brand-group">
-      <div class="brand-mark">PR</div>
-      <div class="brand-text">
-        <span class="brand-name">Points & Reality</span>
-        <span class="brand-tagline" data-i18n="header_tagline">Spatial Capture & 3DGS Studio</span>
-      </div>
+<!-- Hardware-accelerated Canvas Image Sequence Background (Apple-style 60+ FPS Scroll Scrubbing) -->
+<div class="video-bg-container">
+  <canvas id="video-canvas" class="video-canvas"></canvas>
+  <div class="video-bg-overlay"></div>
+</div>
+
+<div id="progress"></div>
+<canvas id="particles"></canvas>
+
+<!-- ═══ Nav ═══ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">P</div>
+      <span>Points & Reality</span>
     </a>
-
-    <div class="nav-actions">
-      <ul class="nav-links">
-        <li><a href="index.html" class="nav-link" data-i18n="nav_home">Home</a></li>
-        <li><a href="showroom.html" class="nav-link active" data-i18n="nav_showroom">Showroom</a></li>
-        <li><a href="index.html#services" class="nav-link" data-i18n="nav_services">Services</a></li>
-        <li><a href="index.html#pipeline" class="nav-link" data-i18n="nav_pipeline">Pipeline</a></li>
-      </ul>
-
-      <!-- Language Selector -->
-      <div class="lang-selector-wrap">
-        <select id="langSelect" class="lang-select" aria-label="Select Language">
-          <option value="en" selected>English (NZ)</option>
-          <option value="ko">한국어 (Korean)</option>
-          <option value="zh">中文 (Chinese)</option>
-          <option value="mi">Te Reo Māori</option>
-        </select>
-        <span class="lang-arrow">▼</span>
-      </div>
-
-      <a href="index.html" class="btn-secondary" data-i18n="btn_back_home">
-        ← Back to Portal
-      </a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link" data-i18n="nav_home">Home</a>
+      <a href="showroom.html" class="nav-link active" data-i18n="nav_showroom">Showroom</a>
+      <a href="index.html#tech" class="nav-link" data-i18n="nav_tech">Technology</a>
+      <a href="index.html#process" class="nav-link" data-i18n="nav_process">Process</a>
+      <select class="lang" id="langSelect" aria-label="Language">
+        <option value="en" selected>EN</option>
+        <option value="ko">한국어</option>
+        <option value="zh">中文</option>
+        <option value="mi">Māori</option>
+      </select>
+      <a href="index.html" class="nav-cta" data-i18n="nav_back">← Home</a>
     </div>
-  </header>
+  </div>
+</nav>
 
-  <!-- Main Content -->
-  <main>
-    <!-- Page Header -->
-    <div class="page-header">
-      <div>
-        <div class="page-eyebrow" data-i18n="showroom_eyebrow">Deliverables & Spatial Archive</div>
-        <h1 class="page-title" data-i18n="showroom_title">3DGS Spatial Showroom</h1>
-        <p class="page-desc" data-i18n="showroom_desc">
-          Browse and interact with client deliverables and neural 3D Gaussian Splats generated by the Points & Reality Pipeline. Zero-install, ultra-fast 60+ FPS WebGL rendering.
-        </p>
+<!-- ═══ Main ═══ -->
+<main>
+  <!-- Page Header -->
+  <div class="page-head">
+    <div>
+      <div class="page-label" data-i18n="showroom_label">Deliverables</div>
+      <h1 class="page-title" data-i18n="showroom_title">Showroom</h1>
+      <p class="page-desc" data-i18n="showroom_desc">Browse and interact with 3D Gaussian Splatting deliverables generated by the Points & Reality pipeline. Zero-install, 60+ FPS WebGL.</p>
+    </div>
+    <div class="count-badge">
+      <span class="pulse"></span>
+      <span id="modelCountLabel" data-i18n="loading_models">Scanning…</span>
+    </div>
+  </div>
+
+  <!-- Live Stage -->
+  <div class="stage-container">
+    <div class="stage-chrome">
+      <div class="stage-dots">
+        <span class="stage-dot"></span>
+        <span class="stage-dot"></span>
+        <span class="stage-dot"></span>
       </div>
-
-      <div class="status-count-badge">
-        <span class="status-dot"></span>
-        <span id="modelCountLabel" data-i18n="loading_models">Scanning Deliverables...</span>
+      <div class="stage-label">
+        <span class="pulse"></span>
+        <span id="activeModelTitle">3DGS Viewer</span>
+      </div>
+      <div class="stage-actions">
+        <a id="btnOpenStandalone" href="#" target="_blank" class="stage-btn" data-i18n="btn_standalone">Open ↗</a>
+        <button class="stage-btn" onclick="goFS()" title="Fullscreen">⛶</button>
       </div>
     </div>
+    <div class="stage-viewport">
+      <iframe id="stageIframe" src="" title="3DGS Viewer" allow="fullscreen; xr-spatial-tracking"></iframe>
+    </div>
+    <div class="stage-footer">
+      <div class="stage-hint">
+        <span><kbd class="kbd">Drag</kbd> orbit</span>
+        <span><kbd class="kbd">Scroll</kbd> zoom</span>
+        <span><kbd class="kbd">Shift+Drag</kbd> pan</span>
+      </div>
+      <div class="stage-hint">WebGL 2.0</div>
+    </div>
+  </div>
 
-    <!-- Live Interactive Stage -->
-    <section class="stage-section">
-      <div class="stage-header">
-        <div class="stage-title-wrap">
-          <span style="font-size: 13px; font-weight: 700; color: var(--accent-steel); text-transform: uppercase;" data-i18n="active_stage_badge">Active Stage:</span>
-          <span id="activeModelTitle" class="stage-title">Interactive 3DGS Engine Preview</span>
-          <span id="activeStageReviewBadge" class="review-badge-pill" style="display:none;" data-i18n="badge_review">🛡️ Client Review</span>
+  <!-- Filters & Cards -->
+  <div class="filter-bar">
+    <div class="filter-pills">
+      <button class="filter-pill active" data-filter="all" data-i18n="filter_all">All</button>
+      <button class="filter-pill" data-filter="sog" data-i18n="filter_sog">SOG</button>
+      <button class="filter-pill" data-filter="ply" data-i18n="filter_ply">PLY / WebGL</button>
+    </div>
+    <span class="filter-note" data-i18n="sync_note">⚡ Synced from pipeline</span>
+  </div>
+
+  <div id="showroomGrid" class="model-grid">
+    <!-- Dynamically populated -->
+  </div>
+</main>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Points & Reality</span>
+    <ul class="footer-links">
+      <li><a href="index.html" data-i18n="nav_home">Home</a></li>
+      <li><a href="index.html#tech" data-i18n="nav_tech">Technology</a></li>
+      <li><a href="index.html#work" data-i18n="nav_work">Work</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+/* ═══ Particles (same as index) ═══ */
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: 0, y: 0, targetX: 0, targetY: 0 }, scrollY = 0;
+  const FOCAL = 380; // Focal length for 3D projection
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = [];
+    const count = Math.min(Math.floor(W * H / 8000), 180);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: (Math.random() - 0.5) * W * 2.2,
+        y: (Math.random() - 0.5) * H * 2.2,
+        z: Math.random() * 800 + 100,
+        r: Math.random() * 1.5 + 0.6,
+        hue: Math.random() > 0.4 ? (Math.random() > 0.5 ? 32 : 24) : 275,
+        alpha: Math.random() * 0.4 + 0.15,
+        speedZ: -Math.random() * 0.4 - 0.1
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    
+    mouse.x += (mouse.targetX - mouse.x) * 0.08;
+    mouse.y += (mouse.targetY - mouse.y) * 0.08;
+    
+    const cameraZ = (scrollY * 0.35) % 800;
+    const centerX = W / 2;
+    const centerY = H / 2;
+    const projected = [];
+
+    for (const p of particles) {
+      p.z += p.speedZ;
+
+      let finalZ = p.z - cameraZ;
+      if (finalZ <= 10) {
+        p.z += 800;
+        finalZ = p.z - cameraZ;
+      } else if (finalZ > 900) {
+        p.z -= 800;
+        finalZ = p.z - cameraZ;
+      }
+
+      const scale = FOCAL / finalZ;
+      const shiftX = mouse.x * (scale * 0.02);
+      const shiftY = mouse.y * (scale * 0.02);
+
+      const px = centerX + (p.x + shiftX) * scale;
+      const py = centerY + (p.y + shiftY) * scale;
+
+      if (px >= -20 && px <= W + 20 && py >= -20 && py <= H + 20) {
+        const size = p.r * scale * 0.6;
+        const opacity = p.alpha * (1 - finalZ / 900);
+        projected.push({ x: px, y: py, z: finalZ, hue: p.hue, opacity: opacity, size: size });
+      }
+    }
+
+    projected.sort((a, b) => b.z - a.z);
+
+    ctx.lineWidth = 0.55;
+    for (let i = 0; i < projected.length; i++) {
+      const p1 = projected[i];
+      let connections = 0;
+      for (let j = i + 1; j < projected.length; j++) {
+        if (connections >= 2) break;
+        const p2 = projected[j];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 75 && Math.abs(p1.z - p2.z) < 80) {
+          const lineAlpha = Math.min(p1.opacity, p2.opacity) * 0.16;
+          ctx.strokeStyle = `hsla(${p1.hue}, 80%, 70%, ${lineAlpha})`;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          connections++;
+        }
+      }
+    }
+
+    for (const p of projected) {
+      ctx.beginPath();
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2.8);
+      grad.addColorStop(0, `hsla(${p.hue}, 85%, 68%, ${p.opacity})`);
+      grad.addColorStop(1, `hsla(${p.hue}, 85%, 68%, 0)`);
+      ctx.fillStyle = grad;
+      ctx.arc(p.x, p.y, p.size * 2.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (!particlesPaused) {
+      rafId = requestAnimationFrame(draw);
+    }
+  }
+
+  let particlesPaused = false;
+  let rafId = null;
+
+  window.PointsRealityParticles = {
+    pause: () => {
+      particlesPaused = true;
+      if (rafId) cancelAnimationFrame(rafId);
+    },
+    resume: () => {
+      if (!particlesPaused) return;
+      particlesPaused = false;
+      rafId = requestAnimationFrame(draw);
+    }
+  };
+
+  window.addEventListener('resize', () => { resize(); createParticles(); });
+  window.addEventListener('scroll', () => {
+    scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  }, { passive: true });
+
+  document.addEventListener('mousemove', e => {
+    mouse.targetX = e.clientX - window.innerWidth / 2;
+    mouse.targetY = e.clientY - window.innerHeight / 2;
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    mouse.targetX = 0;
+    mouse.targetY = 0;
+  });
+
+  resize();
+  createParticles();
+  draw();
+})();
+
+/* ═══ Scroll-Responsive Canvas Sequence Scrubber & Resource Multiplexer ═══ */
+let bgScrubber = null;
+if (window.PointsRealityMotion && PointsRealityMotion.initScrollCanvasSequence) {
+  bgScrubber = PointsRealityMotion.initScrollCanvasSequence('#video-canvas', {
+    frameCount: 93,
+    framePath: (i) => `assets/hero-sequence/frame_${String(i).padStart(3, '0')}.webp`,
+    lerp: 0.18
+  });
+}
+
+// Resource Multiplexing: Conserve GPU cycles for 3DGS Stage
+(function initResourceMultiplexing() {
+  const stage = document.querySelector('.stage-card');
+  if (!stage) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.35) {
+        if (window.PointsRealityParticles) window.PointsRealityParticles.pause();
+        if (bgScrubber) bgScrubber.pause();
+      } else {
+        if (window.PointsRealityParticles) window.PointsRealityParticles.resume();
+        if (bgScrubber) bgScrubber.resume();
+      }
+    });
+  }, { threshold: [0.1, 0.35, 0.6] });
+
+  observer.observe(stage);
+})();
+
+/* ═══ Nav scroll ═══ */
+const nav = document.getElementById('nav');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => { nav.classList.toggle('scrolled', window.scrollY > 40); ticking = false; });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* ═══ Scroll progress ═══ */
+(function() {
+  const bar = document.getElementById('progress');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    if (total > 0) bar.style.width = ((window.scrollY / total) * 100) + '%';
+  }, { passive: true });
+})();
+
+/* ═══ Fullscreen ═══ */
+function goFS() {
+  const el = document.getElementById('stageIframe');
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+/* ═══ i18n ═══ */
+const translations = {
+  en: {
+    nav_home:"Home", nav_showroom:"Showroom", nav_tech:"Technology", nav_process:"Process", nav_work:"Work", nav_back:"← Home",
+    showroom_label:"Deliverables", showroom_title:"Showroom",
+    showroom_desc:"Browse and interact with <span class=\"nowrap\">3D Gaussian Splatting</span> deliverables generated by the <span class=\"nowrap\">Points & Reality</span> pipeline. Zero-install, <span class=\"nowrap\">60+ FPS</span> WebGL.",
+    loading_models:"Scanning…", models_suffix:"model(s)",
+    btn_standalone:"Open ↗",
+    filter_all:"All", filter_sog:"SOG", filter_ply:"PLY / WebGL",
+    sync_note:"⚡ Synced from pipeline",
+    btn_stage:"▶ View in Stage", btn_open:"↗ Open",
+    badge_latest:"Latest", badge_review:"Review",
+    empty_title:"No deliverables found", empty_desc:"Build WebGL models in the pipeline and deploy to see them here."
+  },
+  ko: {
+    nav_home:"홈", nav_showroom:"쇼룸", nav_tech:"기술", nav_process:"프로세스", nav_work:"포트폴리오", nav_back:"← 홈",
+    showroom_label:"납품물", showroom_title:"쇼룸",
+    showroom_desc:"<span class=\"nowrap\">Points & Reality</span> 파이프라인에서 생성된 <span class=\"nowrap\">3D Gaussian Splatting</span> 결과물을 인터랙티브하게 감상할 수 있습니다. 설치 없이 <span class=\"nowrap\">60+ FPS</span>.",
+    loading_models:"스캔 중…", models_suffix:"개 모델",
+    btn_standalone:"열기 ↗",
+    filter_all:"전체", filter_sog:"SOG", filter_ply:"PLY / WebGL",
+    sync_note:"⚡ 파이프라인 동기화",
+    btn_stage:"▶ 뷰어에 로드", btn_open:"↗ 열기",
+    badge_latest:"최신", badge_review:"검토용",
+    empty_title:"등록된 모델이 없습니다", empty_desc:"파이프라인에서 WebGL 모델을 빌드한 후 배포하면 여기에 표시됩니다."
+  },
+  zh: {
+    nav_home:"首页", nav_showroom:"展厅", nav_tech:"技术", nav_process:"流程", nav_work:"作品", nav_back:"← 首页",
+    showroom_label:"交付成果", showroom_title:"展厅",
+    showroom_desc:"浏览 <span class=\"nowrap\">Points & Reality</span> 管线生成的高保真 <span class=\"nowrap\">3D 高斯泼溅</span>交付成果，无需安装，<span class=\"nowrap\">60+ FPS</span>。",
+    loading_models:"扫描中…", models_suffix:"个模型",
+    btn_standalone:"打开 ↗",
+    filter_all:"全部", filter_sog:"SOG", filter_ply:"PLY / WebGL",
+    sync_note:"⚡ 管线同步",
+    btn_stage:"▶ 载入展台", btn_open:"↗ 打开",
+    badge_latest:"最新", badge_review:"审核版",
+    empty_title:"暂无成果", empty_desc:"在管线中构建 WebGL 模型并部署后即可显示。"
+  },
+  mi: {
+    nav_home:"Kāinga", nav_showroom:"Whare Whakaari", nav_tech:"Hangarau", nav_process:"Rerenga", nav_work:"Mahi", nav_back:"← Kāinga",
+    showroom_label:"Ngā Rawa", showroom_title:"Whare Whakaari",
+    showroom_desc:"Tirohia ngā <span class=\"nowrap\">3D Gaussian Splatting</span> kua hangaia e te <span class=\"nowrap\">Points & Reality</span>.",
+    loading_models:"E kimi ana…", models_suffix:"ngā tauira",
+    btn_standalone:"Whakatuwhera ↗",
+    filter_all:"Katoa", filter_sog:"SOG", filter_ply:"PLY / WebGL",
+    sync_note:"⚡ Kua tūhono",
+    btn_stage:"▶ Tirohia", btn_open:"↗ Whakatuwhera",
+    badge_latest:"Hou", badge_review:"Arotake",
+    empty_title:"Kāore he rawa", empty_desc:"Hangaia ngā tauira 3D ka tuku ai ki konei."
+  }
+};
+
+let currentLang = 'en';
+
+function applyLanguage(lang) {
+  const dict = translations[lang] || translations.en;
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (dict[k]) el.innerHTML = dict[k];
+  });
+  localStorage.setItem('pr_preferred_lang', lang);
+
+  if (allLoadedModels.length > 0) {
+    document.getElementById('modelCountLabel').textContent =
+      `${allLoadedModels.length} ${dict.models_suffix || 'model(s)'}`;
+  }
+  if (currentFilteredModels.length > 0) renderCards(currentFilteredModels);
+  else if (allLoadedModels.length > 0) renderCards(allLoadedModels);
+}
+
+/* ═══ State ═══ */
+let allLoadedModels = [];
+let currentFilteredModels = [];
+let currentFilter = 'all';
+let currentActiveModel = null;
+
+function getCleanTitle(m) {
+  if (!m) return '3DGS Model';
+  let t = m.title || '';
+  if (!t && m.filename) { t = m.filename; if (t.endsWith('.html')) t = t.slice(0, -5); }
+  if (t.startsWith('Review_')) t = t.slice(7);
+  return t || '3DGS Model';
+}
+
+function sortNewest(arr) {
+  return [...arr].sort((a, b) => {
+    if (a.mtime !== undefined && b.mtime !== undefined) return b.mtime - a.mtime;
+    return (b.filename || '').localeCompare(a.filename || '', undefined, { numeric: true });
+  });
+}
+
+/* ═══ Stage controller ═══ */
+function setActiveStage(model) {
+  if (!model || !model.path) return;
+  currentActiveModel = model;
+
+  const iframe = document.getElementById('stageIframe');
+  const titleEl = document.getElementById('activeModelTitle');
+  const btnOpen = document.getElementById('btnOpenStandalone');
+
+  if (titleEl) titleEl.textContent = getCleanTitle(model);
+  if (btnOpen) btnOpen.href = model.path;
+
+  if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
+    PointsRealityMotion.transitionStage(iframe, model.path);
+  } else if (iframe) {
+    iframe.src = model.path;
+  }
+
+  document.querySelectorAll('.model-card').forEach(c => {
+    c.classList.toggle('active-stage', c.getAttribute('data-path') === model.path);
+  });
+}
+
+/* ═══ Card renderer ═══ */
+function renderCards(models) {
+  const grid = document.getElementById('showroomGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const dict = translations[currentLang] || translations.en;
+  const sorted = sortNewest(models);
+  currentFilteredModels = sorted;
+
+  if (sorted.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <h3>${dict.empty_title}</h3>
+        <p>${dict.empty_desc}</p>
+      </div>`;
+    return;
+  }
+
+  sorted.forEach((m, idx) => {
+    const isSog = (m.filename || '').toLowerCase().includes('.sog');
+    const isLatest = idx === 0 && currentFilter === 'all';
+    const isReview = !!(m.is_review || (m.filename && m.filename.startsWith('Review_')));
+    const title = getCleanTitle(m);
+
+    const card = document.createElement('div');
+    card.className = 'model-card';
+    card.setAttribute('data-path', m.path);
+    if (currentActiveModel && currentActiveModel.path === m.path) card.classList.add('active-stage');
+
+    card.innerHTML = `
+      <div class="card-body">
+        <div class="card-header-row">
+          <div class="card-tags">
+            <span class="tag">${isSog ? 'SOG' : 'WebGL'}</span>
+            ${isLatest ? `<span class="tag tag-accent">${dict.badge_latest || 'Latest'}</span>` : ''}
+            ${isReview ? `<span class="tag tag-review">${dict.badge_review || 'Review'}</span>` : ''}
+          </div>
+          <span class="card-date">${m.date || ''}</span>
         </div>
-        <div class="stage-controls">
-          <a id="btnOpenStandalone" href="ui/templates/supersplat_template.html" target="_blank" class="btn-primary" style="font-size: 12px; padding: 6px 14px;" data-i18n="btn_open_standalone">
-            ↗ Open Full Window
+        <div class="card-title">${title}</div>
+        <div class="card-file">${m.filename || ''}</div>
+        <div class="card-actions">
+          <button type="button" class="btn-view" data-action="stage" data-idx="${idx}">
+            ${dict.btn_stage || '▶ View in Stage'}
+          </button>
+          <a href="${m.path}" target="_blank" rel="noopener" class="btn-open">
+            ${dict.btn_open || '↗ Open'}
           </a>
         </div>
-      </div>
+      </div>`;
 
-      <div class="stage-frame-container">
-        <iframe id="stageIframe" class="stage-iframe" src="ui/templates/supersplat_template.html" title="3D WebGL Viewer Stage" allow="fullscreen"></iframe>
-      </div>
-    </section>
+    grid.appendChild(card);
+  });
 
-    <!-- Filter & Model Cards Grid -->
-    <section>
-      <div class="filter-bar">
-        <div class="filter-pills">
-          <button class="filter-pill active" data-filter="all" data-i18n="filter_all">All Deliverables</button>
-          <button class="filter-pill" data-filter="sog" data-i18n="filter_sog">SuperSplat (.sog)</button>
-          <button class="filter-pill" data-filter="ply" data-i18n="filter_ply">GaussianSplats (.ply)</button>
-        </div>
+  // Motion.dev stagger animation
+  if (window.Motion && Motion.animate) {
+    Motion.animate('.model-card', { opacity: [0, 1], y: [20, 0] },
+      { delay: Motion.stagger(0.05), duration: 0.4, ease: [0.16, 1, 0.3, 1] });
+  }
+}
 
-        <div style="font-size: 13px; color: var(--text-muted);" data-i18n="pipeline_sync_note">
-          ⚡ Auto-synced from 05_web_build pipeline
-        </div>
-      </div>
+/* ═══ Init ═══ */
+async function initShowroom() {
+  const countLabel = document.getElementById('modelCountLabel');
+  const dict = translations[currentLang] || translations.en;
 
-      <div id="showroomGrid" class="grid-3">
-        <!-- Dynamically populated from 05_web_build/models.json -->
-      </div>
-    </section>
-  </main>
+  try {
+    let res = await fetch('05_web_build/models.json?v=' + Date.now());
+    if (!res.ok) res = await fetch('/05_web_build/models.json?v=' + Date.now());
+    if (!res.ok) throw new Error('No manifest');
 
-  <!-- Footer -->
-  <footer>
-    <div>
-      © 2026 Points & Reality. <span data-i18n="footer_rights">All rights reserved.</span>
-    </div>
-    <div class="footer-meta">
-      <span data-i18n="footer_base">Aotearoa New Zealand</span>
-      <span>•</span>
-      <span>Points & Reality 3DGS Showroom v2.248</span>
-    </div>
-  </footer>
+    const data = await res.json();
+    allLoadedModels = sortNewest(data.models || []);
 
-  <!-- Multilingual & Showroom Manifest Script -->
-  <script>
-    // 1. Multilingual Dictionary
-    const translations = {
-      en: {
-        header_tagline: "Spatial Capture & 3DGS Studio",
-        nav_home: "Home",
-        nav_showroom: "Showroom",
-        nav_services: "Services",
-        nav_pipeline: "Pipeline",
-        btn_back_home: "← Back to Portal",
-        showroom_eyebrow: "Deliverables & Spatial Archive",
-        showroom_title: "3DGS Spatial Showroom",
-        showroom_desc: "Browse and interact with client deliverables and neural 3D Gaussian Splats generated by the Points & Reality Pipeline. Zero-install, ultra-fast 60+ FPS WebGL rendering.",
-        loading_models: "Scanning Deliverables...",
-        active_models_suffix: "Active Model(s)",
-        active_stage_badge: "Active Stage:",
-        badge_review: "🛡️ Client Review",
-        btn_open_standalone: "↗ Open Full Window",
-        badge_latest: "⭐ Latest Deliverable",
-        filter_all: "All Deliverables",
-        filter_sog: "SuperSplat (.sog)",
-        filter_ply: "GaussianSplats (.ply)",
-        pipeline_sync_note: "⚡ Auto-synced from 05_web_build pipeline",
-        btn_load_stage: "▶ View in Stage",
-        btn_fullscreen: "↗ Full Tab",
-        empty_title: "No 05_web_build deliverables detected yet",
-        empty_desc: "Build WebGL models in the Points & Reality Controller and click [🚀 Upload to Web (Vercel)] to publish them here.",
-        footer_rights: "All rights reserved.",
-        footer_base: "Aotearoa New Zealand"
-      },
-      ko: {
-        header_tagline: "스페이셜 캡처 & 3DGS 전문 스튜디오",
-        nav_home: "홈",
-        nav_showroom: "쇼룸",
-        nav_services: "서비스",
-        nav_pipeline: "파이프라인",
-        btn_back_home: "← 메인 포털로",
-        showroom_eyebrow: "3D 산출물 및 스페이셜 아카이브",
-        showroom_title: "3DGS 스페이셜 쇼룸",
-        showroom_desc: "Points & Reality 파이프라인에서 생성된 3D 가우시안 스플래팅 결과물과 클라이언트 납품 모델들을 한곳에서 인터랙티브하게 감상할 수 있습니다.",
-        loading_models: "산출물 검색 중...",
-        active_models_suffix: "개 활성 모델",
-        active_stage_badge: "현재 뷰어:",
-        badge_review: "🛡️ 고객 검토용",
-        btn_open_standalone: "↗ 전체 화면 창 열기",
-        badge_latest: "⭐ 최신 모델",
-        filter_all: "전체 모델",
-        filter_sog: "SuperSplat (.sog)",
-        filter_ply: "GaussianSplats (.ply)",
-        pipeline_sync_note: "⚡ 05_web_build 파이프라인 실시간 동기화",
-        btn_load_stage: "▶ 뷰어에 로드",
-        btn_fullscreen: "↗ 새 탭 전체보기",
-        empty_title: "아직 등록된 05_web_build 산출물이 없습니다",
-        empty_desc: "Points & Reality 컨트롤러에서 WebGL을 빌드한 후 [🚀 웹 뷰어로 업로드 (Vercel 배포)]를 누르면 여기에 자동 등록됩니다.",
-        footer_rights: "모든 권리 보유.",
-        footer_base: "뉴질랜드 아오테아로아"
-      },
-      zh: {
-        header_tagline: "空间实景捕捉与 3DGS 工作室",
-        nav_home: "首页",
-        nav_showroom: "三维展厅",
-        nav_services: "核心服务",
-        nav_pipeline: "制作流程",
-        btn_back_home: "← 返回主站",
-        showroom_eyebrow: "空间三维成果与交付档案",
-        showroom_title: "3DGS 空间全景展厅",
-        showroom_desc: "浏览由 Points & Reality 管线制作的高保真 3D 高斯泼溅模型与交付成果，无需安装任何插件，即开即享 60+ FPS 超清交互体验。",
-        loading_models: "正在扫描成果...",
-        active_models_suffix: "个活动模型",
-        active_stage_badge: "当前模型:",
-        badge_review: "🛡️ 客户审核版",
-        btn_open_standalone: "↗ 打开全屏窗口",
-        badge_latest: "⭐ 最新模型",
-        filter_all: "全部交付成果",
-        filter_sog: "SuperSplat (.sog)",
-        filter_ply: "GaussianSplats (.ply)",
-        pipeline_sync_note: "⚡ 与 05_web_build 管线实时同步",
-        btn_load_stage: "▶ 载入展台",
-        btn_fullscreen: "↗ 新标签页全屏",
-        empty_title: "暂未检测到 05_web_build 成果",
-        empty_desc: "在 Points & Reality 控制器中构建 WebGL 模型后，点击 [🚀 上传到 Web (Vercel)] 即可发布至此处。",
-        footer_rights: "保留所有权利。",
-        footer_base: "新西兰 (Aotearoa)"
-      },
-      mi: {
-        header_tagline: "Whakarite Mokowā me te Whare 3DGS",
-        nav_home: "Kāinga",
-        nav_showroom: "Whare Whakaari",
-        nav_services: "Ratonga",
-        nav_pipeline: "Rarangi Mahi",
-        btn_back_home: "← Hoki ki te Kāinga",
-        showroom_eyebrow: "Rawa me ngā Whakaaturanga 3D",
-        showroom_title: "Whare Whakaari 3DGS",
-        showroom_desc: "Tirohia ngā whakaaturanga 3D Gaussian Splatting kua oti te hanga e te Points & Reality. He tere, he pono te tirotiro i runga ipurangi.",
-        loading_models: "E kimi ana i ngā rawa...",
-        active_models_suffix: "ngā Rawa Hohe",
-        active_stage_badge: "Tirohanga Ināianei:",
-        badge_review: "🛡️ Arotake Kiritaki",
-        btn_open_standalone: "↗ Whakatuwhera Whānui",
-        badge_latest: "⭐ Hou Rawa",
-        filter_all: "Ngā Rawa Katoa",
-        filter_sog: "SuperSplat (.sog)",
-        filter_ply: "GaussianSplats (.ply)",
-        pipeline_sync_note: "⚡ Kua tūhono ki te 05_web_build",
-        btn_load_stage: "▶ Tirohia ki te Whare",
-        btn_fullscreen: "↗ Whakatuwhera",
-        empty_title: "Kāore anō kia kitea he rawa 05_web_build",
-        empty_desc: "Hangaia ngā tauira 3D ki te Points & Reality Controller, ka tuku ai ki konei.",
-        footer_rights: "Pūmau te mana.",
-        footer_base: "Aotearoa New Zealand"
-      }
-    };
-
-    // 2. Global State Variables (Always initialized at top)
-    let allLoadedModels = [];
-    let currentFilteredModels = [];
-    let currentFilter = 'all';
-    let currentActiveModel = null;
-
-    // 3. Model Title Formatter (100% matched with Viewer internal HUD)
-    function getCleanModelTitle(model) {
-      if (!model) return '3DGS Model';
-      let t = model.title || '';
-      if (!t && model.filename) {
-        t = model.filename;
-        if (t.toLowerCase().endsWith('.html')) t = t.slice(0, -5);
-      }
-      if (t.startsWith('Review_')) {
-        t = t.slice(7);
-      }
-      return t || '3DGS Model';
+    if (allLoadedModels.length > 0) {
+      if (countLabel) countLabel.textContent = `${allLoadedModels.length} ${dict.models_suffix || 'model(s)'}`;
+      setActiveStage(allLoadedModels[0]);
+      renderCards(allLoadedModels);
+    } else {
+      showFallback();
     }
+  } catch (e) {
+    console.warn('[Showroom]', e.message);
+    showFallback();
+  }
+}
 
-    // 4. Sorting Utility (Newest First)
-    function sortModelsNewestFirst(models) {
-      if (!Array.isArray(models)) return [];
-      return [...models].sort((a, b) => {
-        if (a.mtime !== undefined && b.mtime !== undefined && a.mtime !== b.mtime) {
-          return b.mtime - a.mtime;
-        }
-        return (b.filename || b.title || '').localeCompare(a.filename || a.title || '', undefined, { numeric: true, sensitivity: 'base' });
-      });
+function showFallback() {
+  const fallback = [{ title: "3DGS Engine Preview", filename: "supersplat_template.html", path: "ui/templates/supersplat_template.html", is_index: true }];
+  allLoadedModels = fallback;
+  setActiveStage(fallback[0]);
+  renderCards(fallback);
+}
+
+/* ═══ Event listeners ═══ */
+document.addEventListener('DOMContentLoaded', () => {
+  const langSelect = document.getElementById('langSelect');
+  const saved = localStorage.getItem('pr_preferred_lang') || 'en';
+  if (langSelect) {
+    langSelect.value = saved;
+    langSelect.addEventListener('change', e => applyLanguage(e.target.value));
+  }
+  applyLanguage(saved);
+
+  // Card grid delegation
+  document.getElementById('showroomGrid').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action="stage"]');
+    if (btn) {
+      const idx = parseInt(btn.getAttribute('data-idx'), 10);
+      if (!isNaN(idx) && currentFilteredModels[idx]) setActiveStage(currentFilteredModels[idx]);
     }
+  });
 
-    // 5. Multilingual Switching
-    function applyLanguage(lang) {
-      const selected = translations[lang] || translations.en;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (selected[key]) {
-          el.textContent = selected[key];
-        }
-      });
-      document.documentElement.lang = lang;
-      localStorage.setItem('pr_preferred_lang', lang);
-
-      // Update model count badge text if models are loaded
-      const countLabel = document.getElementById('modelCountLabel');
-      if (countLabel && allLoadedModels.length > 0) {
-        countLabel.textContent = `${allLoadedModels.length} ${selected.active_models_suffix || 'Active Model(s)'}`;
-      }
-
-      // Re-render cards with updated language labels
-      if (Array.isArray(currentFilteredModels) && currentFilteredModels.length > 0) {
-        renderCards(currentFilteredModels);
-      } else if (Array.isArray(allLoadedModels) && allLoadedModels.length > 0) {
-        renderCards(allLoadedModels);
-      }
-    }
-
-    // 6. Active Stage Controller
-    function setActiveStage(model) {
-      if (!model || !model.path) return;
-      currentActiveModel = model;
-
-      const stageIframe = document.getElementById('stageIframe');
-      const activeTitle = document.getElementById('activeModelTitle');
-      const activeReviewBadge = document.getElementById('activeStageReviewBadge');
-      const btnStandalone = document.getElementById('btnOpenStandalone');
-
-      const isReview = !!(model.is_review || (model.filename && model.filename.startsWith('Review_')) || (model.raw_title && model.raw_title.startsWith('Review_')));
-
-      if (activeTitle) activeTitle.textContent = getCleanModelTitle(model);
-      if (activeReviewBadge) {
-        activeReviewBadge.style.display = isReview ? 'inline-flex' : 'none';
-      }
-      if (stageIframe) stageIframe.src = model.path;
-      if (btnStandalone) btnStandalone.href = model.path;
-
-      // Update card visual active highlight
-      document.querySelectorAll('.asset-card').forEach(card => {
-        if (card.getAttribute('data-path') === model.path) {
-          card.classList.add('active-stage');
-        } else {
-          card.classList.remove('active-stage');
-        }
-      });
-    }
-
-    // 7. Card Grid Renderer (With Event Delegation)
-    function renderCards(models) {
-      const grid = document.getElementById('showroomGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
-      const t = translations[currentLang] || translations.en;
-
-      const sorted = sortModelsNewestFirst(models);
-      currentFilteredModels = sorted;
-
-      if (sorted.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state" style="grid-column: 1 / -1;">
-            <div class="empty-icon">📦</div>
-            <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--text-primary);">${t.empty_title}</h3>
-            <p style="font-size: 14px; max-width: 500px; margin: 0 auto;">${t.empty_desc}</p>
-          </div>
-        `;
-        return;
-      }
-
-      sorted.forEach((m, idx) => {
-        const isSog = (m.filename || '').toLowerCase().includes('.sog');
-        const ext = isSog ? 'SOG / SuperSplat' : 'PLY / WebGL';
-        const isLatest = (idx === 0 && currentFilter === 'all');
-        const isReview = !!(m.is_review || (m.filename && m.filename.startsWith('Review_')) || (m.raw_title && m.raw_title.startsWith('Review_')));
-        const dateBadge = isLatest ? (t.badge_latest || '⭐ Latest') : (m.date ? m.date : (m.is_index ? 'Primary Index' : '3DGS Model'));
-        const reviewHtml = isReview ? `<span class="review-badge-pill" style="font-size: 10px; padding: 2px 6px;">${t.badge_review || '🛡️ Client Review'}</span>` : '';
-
-        const card = document.createElement('div');
-        card.className = 'asset-card';
-        if (currentActiveModel && currentActiveModel.path === m.path) {
-          card.classList.add('active-stage');
-        }
-        card.setAttribute('data-path', m.path);
-        card.setAttribute('data-idx', idx.toString());
-
-        card.innerHTML = `
-          <div>
-            <div class="asset-header">
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                <span class="asset-format-badge">${ext}</span>
-                ${reviewHtml}
-              </div>
-              <span class="asset-date" style="${isLatest ? 'color: var(--accent-steel); font-weight: 700; background: rgba(56, 189, 248, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3);' : ''}">${dateBadge}</span>
-            </div>
-            <h3 class="asset-title">${getCleanModelTitle(m)}</h3>
-            <div class="asset-filename">${m.filename}</div>
-          </div>
-          <div class="asset-actions">
-            <button type="button" class="btn-stage" data-action="stage" data-idx="${idx}">
-              ${t.btn_load_stage || '▶ View in Stage'}
-            </button>
-            <a href="${m.path}" target="_blank" rel="noopener noreferrer" class="btn-fullscreen">
-              ${t.btn_fullscreen || '↗ Full'}
-            </a>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // 7. Demo Fallback Handler
-    function showDemoFallback() {
-      const countLabel = document.getElementById('modelCountLabel');
-      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
-      const t = translations[currentLang] || translations.en;
-
-      if (countLabel) countLabel.textContent = "Engine Ready";
-
-      const demoModels = [
-        {
-          title: "SuperSplat 3DGS Engine Preview",
-          filename: "supersplat_template.html",
-          path: "ui/templates/supersplat_template.html",
-          is_index: true
-        }
-      ];
-
-      allLoadedModels = demoModels;
-      setActiveStage(demoModels[0]);
-      renderCards(demoModels);
-    }
-
-    // 8. Main Showroom Initializer
-    async function initShowroom() {
-      const countLabel = document.getElementById('modelCountLabel');
-      const currentLang = localStorage.getItem('pr_preferred_lang') || 'en';
-      const t = translations[currentLang] || translations.en;
-
-      try {
-        let res = await fetch('05_web_build/models.json?v=' + Date.now());
-        if (!res.ok) {
-          res = await fetch('/05_web_build/models.json?v=' + Date.now());
-        }
-        if (!res.ok) throw new Error('No models.json manifest found');
-        
-        const data = await res.json();
-        const models = Array.isArray(data.models) ? data.models : [];
-        allLoadedModels = sortModelsNewestFirst(models);
-
-        if (allLoadedModels.length > 0) {
-          if (countLabel) {
-            countLabel.textContent = `${allLoadedModels.length} ${t.active_models_suffix || 'Active Model(s)'}`;
-          }
-          
-          // Set newest model as active stage
-          setActiveStage(allLoadedModels[0]);
-          renderCards(allLoadedModels);
-        } else {
-          showDemoFallback();
-        }
-      } catch (err) {
-        console.warn('[Showroom] models.json fetch notice:', err.message);
-        showDemoFallback();
-      }
-    }
-
-    // 9. Event Listeners Setup
-    document.addEventListener('DOMContentLoaded', () => {
-      // Language dropdown
-      const langSelect = document.getElementById('langSelect');
-      const savedLang = localStorage.getItem('pr_preferred_lang') || 'en';
-      if (langSelect) {
-        langSelect.value = savedLang;
-        langSelect.addEventListener('change', (e) => {
-          applyLanguage(e.target.value);
-        });
-      }
-      applyLanguage(savedLang);
-
-      // Card Grid Event Delegation
-      const grid = document.getElementById('showroomGrid');
-      if (grid) {
-        grid.addEventListener('click', (e) => {
-          const stageBtn = e.target.closest('[data-action="stage"]');
-          if (stageBtn) {
-            const idx = parseInt(stageBtn.getAttribute('data-idx'), 10);
-            if (!isNaN(idx) && currentFilteredModels[idx]) {
-              setActiveStage(currentFilteredModels[idx]);
-            }
-          }
-        });
-      }
-
-      // Filter pills handler
-      document.querySelectorAll('.filter-pill').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const filter = btn.getAttribute('data-filter') || 'all';
-          currentFilter = filter;
-
-          if (filter === 'all') {
-            renderCards(allLoadedModels);
-          } else if (filter === 'sog') {
-            const filtered = allLoadedModels.filter(m => (m.filename || '').toLowerCase().includes('.sog'));
-            renderCards(filtered);
-          } else if (filter === 'ply') {
-            const filtered = allLoadedModels.filter(m => !(m.filename || '').toLowerCase().includes('.sog'));
-            renderCards(filtered);
-          }
-        });
-      });
-
-      // Start Showroom Data Ingestion
-      initShowroom();
+  // Filter pills
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const f = pill.getAttribute('data-filter') || 'all';
+      currentFilter = f;
+      if (f === 'all') renderCards(allLoadedModels);
+      else if (f === 'sog') renderCards(allLoadedModels.filter(m => (m.filename||'').toLowerCase().includes('.sog')));
+      else renderCards(allLoadedModels.filter(m => !(m.filename||'').toLowerCase().includes('.sog')));
     });
-  </script>
+  });
+
+  initShowroom();
+});
+</script>
+
 </body>
 </html>

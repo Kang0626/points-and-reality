@@ -1,0 +1,22 @@
+{
+  "name": "points-and-reality-web",
+  "version": "1.0.0",
+  "description": "Points & Reality - Industrial 3D Gaussian Splatting & Spatial AI Studio with Motion.dev",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "python -m http.server 8080",
+    "start": "python -m http.server 8080"
+  },
+  "keywords": [
+    "3dgs",
+    "motion.dev",
+    "webgl",
+    "spatial-ai"
+  ],
+  "author": "Points & Reality",
+  "license": "MIT",
+  "dependencies": {
+    "motion": "^12.4.7"
+  }
+}

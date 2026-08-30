@@ -1,2952 +1,1254 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <title>Points & Reality — Industrial 3D Gaussian Splatting & Spatial AI Studio</title>
-  <meta name="description" content="Turn optical video or multi-angle photos into ultra-realistic, interactive 3D Gaussian Splatting digital twins in ~1 hour. Next-Gen 3D capture, creation, and ecommerce conversion." />
-  <meta name="keywords" content="3D Gaussian Splatting, 3DGS, Spatial AI, Reality Capture, Digital Twin, WebGL, Ecommerce 3D, Automotive 3D, SOG" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points & Reality — 3D Gaussian Splatting</title>
+  <meta name="description" content="Photorealistic 3D Gaussian Splatting reality capture. Zero-install WebGL streaming at 60+ FPS.">
+  <meta name="theme-color" content="#09090b">
 
-  <!-- Fonts: Archivo & Archivo Narrow + Pretendard + JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="libs/motion.js"></script>
+  <script src="libs/motion-engine.js"></script>
 
   <style>
-    /* ==========================================================================
-       01. SILICON VALLEY TIER-1 DESIGN TOKENS & CSS SYSTEM
-       ========================================================================== */
+    /* ═══════════════════════════════════════════════
+       DESIGN SYSTEM — Inspired by Luma Labs / Spline
+       ═══════════════════════════════════════════════ */
     :root {
-      --bg-base: #050608;
-      --bg-surface: #0b0d13;
-      --bg-surface-elevated: #111420;
-      --bg-surface-hover: #181d2e;
-      --bg-glass: rgba(11, 13, 19, 0.75);
-      
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-medium: rgba(255, 255, 255, 0.16);
-      --border-accent: rgba(14, 118, 255, 0.35);
-      --border-bright: rgba(14, 118, 255, 0.8);
-
-      --brand-blue: #0E76FF;
-      --brand-cyan: #38BDF8;
-      --brand-glow: rgba(14, 118, 255, 0.25);
-      --brand-emerald: #10B981;
-      --brand-amber: #F59E0B;
-
-      --fg-primary: #FFFFFF;
-      --fg-secondary: #94A3B8;
-      --fg-muted: #64748B;
-      --fg-accent: #0E76FF;
-      --fg-cyan: #38BDF8;
-      
-      --font-display: 'Archivo', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-sans: 'Archivo', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-narrow: 'Archivo Narrow', 'Pretendard', sans-serif;
-      --font-mono: 'JetBrains Mono', 'Archivo Narrow', monospace;
-
-      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --c-bg: #09090b;
+      --c-surface: rgba(255,255,255,0.03);
+      --c-surface-hover: rgba(255,255,255,0.06);
+      --c-border: rgba(255,255,255,0.07);
+      --c-border-hover: rgba(255,255,255,0.16);
+      --c-text: #fafafa;
+      --c-text-2: rgba(255,255,255,0.55);
+      --c-text-3: rgba(255,255,255,0.3);
+      --c-accent: #a78bfa;
+      --c-accent2: #818cf8;
+      --c-glow: rgba(139,92,246,0.15);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', monospace;
+      --ease: cubic-bezier(.4,0,.2,1);
+      --ease-spring: cubic-bezier(.16,1,.3,1);
+      --r: 12px;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
       scroll-behavior: smooth;
-      background-color: var(--bg-base);
-      color: var(--fg-primary);
-      font-family: var(--font-sans);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    ::selection {
-      background: var(--brand-blue);
-      color: #FFFFFF;
-    }
-
     body {
+      font-family: var(--font);
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.6;
       overflow-x: hidden;
-      background-color: var(--bg-base);
-      color: var(--fg-primary);
-      line-height: 1.55;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
-    /* Scroll Progress Bar */
-    .scroll-progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      width: 0%;
-      background: linear-gradient(90deg, #0E76FF 0%, #38BDF8 50%, #10B981 100%);
-      z-index: 1000;
-      box-shadow: 0 0 10px rgba(14, 118, 255, 0.8);
-      transition: width 0.08s ease-out;
+    h1, h2, h3, h4, .hero-title, .section-h2 {
+      text-wrap: balance;
+      word-break: keep-all;
     }
 
-    /* Laser / Glowing Aurora Background */
-    .aurora-glow-1 {
-      position: fixed;
-      top: -20%;
-      left: 20%;
-      width: 60vw;
-      height: 50vh;
-      background: radial-gradient(circle, rgba(14, 118, 255, 0.12) 0%, rgba(56, 189, 248, 0.04) 40%, transparent 70%);
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-      animation: floatAurora 18s ease-in-out infinite alternate;
+    p, .hero-sub, .section-desc, .bento-p, .proc-p, .faq-answer {
+      text-wrap: pretty;
+      word-break: keep-all;
     }
 
-    .aurora-glow-2 {
-      position: fixed;
-      bottom: 10%;
-      right: 10%;
-      width: 50vw;
-      height: 50vh;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(14, 118, 255, 0.03) 50%, transparent 70%);
-      filter: blur(100px);
-      pointer-events: none;
-      z-index: 0;
+    .nowrap {
+      white-space: nowrap;
+      display: inline-block;
     }
 
-    @keyframes floatAurora {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-5%, 8%) scale(1.15); }
+    ::selection {
+      background: var(--c-accent);
+      color: #fff;
     }
 
-    /* Subtle Architectural Background Grid */
-    .bg-grid {
-      position: fixed;
-      inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 72px 72px;
-      pointer-events: none;
-      z-index: 0;
+    /* Scroll progress */
+    #progress {
+      position: fixed; top: 0; left: 0; height: 1px; width: 0%;
+      background: linear-gradient(90deg, var(--c-accent2), var(--c-accent));
+      z-index: 9999; pointer-events: none;
     }
 
-    /* Ambient Realtime Particle Canvas */
-    #ambient-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.4;
+    /* ── Ambient particle canvas ── */
+    #particles {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
 
-    .container {
-      width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 clamp(20px, 4vw, 64px);
-      position: relative;
-      z-index: 2;
+    /* ── Layout ── */
+    .wrap {
+      width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 24px;
+      position: relative; z-index: 2;
     }
 
-    /* ==========================================================================
-       02. MOTION PHYSICS & SHARPLINK CROSSHAIRS
-       ========================================================================== */
-    .reveal-on-scroll {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.85s var(--ease-smooth), transform 0.85s var(--ease-smooth);
-      will-change: opacity, transform;
+    /* ═════════════ NAVIGATION ═════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .3s var(--ease), border-color .3s var(--ease);
     }
 
-    .reveal-on-scroll.is-revealed {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .stagger-1 { transition-delay: 60ms; }
-    .stagger-2 { transition-delay: 120ms; }
-    .stagger-3 { transition-delay: 180ms; }
-    .stagger-4 { transition-delay: 240ms; }
-    .stagger-5 { transition-delay: 300ms; }
-    .stagger-6 { transition-delay: 360ms; }
-
-    /* Precision Corner Crosshairs (+) */
-    .has-crosshair {
-      position: relative;
-    }
-
-    .has-crosshair::before {
-      content: '+';
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--brand-blue);
-      pointer-events: none;
-      line-height: 1;
-      z-index: 5;
-    }
-
-    .has-crosshair::after {
-      content: '+';
-      position: absolute;
-      bottom: -10px;
-      right: -10px;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--brand-blue);
-      pointer-events: none;
-      line-height: 1;
-      z-index: 5;
-    }
-
-    /* Border Beam / Glowing Border */
-    .glow-border-card {
-      position: relative;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      transition: all 0.35s var(--ease-smooth);
-      overflow: hidden;
-    }
-
-    .glow-border-card:hover {
-      border-color: var(--border-accent);
-      box-shadow: 0 12px 36px -8px rgba(14, 118, 255, 0.25);
-      transform: translateY(-3px);
-    }
-
-    /* ==========================================================================
-       03. TYPOGRAPHY & MICRO-BADGES
-       ========================================================================== */
-    .font-display { font-family: var(--font-display); }
-    .font-narrow { font-family: var(--font-narrow); }
-    .font-mono { font-family: var(--font-mono); }
-    .font-sans { font-family: var(--font-sans); }
-
-    .eyebrow {
-      font-family: var(--font-narrow);
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.6px;
-      color: var(--brand-cyan);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      background: rgba(14, 118, 255, 0.1);
-      border: 1px solid rgba(14, 118, 255, 0.25);
-      padding: 4px 12px;
-      border-radius: 9999px;
-    }
-
-    .eyebrow .pulse-dot {
-      width: 6px;
-      height: 6px;
-      background-color: var(--brand-blue);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--brand-blue);
-      animation: pulseGlow 2s infinite;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.6; }
-    }
-
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(46px, 7.5vw, 100px);
-      font-weight: 900;
-      line-height: 0.94;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      color: var(--fg-primary);
-    }
-
-    .hero-title .gradient-text {
-      background: linear-gradient(135deg, #FFFFFF 20%, #38BDF8 70%, #0E76FF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-title em {
-      font-style: normal;
-      color: var(--brand-blue);
-      font-weight: 900;
-    }
-
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(34px, 4.8vw, 60px);
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: -0.035em;
-      text-transform: uppercase;
-    }
-
-    .section-title em {
-      font-style: normal;
-      color: var(--brand-blue);
-    }
-
-    .section-desc {
-      font-size: 16px;
-      color: var(--fg-secondary);
-      line-height: 1.7;
-      letter-spacing: -0.01em;
-      max-width: 640px;
-    }
-
-    /* Buttons */
-    .btn {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 14px 28px;
-      border-radius: 6px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.25s var(--ease-smooth);
-    }
-
-    .btn-primary {
-      background: var(--brand-blue);
-      color: #FFFFFF;
-      border: 1px solid var(--brand-blue);
-      box-shadow: 0 6px 20px -4px rgba(14, 118, 255, 0.45);
-    }
-
-    .btn-primary:hover {
-      background: #2582ff;
-      border-color: #2582ff;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px -4px rgba(14, 118, 255, 0.6);
-    }
-
-    .btn-ghost {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--fg-primary);
-      border: 1px solid var(--border-medium);
-      backdrop-filter: blur(10px);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--fg-primary);
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-2px);
-    }
-
-    /* ==========================================================================
-       04. TOP STATUS & NAVIGATION BAR
-       ========================================================================== */
-    .top-status-bar {
-      background: linear-gradient(90deg, #090b10 0%, #101524 50%, #090b10 100%);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 8px 16px;
-      text-align: center;
-      font-size: 11px;
-      font-family: var(--font-narrow);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--fg-secondary);
-      position: relative;
-      z-index: 101;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .top-status-bar a {
-      color: var(--brand-cyan);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      font-weight: 600;
-    }
-
-    .site-nav {
-      position: sticky;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-      padding: 16px 0;
-      background: rgba(5, 6, 8, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-subtle);
-      transition: all 0.3s ease;
+    nav.scrolled {
+      background: rgba(9,9,11,0.82);
+      backdrop-filter: blur(20px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      border-bottom: 1px solid var(--c-border);
     }
 
     .nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      width: 100%; max-width: 1180px;
+      display: flex; align-items: center; justify-content: space-between;
     }
 
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--fg-primary);
-      font-family: var(--font-display);
-      font-weight: 900;
-      font-size: 20px;
-      letter-spacing: -0.03em;
-      text-transform: uppercase;
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--c-text);
     }
 
-    .brand-logo svg {
-      width: 24px;
-      height: 24px;
-      color: var(--brand-blue);
+    .logo-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: linear-gradient(135deg, #a78bfa, #818cf8);
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 13px; color: #fff;
     }
 
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
+    .logo span {
+      font-weight: 700; font-size: 14px; letter-spacing: -.02em;
     }
 
-    @media (max-width: 960px) {
-      .nav-menu { display: none; }
+    .nav-right {
+      display: flex; align-items: center; gap: 6px;
     }
 
-    .nav-menu a {
-      color: var(--fg-secondary);
-      text-decoration: none;
-      font-family: var(--font-narrow);
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.2s ease;
+    .nav-link {
+      color: var(--c-text-2); text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      padding: 6px 12px; border-radius: 8px;
+      transition: color .2s, background .2s;
     }
 
-    .nav-menu a:hover {
-      color: var(--fg-primary);
+    .nav-link:hover { color: var(--c-text); background: var(--c-surface-hover); }
+
+    .nav-cta {
+      color: var(--c-bg); background: var(--c-text);
+      font-weight: 600; font-size: 13px;
+      padding: 7px 16px; border-radius: 8px;
+      text-decoration: none; margin-left: 8px;
+      transition: opacity .2s;
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .nav-cta:hover { opacity: .85; }
+
+    select.lang {
+      appearance: none; -webkit-appearance: none;
+      background: transparent; border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono);
+      font-size: 11px; font-weight: 500;
+      padding: 5px 10px 5px 10px; border-radius: 6px;
+      cursor: pointer; outline: none;
+      transition: border-color .2s;
     }
 
-    .lang-switcher {
-      display: flex;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 2px;
+    select.lang:hover { border-color: var(--c-border-hover); }
+
+    select.lang option {
+      background: #09090b;
+      color: var(--c-text);
     }
 
-    .lang-btn {
-      background: none;
-      border: none;
-      color: var(--fg-muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 4px 8px;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.2s ease;
+    @media(max-width:768px) {
+      .nav-link { display: none; }
+      .logo span { font-size: 13px; }
     }
 
-    .lang-btn.active, .lang-btn:hover {
-      color: var(--fg-primary);
-      background: rgba(14, 118, 255, 0.2);
-    }
-
-    /* ==========================================================================
-       05. HERO SECTION & INTERACTIVE 3D COMMAND STAGE
-       ========================================================================== */
-    .hero-section {
-      padding: 60px 0 90px;
+    /* ═════════════ HERO ═════════════ */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 160px 24px 100px;
       position: relative;
-      z-index: 2;
     }
 
-    .hero-top-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 48px;
-      align-items: center;
-      margin-bottom: 48px;
-    }
-
-    @media (max-width: 960px) {
-      .hero-top-grid { grid-template-columns: 1fr; gap: 32px; }
-    }
-
-    .hero-cta-group {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 32px;
-      flex-wrap: wrap;
-    }
-
-    /* Interactive 3D Splatting Command Center */
-    .hero-stage-card {
-      background: #020305;
-      border: 1px solid var(--border-medium);
-      border-radius: 10px;
+    /* ═════════════ FIXED VIDEO BACKGROUND (odd.global style) ═════════════ */
+    .video-bg-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -10;
       overflow: hidden;
-      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.9), 0 0 40px -10px rgba(14, 118, 255, 0.15);
-      position: relative;
+      pointer-events: none;
     }
 
-    .stage-top-bar {
-      padding: 14px 24px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .stage-title-tag {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--fg-primary);
-    }
-
-    .stage-title-tag .ping {
-      width: 7px;
-      height: 7px;
-      background: var(--brand-emerald);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--brand-emerald);
-    }
-
-    .stage-viewport-wrap {
-      position: relative;
-      width: 100%;
-      height: clamp(500px, 66vh, 760px);
-      background: #010203;
-      overflow: hidden;
-    }
-
-    .stage-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    /* Interactive 3D Hotspot Simulator Pins */
-    .hotspot-layer {
+    .video-canvas {
       position: absolute;
       inset: 0;
-      pointer-events: none;
-      z-index: 15;
+      width: 100%;
+      height: 100%;
+      opacity: 0.32; /* Subtle point cloud radiance */
     }
 
-    .hotspot-pin {
+    .video-bg-overlay {
       position: absolute;
-      pointer-events: auto;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(11, 13, 19, 0.88);
-      border: 1px solid var(--brand-blue);
-      backdrop-filter: blur(12px);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-family: var(--font-narrow);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--fg-primary);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(14, 118, 255, 0.4);
-      transition: all 0.25s var(--ease-bounce);
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(9, 9, 11, 0.1) 0%, #09090b 95%);
     }
 
-    .hotspot-pin:hover {
-      background: var(--brand-blue);
-      color: #FFF;
-      transform: scale(1.08);
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 100px;
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      font-family: var(--mono); font-size: 11px; font-weight: 500;
+      color: var(--c-accent); letter-spacing: .03em;
+      margin-bottom: 28px;
     }
 
-    .hotspot-pin .pin-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--brand-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 6px var(--brand-cyan);
+    .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; box-shadow: 0 0 8px #22c55e;
+      animation: pulse 2s infinite;
     }
 
-    /* Floating Viewport HUD Controls */
-    .stage-hud-controls {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      z-index: 20;
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: .4; }
     }
 
-    .hud-chip {
-      background: rgba(8, 10, 16, 0.85);
-      border: 1px solid var(--border-subtle);
-      backdrop-filter: blur(14px);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-family: var(--font-narrow);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--fg-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800; letter-spacing: -.04em;
+      line-height: 1.05; max-width: 800px;
+      margin-bottom: 24px;
     }
 
-    .hud-chip.active, .hud-chip:hover {
-      border-color: var(--brand-blue);
-      color: #FFFFFF;
-      background: rgba(14, 118, 255, 0.2);
-    }
-
-    .stage-bottom-bar {
-      padding: 14px 24px;
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .model-pills {
-      display: flex;
-      gap: 8px;
-    }
-
-    .model-pill {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      color: var(--fg-secondary);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .model-pill.active, .model-pill:hover {
-      background: rgba(14, 118, 255, 0.2);
-      color: #FFFFFF;
-      border-color: var(--brand-blue);
-    }
-
-    /* 4-Stat Metric Strip */
-    .hero-stats-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-top: 48px;
-    }
-
-    @media (max-width: 860px) {
-      .hero-stats-strip { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    }
-    @media (max-width: 500px) {
-      .hero-stats-strip { grid-template-columns: 1fr; }
-    }
-
-    .stat-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 24px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: all 0.3s ease;
-    }
-
-    .stat-box:hover {
-      border-color: var(--border-accent);
-      background: var(--bg-surface-elevated);
-      transform: translateY(-2px);
-    }
-
-    .stat-val {
-      font-family: var(--font-display);
-      font-size: 42px;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      color: var(--fg-primary);
-      line-height: 1;
-    }
-
-    .stat-val em {
-      font-size: 0.5em;
-      color: var(--brand-cyan);
+    .hero h1 em {
       font-style: normal;
-      font-family: var(--font-narrow);
-      margin-left: 3px;
+      background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 50%, #a78bfa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .stat-lbl {
-      font-family: var(--font-narrow);
-      font-size: 13px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--fg-secondary);
+    .hero-sub {
+      font-size: clamp(15px, 1.4vw, 18px);
+      color: var(--c-text-2); max-width: 600px;
+      line-height: 1.65; margin-bottom: 36px;
     }
 
-    /* ==========================================================================
-       06. SILICON VALLEY BENTO GRID PLATFORM
-       ========================================================================== */
-    .section-bento {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
+    .hero-actions {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      position: relative; z-index: 2;
     }
 
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 20px;
-      margin-top: 48px;
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 22px; border-radius: 10px;
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all .25s var(--ease-spring);
     }
 
-    .bento-col-8 { grid-column: span 8; }
-    .bento-col-4 { grid-column: span 4; }
-    .bento-col-6 { grid-column: span 6; }
-    .bento-col-12 { grid-column: span 12; }
-
-    @media (max-width: 960px) {
-      .bento-col-8, .bento-col-4, .bento-col-6 { grid-column: span 12; }
+    .btn-primary {
+      background: #fff; color: #09090b;
     }
 
-    .bento-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 36px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .btn-primary:hover { box-shadow: 0 0 30px rgba(167,139,250,.25); transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: var(--c-surface); color: var(--c-text);
+      border: 1px solid var(--c-border);
+    }
+
+    .btn-ghost:hover { background: var(--c-surface-hover); border-color: var(--c-border-hover); transform: translateY(-2px); }
+
+    /* ═════════════ 3D STAGE ═════════════ */
+    .stage-section {
+      padding: 0 24px 140px;
+    }
+
+    .stage-container {
+      max-width: 1180px; margin: 0 auto;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid var(--c-border);
+      background: #000;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04),
+        0 40px 80px -20px rgba(0,0,0,.8),
+        0 0 60px rgba(139,92,246,.06);
       position: relative;
-      overflow: hidden;
-      transition: all 0.3s var(--ease-smooth);
     }
 
-    .bento-card:hover {
-      border-color: var(--border-accent);
-      background: var(--bg-surface-elevated);
-      transform: translateY(-3px);
+    .stage-chrome {
+      height: 44px; padding: 0 16px;
+      background: rgba(255,255,255,.03);
+      border-bottom: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: space-between;
     }
 
-    .bento-tag {
-      font-family: var(--font-narrow);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--brand-cyan);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
+    .stage-dots {
+      display: flex; gap: 6px;
     }
 
-    .bento-title {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
+    .stage-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,.08);
     }
 
-    .bento-desc {
-      font-size: 15px;
-      color: var(--fg-secondary);
-      line-height: 1.65;
+    .stage-label {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--c-text-3); display: flex; align-items: center; gap: 8px;
     }
 
-    /* Trajectory Canvas Visualizer in Bento */
-    #trajectory-canvas {
-      width: 100%;
-      height: 200px;
-      background: #06080e;
-      border-radius: 6px;
-      border: 1px solid var(--border-subtle);
-      margin-top: 24px;
-      display: block;
+    .stage-actions {
+      display: flex; gap: 6px;
     }
 
-    /* Interactive Compression Slider in Bento */
-    .compression-box {
-      background: #06080e;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 20px;
-      margin-top: 24px;
+    .stage-btn {
+      background: none; border: 1px solid var(--c-border);
+      color: var(--c-text-2); font-family: var(--mono); font-size: 10px;
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: all .2s;
     }
 
-    .comp-slider-bar {
-      width: 100%;
-      margin: 16px 0;
-      accent-color: var(--brand-blue);
+    .stage-btn:hover { background: var(--c-surface-hover); color: var(--c-text); border-color: var(--c-border-hover); }
+    .stage-btn.active { background: rgba(139,92,246,.15); color: var(--c-accent); border-color: rgba(139,92,246,.3); }
+
+    .stage-viewport {
+      width: 100%; height: clamp(480px, 64vh, 720px);
+      background: #000; position: relative;
     }
 
-    .comp-stats-row {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 12px;
+    .stage-viewport iframe {
+      width: 100%; height: 100%; border: none; display: block;
     }
 
-    /* ==========================================================================
-       07. INTERACTIVE 6-STEP CAPTURE PROTOCOL
-       ========================================================================== */
-    .section-protocol {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
+    .stage-footer {
+      height: 40px; padding: 0 16px;
+      background: rgba(255,255,255,.02);
+      border-top: 1px solid var(--c-border);
+      display: flex; align-items: center; justify-content: space-between;
     }
 
-    .protocol-stepper-wrap {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 40px;
-      margin-top: 48px;
+    .stage-hint {
+      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+      display: flex; align-items: center; gap: 12px;
     }
 
-    @media (max-width: 900px) {
-      .protocol-stepper-wrap { grid-template-columns: 1fr; }
+    .kbd {
+      display: inline-flex; padding: 2px 6px; border-radius: 4px;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
+      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
     }
 
-    .protocol-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    /* ═════════════ SECTIONS ═════════════ */
+    section.s {
+      padding: 100px 24px;
     }
 
-    .protocol-tab-btn {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 16px 20px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
+    .s-head {
+      text-align: center; max-width: 560px; margin: 0 auto 64px;
+    }
+
+    .s-label {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      color: var(--c-accent); letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .s-head h2 {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800; letter-spacing: -.035em;
+      line-height: 1.1; margin-bottom: 16px;
+    }
+
+    .s-head p {
+      font-size: 15px; color: var(--c-text-2); line-height: 1.65;
+    }
+
+    /* ── Feature grid ── */
+    .features {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--c-border); border-radius: 16px; overflow: hidden;
+      max-width: 1180px; margin: 0 auto;
+    }
+
+    @media(max-width:860px) { .features { grid-template-columns: 1fr; } }
+
+    .feat {
+      background: var(--c-bg); padding: 44px 36px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: background .3s var(--ease);
+    }
+
+    .feat:hover { background: rgba(255,255,255,.02); }
+
+    .feat-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--c-glow); border: 1px solid rgba(139,92,246,.2);
+      display: grid; place-items: center; font-size: 18px;
+    }
+
+    .feat h3 {
+      font-size: 17px; font-weight: 700; letter-spacing: -.02em;
+    }
+
+    .feat p {
+      font-size: 14px; color: var(--c-text-2); line-height: 1.6;
+    }
+
+    /* ── Process ── */
+    .process {
+      display: flex; gap: 48px; max-width: 1180px; margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    @media(max-width:860px) { .process { flex-direction: column; gap: 36px; } }
+
+    .step {
+      flex: 1; position: relative;
+      padding-left: 24px;
+    }
+
+    .step::before {
+      content: ''; position: absolute; left: 0; top: 4px;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, var(--c-accent), transparent);
+    }
+
+    .step-n {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      color: var(--c-accent); margin-bottom: 8px;
+    }
+
+    .step h4 {
+      font-size: 17px; font-weight: 700; letter-spacing: -.02em;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 14px; color: var(--c-text-2); line-height: 1.6;
+    }
+
+    /* ── Gallery ── */
+    .gallery {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px; max-width: 1180px; margin: 0 auto;
+    }
+
+    .g-card {
+      background: var(--c-bg); border: 1px solid var(--c-border);
+      border-radius: 14px; overflow: hidden;
+      text-decoration: none; color: var(--c-text);
+      transition: all .35s var(--ease-spring);
+    }
+
+    .g-card:hover {
+      border-color: var(--c-border-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px -12px rgba(0,0,0,.7), 0 0 40px rgba(139,92,246,.06);
+    }
+
+    .g-preview {
+      width: 100%; aspect-ratio: 16/10; background: radial-gradient(circle at center, #181822 0%, #09090b 100%);
+      position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    }
+
+    .g-preview img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s var(--ease-spring);
+    }
+
+    .g-card:hover .g-preview img {
+      transform: scale(1.06);
+    }
+
+    .g-badge-launch {
+      position: absolute; display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 100px;
+      background: rgba(15, 15, 22, 0.85); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-family: var(--mono); font-size: 11px; font-weight: 600; color: #f1f5f9;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      transition: all 0.3s var(--ease-spring);
+    }
+
+    .g-card:hover .g-badge-launch {
+      background: rgba(139, 92, 246, 0.3); border-color: var(--c-accent);
+      color: #fff; transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
+    }
+
+    .g-preview::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .g-info {
+      padding: 18px 20px; display: flex; justify-content: space-between;
       align-items: center;
-      gap: 14px;
     }
 
-    .protocol-tab-btn.active, .protocol-tab-btn:hover {
-      background: var(--bg-surface-elevated);
-      border-color: var(--brand-blue);
+    .g-title {
+      font-size: 14px; font-weight: 600; letter-spacing: -.01em;
     }
 
-    .protocol-tab-btn .num {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--brand-cyan);
+    .g-tag {
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      padding: 3px 8px; border-radius: 4px;
+      background: var(--c-surface); color: var(--c-text-2);
     }
 
-    .protocol-tab-btn .title {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--fg-primary);
-      text-transform: uppercase;
-    }
-
-    .protocol-content-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 44px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .protocol-spec-matrix {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 32px;
-      padding-top: 28px;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    @media (max-width: 600px) {
-      .protocol-spec-matrix { grid-template-columns: 1fr; }
-    }
-
-    .spec-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .spec-k {
-      font-family: var(--font-narrow);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--fg-muted);
-    }
-
-    .spec-v {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--brand-cyan);
-    }
-
-    /* ==========================================================================
-       08. INTERACTIVE ECOMMERCE ROI CALCULATOR
-       ========================================================================== */
-    .section-calculator {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
-      background: linear-gradient(180deg, #050608 0%, #090c14 100%);
-    }
-
-    .calc-card-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 48px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
-      border-radius: 8px;
-      padding: clamp(32px, 5vw, 60px);
-      margin-top: 48px;
-    }
-
-    @media (max-width: 960px) {
-      .calc-card-grid { grid-template-columns: 1fr; }
-    }
-
-    .calc-slider-group {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .calc-control {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .calc-label-row {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .calc-val-badge {
-      font-family: var(--font-mono);
-      color: var(--brand-cyan);
-    }
-
-    .calc-slider {
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #191e2e;
-      outline: none;
-      accent-color: var(--brand-blue);
-    }
-
-    .calc-result-panel {
-      background: #06080e;
-      border: 1px solid var(--border-accent);
-      border-radius: 6px;
-      padding: 36px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 28px;
-    }
-
-    .calc-result-box {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .calc-result-number {
-      font-family: var(--font-display);
-      font-size: clamp(38px, 4.5vw, 54px);
-      font-weight: 900;
-      color: var(--brand-cyan);
-      line-height: 1;
-      letter-spacing: -0.04em;
-    }
-
-    /* ==========================================================================
-       09. 1-LINE CODE EMBED PLAYGROUND
-       ========================================================================== */
-    .section-embed {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .embed-card {
-      background: #030407;
-      border: 1px solid var(--border-medium);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 48px;
-    }
-
-    .embed-header {
-      background: var(--bg-surface);
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .embed-tabs {
-      display: flex;
-      gap: 6px;
-    }
-
-    .embed-tab {
-      background: none;
-      border: none;
-      color: var(--fg-secondary);
-      font-family: var(--font-narrow);
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .embed-tab.active, .embed-tab:hover {
-      background: rgba(14, 118, 255, 0.2);
-      color: #FFF;
-    }
-
-    .embed-code-block {
-      padding: 28px 32px;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      line-height: 1.6;
-      color: #E2E8F0;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-
-    /* ==========================================================================
-       10. FAQ ACCORDION
-       ========================================================================== */
-    .section-faq {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .faq-accordion {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 48px;
-      max-width: 900px;
+    /* ── FAQ ── */
+    .faq-list {
+      max-width: 680px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 2px;
     }
 
     .faq-item {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      overflow: hidden;
-      transition: all 0.2s ease;
+      border-bottom: 1px solid var(--c-border);
     }
 
-    .faq-item:hover {
-      border-color: var(--border-medium);
-    }
-
-    .faq-question {
-      padding: 22px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
+    .faq-q {
+      padding: 20px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 15px; font-weight: 600; letter-spacing: -.01em;
       user-select: none;
     }
 
-    .faq-q-text {
-      font-family: var(--font-display);
-      font-size: 18px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: -0.01em;
-    }
-
     .faq-icon {
-      font-family: var(--font-mono);
-      font-size: 20px;
-      color: var(--brand-blue);
-      transition: transform 0.3s ease;
+      font-size: 18px; color: var(--c-text-3);
+      transition: transform .2s var(--ease-spring);
     }
 
     .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s var(--ease-smooth), padding 0.35s ease;
-      font-size: 15px;
-      color: var(--fg-secondary);
-      line-height: 1.65;
-      padding: 0 28px;
+      height: 0; overflow: hidden; opacity: 0;
+      font-size: 14px; color: var(--c-text-2); line-height: 1.65;
+      padding-bottom: 0;
+      transition: height .3s var(--ease-spring), opacity .2s, padding .3s;
     }
 
     .faq-item.open .faq-answer {
-      max-height: 300px;
-      padding: 0 28px 24px 28px;
+      height: auto; opacity: 1; padding-bottom: 20px;
     }
 
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg);
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--c-border);
+      padding: 40px 24px;
     }
 
-    /* ==========================================================================
-       11. CURATED 3D GALLERY ARCHIVE
-       ========================================================================== */
-    .section-archive {
-      padding: 120px 0;
-      border-top: 1px solid var(--border-subtle);
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
     }
 
-    .archive-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 28px;
-      margin-top: 44px;
+    .footer-copy {
+      font-size: 13px; color: var(--c-text-3);
     }
 
-    @media (max-width: 600px) {
-      .archive-grid { grid-template-columns: 1fr; }
+    .footer-links {
+      display: flex; gap: 20px; list-style: none;
     }
 
-    .archive-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.3s var(--ease-smooth);
+    .footer-links a {
+      font-size: 13px; color: var(--c-text-3); text-decoration: none;
+      transition: color .2s;
     }
 
-    .archive-card:hover {
-      border-color: var(--brand-blue);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(14, 118, 255, 0.2);
+    .footer-links a:hover { color: var(--c-text); }
+
+    /* ── Reveal animation base ── */
+    .reveal-on-scroll {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .6s var(--ease-spring), transform .6s var(--ease-spring);
+    }
+    .reveal-on-scroll.will-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    .reveal-on-scroll.is-revealed {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
     }
 
-    .archive-thumb {
-      width: 100%;
-      height: 240px;
-      background: #020305;
-      position: relative;
-    }
-
-    .archive-thumb iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      pointer-events: none;
-    }
-
-    .archive-body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .archive-title {
-      font-family: var(--font-display);
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-
-    .archive-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .chip-item {
-      font-family: var(--font-narrow);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 4px 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 3px;
-      color: var(--fg-secondary);
-    }
-
-    /* ==========================================================================
-       12. FOOTER
-       ========================================================================== */
-    .site-footer {
-      padding: 120px 0 40px;
-      border-top: 1px solid var(--border-subtle);
-      background: #040507;
-      position: relative;
-      z-index: 2;
-    }
-
-    .footer-cta-box {
-      background: linear-gradient(135deg, #0b0e17 0%, #121828 100%);
-      border: 1px solid var(--border-medium);
-      border-radius: 8px;
-      padding: clamp(36px, 5vw, 68px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 36px;
-      margin-bottom: 80px;
-    }
-
-    .footer-cta-text h2 {
-      font-family: var(--font-display);
-      font-size: clamp(30px, 4.5vw, 52px);
-      font-weight: 900;
-      line-height: 1.05;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-    }
-
-    .footer-cta-text p {
-      color: var(--fg-secondary);
-      font-size: 16px;
-      max-width: 560px;
-    }
-
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 32px;
-      border-top: 1px solid var(--border-subtle);
-      flex-wrap: wrap;
-      gap: 20px;
-      font-family: var(--font-narrow);
-      font-size: 13px;
-      letter-spacing: 0.5px;
-      color: var(--fg-muted);
+    /* ── Responsive ── */
+    @media(max-width:640px) {
+      .hero { padding: 100px 20px 40px; }
+      .hero h1 { font-size: 36px; }
+      .stage-container { border-radius: 12px; }
+      .features { border-radius: 12px; }
+      .feat { padding: 32px 24px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Scroll Progress Indicator -->
-  <div class="scroll-progress-bar" id="scroll-progress"></div>
 
-  <!-- Ambient Laser Background -->
-  <div class="aurora-glow-1"></div>
-  <div class="aurora-glow-2"></div>
-  <div class="bg-grid"></div>
-  <canvas id="ambient-canvas"></canvas>
+<!-- Hardware-accelerated Canvas Image Sequence Background (Apple-style 60+ FPS Scroll Scrubbing) -->
+<div class="video-bg-container">
+  <canvas id="video-canvas" class="video-canvas"></canvas>
+  <div class="video-bg-overlay"></div>
+</div>
 
-  <!-- ========================================================================
-       TOP STATUS BAR
-       ======================================================================== -->
-  <aside class="top-status-bar" aria-label="Status">
-    <span>● ENGINE STATUS: <strong>ONLINE v2.4</strong></span>
-    <span style="opacity: 0.3;">|</span>
-    <span data-i18n="top_status">Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour</span>
-    <span style="opacity: 0.3;">|</span>
-    <a href="showroom.html" data-i18n="top_cta">Launch Showroom →</a>
-  </aside>
+<div id="progress"></div>
+<canvas id="particles"></canvas>
 
-  <!-- ========================================================================
-       MAIN NAVIGATION
-       ======================================================================== -->
-  <header class="site-nav" id="site-nav">
-    <div class="container">
-      <div class="nav-inner">
-        <a href="index.html" class="brand-logo" aria-label="Points and Reality Homepage">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-          <span>Points & Reality</span>
-        </a>
+<!-- ═══ Nav ═══ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">P</div>
+      <span>Points & Reality</span>
+    </a>
 
-        <nav class="nav-menu">
-          <a href="#hero-stage" data-i18n="nav_stage">3D Stage</a>
-          <a href="#bento-tech" data-i18n="nav_bento">Technology</a>
-          <a href="#capture-protocol" data-i18n="nav_protocol">6-Step Protocol</a>
-          <a href="#roi-calculator" data-i18n="nav_roi">ROI Calculator</a>
-          <a href="#embed-playground" data-i18n="nav_embed">1-Line Embed</a>
-          <a href="showroom.html" style="color: var(--brand-cyan);" data-i18n="nav_showroom">[ 3D Showroom ↗ ]</a>
-        </nav>
+    <div class="nav-right">
+      <a href="#stage" class="nav-link" data-i18n="nav_stage">Stage</a>
+      <a href="#tech" class="nav-link" data-i18n="nav_tech">Technology</a>
+      <a href="#work" class="nav-link" data-i18n="nav_work">Work</a>
+      <a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
+      <select class="lang" id="langSelect" aria-label="Language">
+        <option value="en" selected>EN</option>
+        <option value="ko">한국어</option>
+        <option value="zh">中文</option>
+        <option value="mi">Māori</option>
+      </select>
+      <a href="showroom.html" class="nav-cta" data-i18n="nav_showroom">Showroom ↗</a>
+    </div>
+  </div>
+</nav>
 
-        <div class="nav-actions">
-          <div class="lang-switcher">
-            <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
-            <button class="lang-btn" onclick="setLanguage('ko')" id="btn-ko">KO</button>
-            <button class="lang-btn" onclick="setLanguage('zh')" id="btn-zh">ZH</button>
-            <button class="lang-btn" onclick="setLanguage('mi')" id="btn-mi">MI</button>
-          </div>
-          <a href="#contact" class="btn btn-primary" data-i18n="btn_inquire">Book Demo →</a>
-        </div>
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+  <div class="hero-eyebrow eyebrow">
+    <span class="pulse"></span>
+    <span data-i18n="hero_badge">3D Gaussian Splatting</span>
+  </div>
+
+  <h1 class="hero-title" data-i18n="hero_h1">
+    Reality captured in <em>millions of light</em>
+  </h1>
+
+  <p class="hero-sub section-desc" data-i18n="hero_p">
+    We reconstruct physical spaces into photorealistic <span class="nowrap">3D Gaussian Splats</span> — streamed instantly in your browser at <span class="nowrap">60+ FPS</span>, <span class="nowrap">zero plugins required</span>.
+  </p>
+
+  <div class="hero-actions hero-cta-group">
+    <a href="#stage" class="btn btn-primary" data-i18n="hero_cta1">Explore Live 3D ↓</a>
+    <a href="showroom.html" class="btn btn-ghost" data-i18n="hero_cta2">Open Showroom ↗</a>
+  </div>
+</section>
+
+<!-- ═══ 3D Stage ═══ -->
+<section class="stage-section" id="stage">
+  <div class="stage-container reveal-on-scroll">
+    <div class="stage-chrome">
+      <div class="stage-dots">
+        <span class="stage-dot"></span>
+        <span class="stage-dot"></span>
+        <span class="stage-dot"></span>
+      </div>
+
+      <div class="stage-label">
+        <span class="pulse"></span>
+        <span id="stage-title">FordEscape_new_LF_09</span>
+      </div>
+
+      <div class="stage-actions" id="model-tabs">
+        <button class="stage-btn active" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_09.html','FordEscape_new_LF_09',this)">LF_09</button>
+        <button class="stage-btn" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_08.html','FordEscape_new_LF_08',this)">LF_08</button>
+        <button class="stage-btn" onclick="goFS()" title="Fullscreen">⛶</button>
       </div>
     </div>
-  </header>
 
-  <!-- ========================================================================
-       01. HERO SECTION (High-Impact Spatial AI Showcase)
-       ======================================================================== -->
-  <main>
-    <section class="hero-section">
-      <div class="container">
-        
-        <div class="hero-top-grid">
-          <div class="reveal-on-scroll">
-            <div class="eyebrow">
-              <span class="pulse-dot"></span>
-              <span data-i18n="hero_eyebrow">3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO</span>
-            </div>
-            <h1 class="hero-title" data-i18n="hero_h1">
-              Capture The Real World.<br />
-              <span class="gradient-text">Render In Neural 3D.</span>
-            </h1>
-            <p class="section-desc" style="margin-top: 20px;" data-i18n="hero_desc">
-              Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.
-            </p>
-
-            <div class="hero-cta-group">
-              <a href="showroom.html" class="btn btn-primary" data-i18n="hero_btn_explore">Launch 3D Showroom ↗</a>
-              <a href="#capture-protocol" class="btn btn-ghost" data-i18n="hero_btn_how">Explore 6-Step Workflow ↓</a>
-            </div>
-          </div>
-
-          <!-- Quick Enterprise Metric Panel -->
-          <div class="has-crosshair glow-border-card reveal-on-scroll stagger-2" style="padding: 32px;">
-            <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; color: var(--brand-cyan); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px;" data-i18n="hero_val_tag">[ ENTERPRISE PERFORMANCE SPEC ]</div>
-            <h3 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 12px;" data-i18n="hero_val_title">Next-Gen 3D Solution for Ecommerce & Automotive</h3>
-            <p style="font-size: 14px; color: var(--fg-secondary); line-height: 1.65;" data-i18n="hero_val_desc">
-              Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.
-            </p>
-          </div>
-        </div>
-
-        <!-- 3DGS Interactive Control Center -->
-        <div class="hero-stage-card has-crosshair reveal-on-scroll stagger-1" id="hero-stage">
-          <div class="stage-top-bar">
-            <div class="stage-title-tag">
-              <span class="ping"></span>
-              <span id="active-model-title">ACTIVE STAGE: FordEscape_new_LF_09</span>
-            </div>
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); display: flex; gap: 16px; align-items: center;">
-              <span>SPLATS: <strong style="color: var(--brand-cyan);">2.8M</strong></span>
-              <span>RENDER: <strong>Pure WebGL</strong></span>
-              <span onclick="openFullscreenStage()" style="cursor: pointer; color: var(--brand-blue); font-weight: 700;">[ ⛶ FULLSCREEN ]</span>
-            </div>
-          </div>
-
-          <div class="stage-viewport-wrap">
-            <iframe 
-              id="hero-stage-iframe" 
-              class="stage-iframe" 
-              src="05_web_build/Review_FordEscape_new_LF_09.html"
-              allow="fullscreen; xr-spatial-tracking"
-              title="Interactive 3DGS Stage">
-            </iframe>
-
-            <!-- Floating Viewport HUD Chips -->
-            <div class="stage-hud-controls">
-              <span class="hud-chip active" onclick="toggleHotspots(this)" data-i18n="stage_hud_hotspots">🏷️ Hotspots (Pins)</span>
-              <span class="hud-chip" onclick="setStageEnv('studio', this)" data-i18n="stage_hud_studio">💡 Studio Light</span>
-              <span class="hud-chip" onclick="setStageEnv('cyber', this)" data-i18n="stage_hud_cyber">⚡ Cyber Neon</span>
-              <span class="hud-chip" onclick="openARModal()" data-i18n="stage_hud_ar">⛶ 1:1 Scale AR</span>
-            </div>
-
-            <!-- Simulated 3D Interactive Hotspot Pins -->
-            <div class="hotspot-layer" id="hotspot-layer">
-              <div class="hotspot-pin" style="top: 35%; left: 25%;" onclick="showHotspotInfo(0)">
-                <span class="pin-dot"></span>
-                <span id="pin-label-0">Carbon Hood</span>
-              </div>
-              <div class="hotspot-pin" style="top: 60%; left: 70%;" onclick="showHotspotInfo(1)">
-                <span class="pin-dot"></span>
-                <span id="pin-label-1">19\" Aero Wheel</span>
-              </div>
-              <div class="hotspot-pin" style="top: 40%; left: 55%;" onclick="showHotspotInfo(2)">
-                <span class="pin-dot"></span>
-                <span id="pin-label-2">Panoramic Roof</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="stage-bottom-bar">
-            <div class="model-pills" id="hero-model-pills">
-              <button class="model-pill active" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_09.html', 'FordEscape_new_LF_09', this)">LF_09 [Automotive Studio]</button>
-              <button class="model-pill" onclick="switchHeroStage('05_web_build/Review_FordEscape_new_LF_08.html', 'FordEscape_new_LF_08', this)">LF_08 [High-Res Detail]</button>
-            </div>
-
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted);">
-              <span>✦ DRAG TO ORBIT</span> &nbsp;•&nbsp; <span>PINCH / SCROLL TO ZOOM</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4-Stat Metric Matrix -->
-        <div class="hero-stats-strip reveal-on-scroll stagger-2">
-          <div class="stat-box">
-            <div class="stat-val">3<em>mins</em></div>
-            <div class="stat-lbl" data-i18n="stat_1_lbl">Typical Optical Capture</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val">~1<em>hour</em></div>
-            <div class="stat-lbl" data-i18n="stat_2_lbl">Turnaround to Live 3D</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val">12<em>MB</em></div>
-            <div class="stat-lbl" data-i18n="stat_3_lbl">Web-Optimized SOG Payload</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-val">60+<em>FPS</em></div>
-            <div class="stat-lbl" data-i18n="stat_4_lbl">Pure Browser WebGL Performance</div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         02. SILICON VALLEY BENTO GRID (Deep Technology & Ecosystem)
-         ======================================================================== -->
-    <section class="section-bento" id="bento-tech">
-      <div class="container">
-        
-        <div class="reveal-on-scroll">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            <span data-i18n="bento_eyebrow">CORE ARCHITECTURE</span>
-          </div>
-          <h2 class="section-title" data-i18n="bento_title">Silicon Valley Grade<br /><em>Spatial AI Platform</em></h2>
-          <p class="section-desc" style="margin-top: 16px;" data-i18n="bento_desc">
-            Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.
-          </p>
-        </div>
-
-        <div class="bento-grid">
-          
-          <!-- Bento 1: Trajectory Simulator (Span 8) -->
-          <div class="bento-card bento-col-8 glow-border-card has-crosshair reveal-on-scroll stagger-1">
-            <div>
-              <div class="bento-tag" data-i18n="b1_tag">01 // OPTICAL TRAJECTORY ENGINE</div>
-              <h3 class="bento-title" data-i18n="b1_title">360° Multi-Angle Helical Trajectory Engine</h3>
-              <p class="bento-desc" data-i18n="b1_desc">
-                Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.
-              </p>
-            </div>
-            <canvas id="trajectory-canvas"></canvas>
-            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-top: 12px; display: flex; justify-content: space-between;">
-              <span data-i18n="b1_footer_k">● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong></span>
-              <span style="color: var(--brand-cyan);" data-i18n="b1_footer_v">SFM OPTIMIZATION ACTIVE</span>
-            </div>
-          </div>
-
-          <!-- Bento 2: Extreme SOG Compression (Span 4) -->
-          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
-            <div>
-              <div class="bento-tag" data-i18n="b2_tag">02 // PAYLOAD COMPRESSION</div>
-              <h3 class="bento-title" data-i18n="b2_title">Ultra-Light SOG Compression</h3>
-              <p class="bento-desc" data-i18n="b2_desc">
-                Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.
-              </p>
-            </div>
-            <div class="compression-box">
-              <div class="comp-stats-row">
-                <span style="color: var(--fg-muted);">RAW PLY: 1.2 GB</span>
-                <span style="color: var(--brand-cyan); font-weight: 700;">SOG PACK: <span id="comp-val">12.4 MB</span></span>
-              </div>
-              <input type="range" min="4" max="60" value="12" class="comp-slider-bar" id="comp-slider" oninput="updateCompDisplay(this.value)" />
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--fg-secondary); text-align: center;" data-i18n="b2_reduction">
-                Payload Reduction: <strong style="color: var(--brand-emerald);">98.9%</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bento 3: 1:1 Scale Spatial AR (Span 4) -->
-          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-1">
-            <div>
-              <div class="bento-tag" data-i18n="b3_tag">03 // SPATIAL AR READY</div>
-              <h3 class="bento-title" data-i18n="b3_title">1:1 Real-Scale Spatial AR</h3>
-              <p class="bento-desc" data-i18n="b3_desc">
-                Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.
-              </p>
-            </div>
-            <div style="margin-top: 24px; text-align: center; padding: 20px; background: #06080e; border-radius: 6px; border: 1px solid var(--border-subtle);">
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan); margin-bottom: 8px;" data-i18n="b3_scan_qr">[ SCAN QR ON MOBILE ]</div>
-              <div style="display: inline-block; padding: 8px; background: #FFF; border-radius: 4px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://points-and-reality.vercel.app/showroom.html" alt="AR QR Code" style="display: block; width: 90px; height: 90px;" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Bento 4: Sub-Millimeter Radiance Fidelity (Span 4) -->
-          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-2">
-            <div>
-              <div class="bento-tag" data-i18n="b4_tag">04 // NEURAL RADIANCE</div>
-              <h3 class="bento-title" data-i18n="b4_title">Sub-Millimeter Neural Radiance</h3>
-              <p class="bento-desc" data-i18n="b4_desc">
-                Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.
-              </p>
-            </div>
-            <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; border-left: 3px solid var(--brand-blue);">
-              <div style="font-family: var(--font-mono); font-size: 11px; color: var(--brand-cyan);" data-i18n="b4_box_k">PHYSICALLY ACCURATE SHADING</div>
-              <div style="font-size: 13px; color: var(--fg-secondary); margin-top: 6px;" data-i18n="b4_box_v">Zero polygonal artifacts or flat baked textures.</div>
-            </div>
-          </div>
-
-          <!-- Bento 5: Enterprise Global CDN (Span 4) -->
-          <div class="bento-card bento-col-4 glow-border-card reveal-on-scroll stagger-3">
-            <div>
-              <div class="bento-tag" data-i18n="b5_tag">05 // GLOBAL EDGE CDN</div>
-              <h3 class="bento-title" data-i18n="b5_title">Global Low-Latency Edge Delivery</h3>
-              <p class="bento-desc" data-i18n="b5_desc">
-                Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.
-              </p>
-            </div>
-            <div style="margin-top: 24px; padding: 18px; background: #06080e; border-radius: 6px; display: flex; justify-content: space-around; font-family: var(--font-mono); font-size: 12px;">
-              <div>LATENCY: <strong style="color: var(--brand-emerald);" data-i18n="b5_latency">&lt;45ms</strong></div>
-              <div>UPTIME: <strong style="color: var(--brand-cyan);" data-i18n="b5_uptime">99.99%</strong></div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         03. INTERACTIVE 6-STEP CAPTURE PROTOCOL
-         ======================================================================== -->
-    <section class="section-protocol" id="capture-protocol">
-      <div class="container">
-        
-        <div class="reveal-on-scroll">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            <span data-i18n="proto_eyebrow">OPERATIONAL PROTOCOL</span>
-          </div>
-          <h2 class="section-title" data-i18n="proto_title">Six Steps to a Perfect<br /><em>3D Capture Protocol</em></h2>
-          <p class="section-desc" style="margin-top: 16px;" data-i18n="proto_desc">
-            Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.
-          </p>
-        </div>
-
-        <div class="protocol-stepper-wrap reveal-on-scroll stagger-1">
-          <!-- Step Nav -->
-          <div class="protocol-nav">
-            <button class="protocol-tab-btn active" onclick="switchProtocolStep(0, this)">
-              <span class="num">01</span>
-              <span class="title" data-i18n="pr_t1">01 Setup</span>
-            </button>
-            <button class="protocol-tab-btn" onclick="switchProtocolStep(1, this)">
-              <span class="num">02</span>
-              <span class="title" data-i18n="pr_t2">02 Lighting</span>
-            </button>
-            <button class="protocol-tab-btn" onclick="switchProtocolStep(2, this)">
-              <span class="num">03</span>
-              <span class="title" data-i18n="pr_t3">03 Camera</span>
-            </button>
-            <button class="protocol-tab-btn" onclick="switchProtocolStep(3, this)">
-              <span class="num">04</span>
-              <span class="title" data-i18n="pr_t4">04 Movement</span>
-            </button>
-            <button class="protocol-tab-btn" onclick="switchProtocolStep(4, this)">
-              <span class="num">05</span>
-              <span class="title" data-i18n="pr_t5">05 Multi-Loop</span>
-            </button>
-            <button class="protocol-tab-btn" onclick="switchProtocolStep(5, this)">
-              <span class="num">06</span>
-              <span class="title" data-i18n="pr_t6">06 Pipeline Upload</span>
-            </button>
-          </div>
-
-          <!-- Step Content Display -->
-          <div class="protocol-content-card glow-border-card has-crosshair">
-            <div>
-              <div style="font-family: var(--font-mono); font-size: 12px; color: var(--brand-cyan); font-weight: 700;" id="proto-step-num">STEP 01 // OBJECT SETUP</div>
-              <h3 style="font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin: 12px 0 16px;" id="proto-step-heading">Object Setup & Clearance</h3>
-              <p style="font-size: 16px; color: var(--fg-secondary); line-height: 1.7;" id="proto-step-body">
-                Place your subject in a clear space allowing 360-degree walkable clearance. Ensure the subject remains completely stationary throughout the capture.
-              </p>
-            </div>
-
-            <div class="protocol-spec-matrix">
-              <div class="spec-item">
-                <div class="spec-k">RECOMMENDED DISTANCE</div>
-                <div class="spec-v" id="proto-k1">1.2m – 2.5m</div>
-              </div>
-              <div class="spec-item">
-                <div class="spec-k">IDEAL CAMERA FPS</div>
-                <div class="spec-v" id="proto-k2">4K @ 60 FPS</div>
-              </div>
-              <div class="spec-item">
-                <div class="spec-k">TARGET ORBIT TIME</div>
-                <div class="spec-v" id="proto-k3">~40s / Loop</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         04. INTERACTIVE ECOMMERCE ROI CALCULATOR
-         ======================================================================== -->
-    <section class="section-calculator" id="roi-calculator">
-      <div class="container">
-        
-        <div class="reveal-on-scroll">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            <span data-i18n="calc_eyebrow">REVENUE & CONVERSION IMPACT</span>
-          </div>
-          <h2 class="section-title" data-i18n="calc_title">Interactive 3DGS<br /><em>Business ROI Calculator</em></h2>
-          <p class="section-desc" style="margin-top: 16px;" data-i18n="calc_desc">
-            Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.
-          </p>
-        </div>
-
-        <div class="calc-card-grid has-crosshair glow-border-card reveal-on-scroll stagger-1">
-          <!-- Sliders -->
-          <div class="calc-slider-group">
-            <div class="calc-control">
-              <div class="calc-label-row">
-                <span data-i18n="calc_l1">Monthly Store Visitors</span>
-                <span class="calc-val-badge" id="lbl-traffic">50,000</span>
-              </div>
-              <input type="range" min="5000" max="500000" step="5000" value="50000" class="calc-slider" id="slider-traffic" oninput="calculateROI()" />
-            </div>
-
-            <div class="calc-control">
-              <div class="calc-label-row">
-                <span data-i18n="calc_l2">Average Order Value (AOV)</span>
-                <span class="calc-val-badge" id="lbl-aov">$120</span>
-              </div>
-              <input type="range" min="20" max="1000" step="10" value="120" class="calc-slider" id="slider-aov" oninput="calculateROI()" />
-            </div>
-
-            <div class="calc-control">
-              <div class="calc-label-row">
-                <span data-i18n="calc_l3">Current Product Return Rate</span>
-                <span class="calc-val-badge" id="lbl-return">18%</span>
-              </div>
-              <input type="range" min="5" max="40" step="1" value="18" class="calc-slider" id="slider-return" oninput="calculateROI()" />
-            </div>
-          </div>
-
-          <!-- Real-Time Calculated ROI Results -->
-          <div class="calc-result-panel">
-            <div class="calc-result-box">
-              <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-cyan);" data-i18n="calc_r1_lbl">
-                🚀 Projected Annual Revenue Uplift
-              </div>
-              <div class="calc-result-number" id="calc-uplift-rev">+$576,000</div>
-              <div style="font-size: 13px; color: var(--fg-secondary);" data-i18n="calc_r1_note">Based on 2.0% baseline with +40% 3D interactive uplift</div>
-            </div>
-
-            <div class="calc-result-box">
-              <div style="font-family: var(--font-narrow); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--brand-emerald);" data-i18n="calc_r2_lbl">
-                📉 Projected Annual Saved Return Costs
-              </div>
-              <div class="calc-result-number" style="color: var(--brand-emerald);" id="calc-saved-returns">+$207,360</div>
-              <div style="font-size: 13px; color: var(--fg-secondary);" data-i18n="calc_r2_note">Saved return logistics from scale & material verification</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         05. 1-LINE DEVELOPER & ECOMMERCE EMBED PLAYGROUND
-         ======================================================================== -->
-    <section class="section-embed" id="embed-playground">
-      <div class="container">
-        
-        <div class="reveal-on-scroll">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            <span data-i18n="embed_eyebrow">ONE-LINE INTEGRATION</span>
-          </div>
-          <h2 class="section-title" data-i18n="embed_title">Embed Anywhere With<br /><em>A Single Line of Code</em></h2>
-          <p class="section-desc" style="margin-top: 16px;" data-i18n="embed_desc">
-            Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.
-          </p>
-        </div>
-
-        <div class="embed-card glow-border-card has-crosshair reveal-on-scroll stagger-1">
-          <div class="embed-header">
-            <div class="embed-tabs">
-              <button class="embed-tab active" onclick="switchEmbedCode('html', this)">HTML / IFRAME</button>
-              <button class="embed-tab" onclick="switchEmbedCode('react', this)">REACT / NEXT.JS</button>
-              <button class="embed-tab" onclick="switchEmbedCode('shopify', this)">SHOPIFY LIQUID</button>
-              <button class="embed-tab" onclick="switchEmbedCode('webflow', this)">WEBFLOW</button>
-            </div>
-            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 11px;" onclick="copyEmbedCode()" id="btn-copy-code" data-i18n="embed_btn_copy">
-              [ COPY CODE 📋 ]
-            </button>
-          </div>
-          <pre class="embed-code-block" id="embed-code-display">&lt;iframe
-  src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
-  width="100%"
-  height="600"
-  frameborder="0"
-  allow="fullscreen; xr-spatial-tracking"
-  loading="lazy"
-  style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);"&gt;
-&lt;/iframe&gt;</pre>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         06. CURATED 3D DELIVERABLES REEL (Live models.json Archive)
-         ======================================================================== -->
-    <section class="section-archive" id="archive">
-      <div class="container">
-        
-        <div class="reveal-on-scroll" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
-          <div>
-            <div class="eyebrow">
-              <span class="pulse-dot"></span>
-              <span data-i18n="arch_eyebrow">LIVE 3D REEL</span>
-            </div>
-            <h2 class="section-title" data-i18n="arch_title">Curated 3D Deliverables Reel</h2>
-          </div>
-          <a href="showroom.html" class="btn btn-primary" data-i18n="arch_btn_all">Launch 3D Showroom ↗</a>
-        </div>
-
-        <div class="archive-grid" id="deliverables-grid">
-          <!-- Populated dynamically via models.json -->
-          <a href="05_web_build/Review_FordEscape_new_LF_09.html" target="_blank" class="archive-card glow-border-card reveal-on-scroll stagger-1">
-            <div class="archive-thumb">
-              <iframe src="05_web_build/Review_FordEscape_new_LF_09.html" loading="lazy" title="LF_09"></iframe>
-            </div>
-            <div class="archive-body">
-              <div class="archive-title">FordEscape_new_LF_09</div>
-              <div class="archive-chips">
-                <span class="chip-item">3DGS SOG</span>
-                <span class="chip-item">AUTOMOTIVE</span>
-                <span class="chip-item">2.8M SPLATS</span>
-              </div>
-            </div>
-          </a>
-
-          <a href="05_web_build/Review_FordEscape_new_LF_08.html" target="_blank" class="archive-card glow-border-card reveal-on-scroll stagger-2">
-            <div class="archive-thumb">
-              <iframe src="05_web_build/Review_FordEscape_new_LF_08.html" loading="lazy" title="LF_08"></iframe>
-            </div>
-            <div class="archive-body">
-              <div class="archive-title">FordEscape_new_LF_08</div>
-              <div class="archive-chips">
-                <span class="chip-item">3DGS SOG</span>
-                <span class="chip-item">HIGH RES</span>
-                <span class="chip-item">2.5M SPLATS</span>
-              </div>
-            </div>
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         07. FAQ ACCORDION SECTION
-         ======================================================================== -->
-    <section class="section-faq" id="faq">
-      <div class="container">
-        
-        <div class="reveal-on-scroll">
-          <div class="eyebrow">
-            <span class="pulse-dot"></span>
-            <span data-i18n="faq_eyebrow">FREQUENTLY ASKED QUESTIONS</span>
-          </div>
-          <h2 class="section-title" data-i18n="faq_title">Frequently Asked Questions</h2>
-        </div>
-
-        <div class="faq-accordion reveal-on-scroll stagger-1">
-          <div class="faq-item open">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text" data-i18n="faq_q1">How does 3D Gaussian Splatting differ from traditional 3D polygon meshes?</span>
-              <span class="faq-icon">+</span>
-            </div>
-            <div class="faq-answer" data-i18n="faq_a1">
-              Traditional 3D meshes wrap 2D textures onto geometric polygon vertices, struggling with reflections, transparency, and organic curves. 3D Gaussian Splatting reconstructs optical radiance using millions of 3D Gaussian ellipsoids, capturing true specular highlights, glass refractions, and sub-millimeter precision in real-time.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text" data-i18n="faq_q2">Do website visitors need to install any apps or plugins?</span>
-              <span class="faq-icon">+</span>
-            </div>
-            <div class="faq-answer" data-i18n="faq_a2">
-              No plugins or apps are required. The Points & Reality viewer is compiled into pure WebGL shaders that run smoothly at 60+ FPS in Safari, Chrome, Edge, and iOS/Android mobile browsers upon clicking the link.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text" data-i18n="faq_q3">How long does optical capture and 3D reconstruction take?</span>
-              <span class="faq-icon">+</span>
-            </div>
-            <div class="faq-answer" data-i18n="faq_a3">
-              Capture takes approximately 3 minutes using any standard smartphone camera. Once footage is uploaded to our neural pipeline, the production-ready 3D digital twin is reconstructed in approximately 1 hour.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question" onclick="toggleFaq(this)">
-              <span class="faq-q-text" data-i18n="faq_q4">How do I integrate this into Shopify or a custom website?</span>
-              <span class="faq-icon">+</span>
-            </div>
-            <div class="faq-answer" data-i18n="faq_a4">
-              Simply paste a single line of HTML iframe or React/Liquid component code into your product page template. Responsive mobile layouts and touch gestures are supported out of the box.
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ========================================================================
-       08. STUDIO FOOTER & INQUIRY
-       ======================================================================== -->
-  <footer class="site-footer" id="contact">
-    <div class="container">
-      
-      <div class="footer-cta-box has-crosshair glow-border-card reveal-on-scroll">
-        <div class="footer-cta-text">
-          <h2 data-i18n="fcta_title">Ready to create your first 3D digital twin?</h2>
-          <p data-i18n="fcta_desc">Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.</p>
-        </div>
-        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-          <a href="mailto:contact@points-and-reality.com" class="btn btn-primary" data-i18n="fcta_btn_primary">Book a Demo / Inquire →</a>
-          <a href="showroom.html" class="btn btn-ghost" data-i18n="fcta_btn_sec">Explore Showroom</a>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <div data-i18n="footer_rights">© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO.</div>
-        <div style="display: flex; gap: 20px;">
-          <a href="showroom.html" style="color: var(--brand-cyan); text-decoration: none;">[ 3D SHOWROOM ]</a>
-          <a href="#site-nav" style="color: var(--fg-secondary); text-decoration: none;">↑ TOP</a>
-        </div>
-      </div>
-
+    <div class="stage-viewport">
+      <iframe id="stage-iframe" src="05_web_build/Review_FordEscape_new_LF_09.html"
+              allow="fullscreen; xr-spatial-tracking" title="3DGS Viewport"></iframe>
     </div>
-  </footer>
 
-  <!-- ========================================================================
-       JAVASCRIPT LOGIC (Interactive Bento, ROI Calc, Stepper, Ambient Engine)
-       ======================================================================== -->
-  <script>
-    /* --------------------------------------------------------------------------
-       01. Multilingual Translation Engine & Data Structures (EN, KO, ZH, MI)
-       -------------------------------------------------------------------------- */
-    let currentLang = 'en';
+    <div class="stage-footer">
+      <div class="stage-hint">
+        <span><kbd class="kbd">Drag</kbd> orbit</span>
+        <span><kbd class="kbd">Scroll</kbd> zoom</span>
+        <span><kbd class="kbd">Shift+Drag</kbd> pan</span>
+      </div>
+      <div class="stage-hint">
+        <span><span class="nowrap">WebGL 2.0</span> · <span class="nowrap">60+ FPS</span></span>
+      </div>
+    </div>
+  </div>
+</section>
 
-    const protocolDataByLang = {
-      en: [
-        {
-          num: "STEP 01 // OBJECT SETUP",
-          heading: "Object Setup & Clearance",
-          body: "Place your subject in a clear space allowing 360-degree walkable clearance. Ensure the subject remains completely stationary throughout the capture. Placing it on a waist-high pedestal makes circling smooth.",
-          k1: "1.2m – 2.5m",
-          k2: "4K @ 60 FPS",
-          k3: "~40s / Loop"
-        },
-        {
-          num: "STEP 02 // DIFFUSED LIGHTING",
-          heading: "Diffused Soft Lighting Environment",
-          body: "Harsh direct sunlight or sharp spot lights create harsh dynamic shadows that corrupt surface reconstruction. Soft diffused studio lighting or overcast outdoor daylight produces the cleanest radiance fields.",
-          k1: "Diffused Soft",
-          k2: "Shadow-Free",
-          k3: "5600K Daylight"
-        },
-        {
-          num: "STEP 03 // CAMERA PARAMETER LOCK",
-          heading: "Exposure, Focus & White Balance Lock",
-          body: "Lock Auto Exposure (AE), Auto Focus (AF), and Auto White Balance (AWB) on your camera. Consistent exposure and color temperature across all frames ensure accurate radiance field optimization.",
-          k1: "AE / AF Locked",
-          k2: "ISO 100-200",
-          k3: "1/120s Shutter"
-        },
-        {
-          num: "STEP 04 // SMOOTH MOVEMENT",
-          heading: "Steady Orbit Pace & Heel-to-Toe Walk",
-          body: "Walk smoothly and continuously at a steady pace of ~40 seconds per loop. Use a heel-to-toe walking technique to minimize vertical camera bounce and eliminate motion blur.",
-          k1: "Heel-to-Toe",
-          k2: "Zero Motion Blur",
-          k3: "Constant Speed"
-        },
-        {
-          num: "STEP 05 // MULTI-LOOP COVERAGE",
-          heading: "3-4 Height Loops for Full Surface Coverage",
-          body: "Circle the subject across 3 distinct elevations: eye-level horizon, 45-degree top-down orbit, and low angle pass to ensure zero blind spots across complex surfaces.",
-          k1: "3-4 Orbit Passes",
-          k2: "45° Top-Down",
-          k3: "100% Coverage"
-        },
-        {
-          num: "STEP 06 // NEURAL PIPELINE UPLOAD",
-          heading: "Points & Reality Automated Neural Processing",
-          body: "Upload video footage directly to the pipeline. Structure-from-Motion camera calibration, 3DGS neural optimization, and SOG web compression execute automatically in ~1 hour.",
-          k1: "~1 Hour Auto",
-          k2: "Pure SOG Output",
-          k3: "Instant CDN Live"
-        }
-      ],
-      ko: [
-        {
-          num: "STEP 01 // 피사체 배치",
-          heading: "피사체 배치 및 주변 공간 확보",
-          body: "피사체 주위를 360도 걸어서 이동할 수 있는 최소 1.5m 이상의 여유 공간을 확보합니다. 촬영 도중 물체가 흔들리거나 이동하지 않도록 단단히 고정하고, 허리 높이의 스탠드 위에 올려두면 이동이 매우 편리합니다.",
-          k1: "1.2m – 2.5m",
-          k2: "4K @ 60 FPS",
-          k3: "~40초 / 바퀴"
-        },
-        {
-          num: "STEP 02 // 확산광 조명",
-          heading: "균일한 확산광 조명 세팅",
-          body: "강한 직사광선이나 점조명은 날카로운 그림자를 만들어 텍스처 재구성을 방해합니다. 소프트박스 확산광이나 흐린 날의 부드러운 자연광 환경에서 촬영하는 것이 가장 이상적입니다.",
-          k1: "소프트 확산광",
-          k2: "그림자 최소화",
-          k3: "5600K 주광색"
-        },
-        {
-          num: "STEP 03 // 카메라 설정 고정",
-          heading: "노출·초점·화이트밸런스 고정 (Lock)",
-          body: "스마트폰 또는 카메라의 자동 노출(AE), 자동 초점(AF), 자동 화이트밸런스(AWB)를 고정합니다. 프레임 간 밝기와 색상 톤이 변하지 않아야 뉴럴 네트워크가 정확한 방사 휘도를 학습합니다.",
-          k1: "AE / AF 고정",
-          k2: "ISO 100-200",
-          k3: "1/120초 셔터"
-        },
-        {
-          num: "STEP 04 // 안정적 보행",
-          heading: "일정한 속도의 안정적 보행 궤적",
-          body: "급격한 카메라 회전이나 흔들림(모션 블러)을 방지하기 위해 발뒤꿈치부터 딛는 힐-투-토(Heel-to-toe) 걸음걸이를 사용합니다. 1바퀴당 약 40~50초의 일정한 페이스를 유지합니다.",
-          k1: "힐-투-토 보행",
-          k2: "모션 블러 0%",
-          k3: "일정 속도 유지"
-        },
-        {
-          num: "STEP 05 // 다각도 궤적",
-          heading: "3~4개 높이 궤적 완전 피복 (Multi-Pass)",
-          body: "단일 높이 촬영 시 상단이나 하단에 사각지대가 발생합니다. 수평(아이레벨), 45도 상단 탑다운, 하단 앙각 궤적을 순차적으로 3바퀴 녹화하여 물체의 모든 표면을 빠짐없이 커버합니다.",
-          k1: "3-4개 궤적 패스",
-          k2: "45° 탑다운 포함",
-          k3: "100% 표면 피복"
-        },
-        {
-          num: "STEP 06 // 파이프라인 업로드",
-          heading: "Points & Reality 파이프라인 업로드",
-          body: "촬영된 고해상도 영상을 업로드하면, 자동 프레임 추출, SfM 카메라 포즈 정렬, 3DGS 뉴럴 최적화 및 SOG 압축이 원스톱으로 진행되어 약 1시간 내에 완성됩니다.",
-          k1: "~1시간 자동 완성",
-          k2: "SOG 표준 출력",
-          k3: "글로벌 CDN 배포"
-        }
-      ],
-      zh: [
-        {
-          num: "STEP 01 // 物体布置",
-          heading: "物体布置与周边空间准备",
-          body: "确保物体周围有至少1.5米宽敞的360度环绕通道。拍摄过程中物体需保持绝对静止，置于齐腰平台可大幅减轻运镜负担。",
-          k1: "1.2米 – 2.5米",
-          k2: "4K @ 60 FPS",
-          k3: "~40秒 / 圈"
-        },
-        {
-          num: "STEP 02 // 柔和光线",
-          heading: "均匀扩散光照明环境",
-          body: "避免强烈直射日光或点状聚光灯产生生硬阴影。柔光箱或阴天柔和自然光是重建材质高光的最优选择。",
-          k1: "漫反射柔光",
-          k2: "无明显死角阴影",
-          k3: "5600K 日光色温"
-        },
-        {
-          num: "STEP 03 // 相机参数锁定",
-          heading: "锁定曝光、对焦与白平衡 (Lock)",
-          body: "开启手机专业模式，锁定自动曝光(AE)、自动对焦(AF)及白平衡(AWB)，确保各角度帧间色温与亮度严苛一致。",
-          k1: "AE / AF 锁定",
-          k2: "ISO 100-200",
-          k3: "1/120秒 快门"
-        },
-        {
-          num: "STEP 04 // 匀速运镜",
-          heading: "平稳步态与匀速环绕",
-          body: "采用脚后跟先着地的步法防止机身晃动，每圈保持约40秒匀速前行，消除动态模糊。",
-          k1: "脚跟平稳过渡",
-          k2: "零动态模糊",
-          k3: "恒定环绕速度"
-        },
-        {
-          num: "STEP 05 // 多高度覆盖",
-          heading: "3-4段不同高度轨迹全覆盖",
-          body: "分别在平视视角、俯视45度及仰视低角度环绕拍摄3圈，确保顶部与底部无死角覆盖。",
-          k1: "3-4圈分层轨迹",
-          k2: "45° 俯角录制",
-          k3: "100% 表面覆盖"
-        },
-        {
-          num: "STEP 06 // 管线上传",
-          heading: "上传至 Points & Reality 云端管线",
-          body: "上传原始高清视频后，系统自动完成帧提取、SfM姿态反算、3DGS神经优化及SOG压缩，约1小时交付可用模型。",
-          k1: "~1小时自动交付",
-          k2: "SOG标准格式",
-          k3: "全球CDN即刻分发"
-        }
-      ],
-      mi: [
-        {
-          num: "STEP 01 // WHAKARITE HUA",
-          heading: "Whakarite Hua me te Wāhi",
-          body: "Whakatūria tō hua ki tētahi wāhi e taea ai e koe te hīkoi 360° huri noa. Me tū pūmau te hua.",
-          k1: "1.2m – 2.5m",
-          k2: "4K @ 60 FPS",
-          k3: "~40s / Porohita"
-        },
-        {
-          num: "STEP 02 // MĀRAMA NGĀWARI",
-          heading: "Mārama Marara Ngāwari",
-          body: "Whakamahia te mārama marara, kaua te rā tika tonu hei karo i ngā ataata pōuri.",
-          k1: "Mārama Ngāwari",
-          k2: "Kore Ataata",
-          k3: "5600K Awatea"
-        },
-        {
-          num: "STEP 03 // RAKA KĀMERA",
-          heading: "Raka Tautuhinga Kāmera",
-          body: "Rakahia te arotahi, te māramatanga me te taurite mā kia rite tonu ngā whakaahua katoa.",
-          k1: "AE / AF Raka",
-          k2: "ISO 100-200",
-          k3: "1/120s Tere"
-        },
-        {
-          num: "STEP 04 // NEKE MARIE",
-          heading: "Hīkoi Marie me te Pūmau",
-          body: "Hīkoi marie mai te rekereke ki te matimati kia kore ai e ohorere te nekehanga.",
-          k1: "Rekereke-Matimati",
-          k2: "Kore Pohe",
-          k3: "Tere Ōrite"
-        },
-        {
-          num: "STEP 05 // KAPI WHĀNUI",
-          heading: "Hopu mai i ngā Teitei Maha",
-          body: "Hopukia mai i ngā teitei rerekē e 3-4 kia kitea katoatia ngā mata o te hua.",
-          k1: "Ngā Porohita 3-4",
-          k2: "45° mai Runga",
-          k3: "100% Kapi"
-        },
-        {
-          num: "STEP 06 // TUKU PŪKAHA",
-          heading: "Tuku ki te Pūkaha AI",
-          body: "Tukua te ataata ki te pūkaha Points & Reality, ka oti te tauira i roto i te haora kotahi.",
-          k1: "~1 Haora Aunoa",
-          k2: "Kōnae SOG",
-          k3: "Tohanga Ao"
-        }
-      ]
-    };
+<!-- ═══ Technology ═══ -->
+<section class="s" id="tech">
+  <div class="s-head reveal-on-scroll">
+    <div class="s-label" data-i18n="tech_label">Technology</div>
+    <h2 data-i18n="tech_h2">Not polygons. <br>Pure radiance fields.</h2>
+    <p data-i18n="tech_p"><span class="nowrap">3D Gaussian Splatting</span> models light itself — millions of anisotropic ellipsoids that capture reflection, transparency, and geometry simultaneously.</p>
+  </div>
 
-    const hotspotsByLang = {
-      en: [
-        { label: "Carbon Hood", title: "Aerodynamic Carbon Hood", desc: "Ultra-light carbon fiber hood designed with aero ducting." },
-        { label: "19\" Aero Wheel", title: "19-inch Machined Aero Wheels", desc: "Diamond-cut lightweight alloys paired with high-performance calipers." },
-        { label: "Panoramic Roof", title: "Panoramic Tinted Glass", desc: "Acoustic-laminated panoramic glass blocking 99.9% UV rays." }
-      ],
-      ko: [
-        { label: "카본 후드", title: "에어로다이내믹 카본 보닛", desc: "초경량 탄소섬유 보닛과 에어로다이내믹 덕트 라인 설계." },
-        { label: "19인치 에어로 휠", title: "19인치 머신드 에어로 휠", desc: "다이아몬드 커팅 경량 알로이 휠 및 고성능 브레이크 캘리퍼." },
-        { label: "파노라믹 루프", title: "파노라믹 틴티드 글래스", desc: "자외선 99.9% 차단 이중접합 차음 파노라믹 글래스." }
-      ],
-      zh: [
-        { label: "碳纤机盖", title: "空气动力学碳纤维机盖", desc: "超轻量化碳纤维材质与空气动力学导流风道设计。" },
-        { label: "19寸风刃轮毂", title: "19英寸精车风刃轻量化轮毂", desc: "钻石切割工艺铝合金轮毂与高性能运动卡钳。" },
-        { label: "全景天幕", title: "隔音全景深色玻璃天幕", desc: "双层夹胶隔音玻璃，隔绝99.9%紫外线辐射。" }
-      ],
-      mi: [
-        { label: "Taupoki Waro", title: "Taupoki Waka Waro", desc: "He mea hanga ki te muka waro māmā me te rere hau pai." },
-        { label: "Wīra 19 Inihi", title: "Wīra Koranu 19 Inihi", desc: "He wīra māmā me ngā pereki kairangi." },
-        { label: "Tuanui Karaehe", title: "Tuanui Karaehe Whānui", desc: "He karaehe tiaki i te rā me te marino o roto." }
-      ]
-    };
+  <div class="features">
+    <div class="feat reveal-on-scroll stagger-1">
+      <div class="feat-icon">✦</div>
+      <h3 data-i18n="f1_h">Photorealistic</h3>
+      <p data-i18n="f1_p">Sub-millimeter fidelity. True reflections, glass transparency, and micro-geometry — <span class="nowrap">no manual texturing</span> or retopology required.</p>
+    </div>
+    <div class="feat reveal-on-scroll stagger-2">
+      <div class="feat-icon">⚡</div>
+      <h3 data-i18n="f2_h">Instant WebGL</h3>
+      <p data-i18n="f2_p">Hardware-accelerated rendering at <span class="nowrap">60+ FPS</span>. Runs natively in Safari, Chrome, and Edge — <span class="nowrap">zero installations</span>, <span class="nowrap">zero plugins</span>.</p>
+    </div>
+    <div class="feat reveal-on-scroll stagger-3">
+      <div class="feat-icon">◈</div>
+      <h3 data-i18n="f3_h">10× Compression</h3>
+      <p data-i18n="f3_p"><span class="nowrap">SOG container format</span> compresses <span class="nowrap">300 MB</span> point clouds to <span class="nowrap">~15 MB</span> for instant loading over mobile connections.</p>
+    </div>
+  </div>
+</section>
 
-    const translations = {
-      en: {
-        top_status: "Points & Reality 3DGS — Turn optical video into 60+ FPS digital twins in ~1 hour",
-        top_cta: "Launch Showroom →",
-        nav_stage: "3D Stage",
-        nav_bento: "Technology",
-        nav_protocol: "6-Step Protocol",
-        nav_roi: "ROI Calculator",
-        nav_embed: "1-Line Embed",
-        nav_showroom: "[ 3D Showroom ↗ ]",
-        btn_inquire: "Book Demo →",
-        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "Turn a simple 3-minute smartphone or camera video into an ultra-realistic, web-ready 3D Gaussian digital twin in ~1 hour. No plugins required. 60+ FPS in any browser.",
-        hero_btn_explore: "Launch 3D Showroom ↗",
-        hero_btn_how: "Explore 6-Step Workflow ↓",
-        hero_val_tag: "[ ENTERPRISE PERFORMANCE SPEC ]",
-        hero_val_title: "Next-Gen 3D Solution for Ecommerce & Automotive",
-        hero_val_desc: "Eliminate the limitations of jagged polygon meshes. 3D Gaussian Splatting preserves true specular reflections, fine textures, and sub-millimeter precision to maximize buyer confidence.",
-        stage_hud_hotspots: "🏷️ Hotspots (Pins)",
-        stage_hud_studio: "💡 Studio Light",
-        stage_hud_cyber: "⚡ Cyber Neon",
-        stage_hud_ar: "⛶ 1:1 Scale AR",
-        stat_1_lbl: "Typical Optical Capture",
-        stat_2_lbl: "Turnaround to Live 3D",
-        stat_3_lbl: "Web-Optimized SOG Payload",
-        stat_4_lbl: "Pure Browser WebGL Performance",
-        bento_eyebrow: "CORE ARCHITECTURE",
-        bento_title: "Silicon Valley Grade<br /><em>Spatial AI Platform</em>",
-        bento_desc: "Combining our proprietary 3DGS neural pipeline with advanced SOG compression, delivering the fastest and sharpest spatial commerce deliverables on the web.",
-        b1_tag: "01 // OPTICAL TRAJECTORY ENGINE",
-        b1_title: "360° Multi-Angle Helical Trajectory Engine",
-        b1_desc: "Recovers precise camera pose positions from raw video frames using Structure from Motion, creating a dense continuous orbit in 3D coordinate space.",
-        b1_footer_k: "● REALTIME CAMERA POSES: <strong>148 POSE POINTS</strong>",
-        b1_footer_v: "SFM OPTIMIZATION ACTIVE",
-        b2_tag: "02 // PAYLOAD COMPRESSION",
-        b2_title: "Ultra-Light SOG Compression",
-        b2_desc: "Compresses multi-gigabyte raw PLY files by up to 98% without perceptual loss, enabling 0.5-second web load times.",
-        b2_reduction: "Payload Reduction: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
-        b3_tag: "03 // SPATIAL AR READY",
-        b3_title: "1:1 Real-Scale Spatial AR",
-        b3_desc: "Native iOS QuickLook and Android WebXR support for zero-friction AR projection directly in real physical rooms.",
-        b3_scan_qr: "[ SCAN QR ON MOBILE ]",
-        b4_tag: "04 // NEURAL RADIANCE",
-        b4_title: "Sub-Millimeter Neural Radiance",
-        b4_desc: "Computes 6D view-dependent radiance fields to capture authentic metallic sheens, car coatings, and glass refractions.",
-        b4_box_k: "PHYSICALLY ACCURATE SHADING",
-        b4_box_v: "Zero polygonal artifacts or flat baked textures.",
-        b5_tag: "05 // GLOBAL EDGE CDN",
-        b5_title: "Global Low-Latency Edge Delivery",
-        b5_desc: "Packaged as self-contained static assets distributed across 180+ global CDN edge nodes with sub-50ms latency.",
-        b5_latency: "<45ms",
-        b5_uptime: "99.99%",
-        proto_eyebrow: "OPERATIONAL PROTOCOL",
-        proto_title: "Six Steps to a Perfect<br /><em>3D Capture Protocol</em>",
-        proto_desc: "Follow this standardized 6-step optical capture protocol using any smartphone or camera. Click each step to inspect parameters and recommendations.",
-        pr_t1: "01 Setup",
-        pr_t2: "02 Lighting",
-        pr_t3: "03 Camera",
-        pr_t4: "04 Movement",
-        pr_t5: "05 Multi-Loop",
-        pr_t6: "06 Pipeline Upload",
-        calc_eyebrow: "REVENUE & CONVERSION IMPACT",
-        calc_title: "Interactive 3DGS<br /><em>Business ROI Calculator</em>",
-        calc_desc: "Adjust monthly visitors and average order value to project realistic conversion boosts and return reductions powered by interactive 3D.",
-        calc_l1: "Monthly Store Visitors",
-        calc_l2: "Average Order Value (AOV)",
-        calc_l3: "Current Product Return Rate",
-        calc_r1_lbl: "🚀 Projected Annual Revenue Uplift",
-        calc_r1_note: "Based on 2.0% baseline with +40% 3D interactive uplift",
-        calc_r2_lbl: "📉 Projected Annual Saved Return Costs",
-        calc_r2_note: "Saved return logistics from scale & material verification",
-        embed_eyebrow: "ONE-LINE INTEGRATION",
-        embed_title: "Embed Anywhere With<br /><em>A Single Line of Code</em>",
-        embed_desc: "Drop interactive 3D Gaussian Splats into Shopify, WooCommerce, Webflow, or React/Next.js applications instantly.",
-        embed_btn_copy: "[ COPY CODE 📋 ]",
-        arch_eyebrow: "LIVE 3D REEL",
-        arch_title: "Curated 3D Deliverables Reel",
-        arch_btn_all: "Launch 3D Showroom ↗",
-        faq_eyebrow: "FREQUENTLY ASKED QUESTIONS",
-        faq_title: "Frequently Asked Questions",
-        faq_q1: "How does 3D Gaussian Splatting differ from traditional 3D polygon meshes?",
-        faq_a1: "Traditional 3D meshes wrap 2D textures onto geometric polygon vertices, struggling with reflections, transparency, and organic curves. 3D Gaussian Splatting reconstructs optical radiance using millions of 3D Gaussian ellipsoids, capturing true specular highlights, glass refractions, and sub-millimeter precision in real-time.",
-        faq_q2: "Do website visitors need to install any apps or plugins?",
-        faq_a2: "No plugins or apps are required. The Points & Reality viewer is compiled into pure WebGL shaders that run smoothly at 60+ FPS in Safari, Chrome, Edge, and iOS/Android mobile browsers upon clicking the link.",
-        faq_q3: "How long does optical capture and 3D reconstruction take?",
-        faq_a3: "Capture takes approximately 3 minutes using any standard smartphone camera. Once footage is uploaded to our neural pipeline, the production-ready 3D digital twin is reconstructed in approximately 1 hour.",
-        faq_q4: "How do I integrate this into Shopify or a custom website?",
-        faq_a4: "Simply paste a single line of HTML iframe or React/Liquid component code into your product page template. Responsive mobile layouts and touch gestures are supported out of the box.",
-        fcta_title: "Ready to create your first 3D digital twin?",
-        fcta_desc: "Shoot a 3-minute video, upload it to Points & Reality, and your production-ready 3DGS model will be ready in ~1 hour.",
-        fcta_btn_primary: "Book a Demo / Inquire →",
-        fcta_btn_sec: "Explore Showroom",
-        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO."
-      },
-      ko: {
-        top_status: "Points & Reality 3DGS — 영상으로 1시간 만에 60+ FPS 3D 디지털 트윈 생성",
-        top_cta: "3D 쇼룸 열기 →",
-        nav_stage: "3D 인터랙티브",
-        nav_bento: "핵심 기술",
-        nav_protocol: "6단계 촬영 가이드",
-        nav_roi: "ROI 계산기",
-        nav_embed: "코드 1줄 연동",
-        nav_showroom: "[ 3D 쇼룸 ↗ ]",
-        btn_inquire: "도입 문의 →",
-        hero_eyebrow: "3D GAUSSIAN SPLATTING & SPATIAL AI STUDIO",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "단 3분의 스마트폰·카메라 동영상 촬영으로 1시간 만에 실물과 100% 동일한 3D 가우시안 디지털 트윈을 복원합니다. 플러그인 없이 모든 웹 브라우저에서 60+ FPS로 매끄럽게 회전·확대·공간 배치가 가능합니다.",
-        hero_btn_explore: "공식 3D 쇼룸 열기 ↗",
-        hero_btn_how: "6단계 워크플로우 보기 ↓",
-        hero_val_tag: "[ 기업용 고성능 기술 규격 ]",
-        hero_val_title: "e커머스 & 자동차 산업용 차세대 3D 솔루션",
-        hero_val_desc: "기존 폴리곤 메시의 다각화 왜곡 없이, 실물 특유의 미세 반사광, 투명도, 서브밀리미터 디테일을 완벽 재현하여 구매 전환율을 극대화하고 반품율을 낮춥니다.",
-        stage_hud_hotspots: "🏷️ 핫스팟 (핀)",
-        stage_hud_studio: "💡 스튜디오 조명",
-        stage_hud_cyber: "⚡ 사이버 네온",
-        stage_hud_ar: "⛶ 1:1 공간 AR",
-        stat_1_lbl: "평균 광학 촬영 시간",
-        stat_2_lbl: "3D 모델 완성 시간",
-        stat_3_lbl: "웹 최적화 SOG 용량",
-        stat_4_lbl: "브라우저 WebGL 성능",
-        bento_eyebrow: "핵심 기술 아키텍처",
-        bento_title: "실리콘밸리 Tier-1급<br /><em>Spatial AI 플랫폼</em>",
-        bento_desc: "Points & Reality는 독자적인 3DGS 뉴럴 파이프라인과 SOG 압축 알고리즘을 결합하여, 모바일과 웹에서 가장 가볍고 디테일한 3D 경험을 제공합니다.",
-        b1_tag: "01 // 광학 궤적 복원 엔진",
-        b1_title: "360° 다각도 나선형 궤적 복원",
-        b1_desc: "단일 카메라 비디오 프레임에서 각도와 위치 좌표를 역산(Structure from Motion)하여, 피사체의 전 방위 나선형 궤적을 3차원 공간에 정확하게 맵핑합니다.",
-        b1_footer_k: "● 실시간 카메라 포즈: <strong>148개 포즈 포인트</strong>",
-        b1_footer_v: "SFM 최적화 활성",
-        b2_tag: "02 // 초경량 페이로드 압축",
-        b2_title: "초경량 SOG 압축 기술",
-        b2_desc: "수 기가바이트(GB)의 거대한 가우시안 PLY 데이터를 화질 손실 없이 최대 98% 압축하여 웹 브라우저 0.5초 로딩을 달성합니다.",
-        b2_reduction: "용량 압축률: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
-        b3_tag: "03 // 공간 증강현실",
-        b3_title: "1:1 실물 크기 증강현실 (AR)",
-        b3_desc: "iOS QuickLook 및 Android WebXR 표준을 지원하여, 별도 앱 없이 실제 거실이나 매장에 즉시 실물 크기 모델을 배치합니다.",
-        b3_scan_qr: "[ 모바일 QR 코드 스캔 ]",
-        b4_tag: "04 // 뉴럴 래디언스",
-        b4_title: "실시간 반사광 & 질감 보존",
-        b4_desc: "금속의 스펙큘러 하이라이트, 자동차 코팅의 광택, 유리 투명도를 물리 법칙에 따라 6차원 공간 함수로 실시간 렌더링합니다.",
-        b4_box_k: "물리 기반 광학 셰이딩",
-        b4_box_v: "폴리곤 각짐이나 평면 텍스처 왜곡 제로.",
-        b5_tag: "05 // 글로벌 엣지 CDN",
-        b5_title: "전 세계 180+ 엣지 즉시 배포",
-        b5_desc: "단일 정적 패키지로 빌드되어 Vercel, Cloudflare, AWS CloudFront를 통해 전 세계 고객에게 50ms 미만의 지연 시간으로 스트리밍됩니다.",
-        b5_latency: "<45ms",
-        b5_uptime: "99.99%",
-        proto_eyebrow: "표준 촬영 가이드라인",
-        proto_title: "완벽한 3D 캡처를 위한<br /><em>6단계 표준 가이드</em>",
-        proto_desc: "스마트폰 하나로 고품질 3DGS 에셋을 완성하기 위한 단계별 표준 가이드입니다. 탭을 클릭하여 세부 가이드라인과 추천 카메라 설정을 확인하세요.",
-        pr_t1: "01 피사체 배치",
-        pr_t2: "02 확산광 조명",
-        pr_t3: "03 카메라 세팅",
-        pr_t4: "04 보행 궤적",
-        pr_t5: "05 다각도 루프",
-        pr_t6: "06 파이프라인 업로드",
-        calc_eyebrow: "매출 & 구매전환 임팩트",
-        calc_title: "인터랙티브 3DGS<br /><em>비즈니스 ROI 계산기</em>",
-        calc_desc: "쇼핑몰의 월간 방문자 수와 평균 주문 금액(AOV)을 입력하여, Points & Reality 3DGS 도입 시 예상되는 추가 매출과 반품 절감 비용을 실시간으로 산출해보세요.",
-        calc_l1: "월간 순 방문자 수",
-        calc_l2: "평균 주문 금액 (AOV)",
-        calc_l3: "현재 상품 반품률",
-        calc_r1_lbl: "🚀 예상 연간 추가 매출 (Annual Revenue Uplift)",
-        calc_r1_note: "기준 전환율 2.0% ➔ 3DGS 인터랙션 시 +40% 상승 적용",
-        calc_r2_lbl: "📉 예상 연간 반품 절감액 (Saved Return Costs)",
-        calc_r2_note: "치수 및 100% 실물 질감 사전 확인을 통한 단순 변심 -16% 절감",
-        embed_eyebrow: "코드 1줄 빠른 연동",
-        embed_title: "코드 단 한 줄로<br /><em>모든 웹사이트에 임베드</em>",
-        embed_desc: "Shopify, WooCommerce, Webflow, React/Next.js 프로젝트에 즉시 삽입할 수 있는 표준 임베드 코드를 제공합니다.",
-        embed_btn_copy: "[ 코드 복사 📋 ]",
-        arch_eyebrow: "실시간 3D 릴",
-        arch_title: "최근 제작된 3D 산출물 릴",
-        arch_btn_all: "전체 3D 쇼룸 열기 ↗",
-        faq_eyebrow: "자주 묻는 질문",
-        faq_title: "자주 묻는 질문 (FAQ)",
-        faq_q1: "3D Gaussian Splatting은 기존 3D 메시(Mesh)와 무엇이 다른가요?",
-        faq_a1: "기존 3D 메시는 삼각형 폴리곤 위에 텍스처를 씌우는 방식으로 모서리가 각지고 미세 반사광이나 투명도 표현이 어렵습니다. 반면 3DGS는 수백만 개의 미세 타원체 가우시안으로 실제 광학 필드를 재구성하므로 실물과 100% 동일한 광택, 굴절, 서브밀리미터 디테일을 실시간으로 완벽하게 표현합니다.",
-        faq_q2: "고객이 볼 때 별도의 앱이나 플러그인 설치가 필요한가요?",
-        faq_a2: "전혀 필요하지 않습니다. Points & Reality 파이프라인은 표준 순수 WebGL 셰이더 기반으로 컴파일되어 Safari, Chrome, Edge, 모바일 브라우저 어디서나 링크 클릭 즉시 60+ FPS로 부드럽게 구동됩니다.",
-        faq_q3: "촬영 및 모델 복원에 소요되는 시간은 얼마나 걸리나요?",
-        faq_a3: "스마트폰 카메라로 제품 주위를 약 3분간 동영상으로 촬영한 뒤 파이프라인에 업로드하면, AI 뉴럴 복원 엔진이 약 1시간 만에 프로덕션 배포 가능한 3D 디지털 트윈을 자동 생성합니다.",
-        faq_q4: "자사 쇼핑몰(Shopify, 카페24, 자체 웹)에 어떻게 연동하나요?",
-        faq_a4: "단 1줄의 HTML iframe 또는 React/Liquid 컴포넌트 코드를 원하는 위치에 붙여넣기만 하면 즉시 연동됩니다. 모바일 최적화 반응형 레이아웃을 기본 지원합니다.",
-        fcta_title: "첫 번째 3D 디지털 트윈을 제작해보세요",
-        fcta_desc: "3분 분량의 제품 동영상을 업로드하면 약 1시간 만에 완성도 높은 3DGS 인터랙티브 모델이 준비됩니다.",
-        fcta_btn_primary: "도입 문의하기 (Book Demo) →",
-        fcta_btn_sec: "쇼룸 둘러보기",
-        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. SILICON VALLEY GRADE 3DGS & SPATIAL AI STUDIO."
-      },
-      zh: {
-        top_status: "Points & Reality 3DGS — 视频采集，约1小时生成 60+ FPS 超写实 3D 数字孪生",
-        top_cta: "进入 3D 展厅 →",
-        nav_stage: "3D 视口",
-        nav_bento: "核心技术",
-        nav_protocol: "6步采集指南",
-        nav_roi: "ROI 计算器",
-        nav_embed: "一行代码嵌入",
-        nav_showroom: "[ 3D 展厅 ↗ ]",
-        btn_inquire: "预约演示 →",
-        hero_eyebrow: "3D 高斯泼溅与 AI 空间工作室",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "仅需一段3分钟的手机或相机视频，约1小时即可生成可在网页流畅运行的 3D 高斯数字孪生。无需任何插件，浏览器 60+ FPS 原生旋转缩放。",
-        hero_btn_explore: "进入 3D 展厅 ↗",
-        hero_btn_how: "查看 6 步采集流程 ↓",
-        hero_val_tag: "[ 企业级高规格性能指标 ]",
-        hero_val_title: "电商与汽车工业级下一代 3D 方案",
-        hero_val_desc: "告别粗糙网格失真，完整还原真实金属光泽、车漆质感及亚毫米级细节，大幅提升下单信心并降低退货。",
-        stage_hud_hotspots: "🏷️ 热点标注 (针)",
-        stage_hud_studio: "💡 影棚光效",
-        stage_hud_cyber: "⚡ 赛博霓虹",
-        stage_hud_ar: "⛶ 1:1 真实空间 AR",
-        stat_1_lbl: "典型光学采集耗时",
-        stat_2_lbl: "模型交付耗时",
-        stat_3_lbl: "网页优化 SOG 体积",
-        stat_4_lbl: "浏览器原生 WebGL 帧率",
-        bento_eyebrow: "核心技术架构",
-        bento_title: "硅谷级顶级架构<br /><em>空间 AI 平台</em>",
-        bento_desc: "结合自研 3DGS 神经渲染管线与 SOG 极度压缩算法，带来极致轻量与高画质兼备的空间电商资产。",
-        b1_tag: "01 // 光学轨迹复原引擎",
-        b1_title: "360° 螺旋环绕轨迹复原",
-        b1_desc: "从视频单帧自动反算相机姿态（SfM），在三维空间中构建完整的连续拍摄轨迹。",
-        b1_footer_k: "● 实时相机姿态: <strong>148个连续姿态点</strong>",
-        b1_footer_v: "SFM 优化算法运行中",
-        b2_tag: "02 // 极致载荷压缩",
-        b2_title: "超轻量 SOG 压缩技术",
-        b2_desc: "将原始数 GB 的 PLY 高斯数据无损压缩高达 98%，实现网页 0.5 秒极速加载。",
-        b2_reduction: "体积压缩率: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
-        b3_tag: "03 // 空间增强现实",
-        b3_title: "1:1 空间真实 AR 体验",
-        b3_desc: "原生支持 iOS QuickLook 及 Android WebXR，无需安装 App 即可在实体房间中投射实物尺寸。",
-        b3_scan_qr: "[ 手机扫描二维码体验 AR ]",
-        b4_tag: "04 // 神经辐射场",
-        b4_title: "实时高光与材质反射",
-        b4_desc: "以六维神经辐射场函数计算视角相关的物理高光，告别死板贴图。",
-        b4_box_k: "基于物理的光学着色",
-        b4_box_v: "彻底消除多边形棱角与平面烘焙失真。",
-        b5_tag: "05 // 全球边缘 CDN",
-        b5_title: "全球 180+ 边缘节点秒级分发",
-        b5_desc: "静态包格式打包，通过全球 CDN 边缘节点实现低于 50ms 的超低延迟访问。",
-        b5_latency: "<45ms",
-        b5_uptime: "99.99%",
-        proto_eyebrow: "标准化采集指南",
-        proto_title: "打造完美 3D 资产的<br /><em>6 步标准拍摄指南</em>",
-        proto_desc: "使用普通手机即可达成电影级 3D 采集。点击各个步骤查看具体推荐参数与注意事项。",
-        pr_t1: "01 物体布置",
-        pr_t2: "02 柔和光线",
-        pr_t3: "03 相机锁定",
-        pr_t4: "04 匀速运镜",
-        pr_t5: "05 分层环绕",
-        pr_t6: "06 管线上传",
-        calc_eyebrow: "营收与转化率增长",
-        calc_title: "交互式 3DGS<br /><em>商业 ROI 收益计算器</em>",
-        calc_desc: "输入月度访客量与客单价，实时预估 3D 交互为独立站带来的销售额增长与退货节省。",
-        calc_l1: "月度独立访客数",
-        calc_l2: "平均订单客单价 (AOV)",
-        calc_l3: "当前退货率",
-        calc_r1_lbl: "🚀 预估年度新增销售额 (Annual Revenue Uplift)",
-        calc_r1_note: "基于 2.0% 基准转化率，结合 3D 交互带来的 +40% 提升",
-        calc_r2_lbl: "📉 预估年度退货节省额 (Saved Return Costs)",
-        calc_r2_note: "通过尺寸与材质精准可视化降低 -16% 盲目退货",
-        embed_eyebrow: "一行代码嵌入",
-        embed_title: "一行代码<br /><em>轻松嵌入任何网站</em>",
-        embed_desc: "无缝支持 Shopify、WooCommerce、Webflow 及 React/Next.js 等各类前端框架。",
-        embed_btn_copy: "[ 复制代码 📋 ]",
-        arch_eyebrow: "实时 3D 交付档案",
-        arch_title: "精选 3D 交付作品",
-        arch_btn_all: "进入 3D 展厅 ↗",
-        faq_eyebrow: "常见问题解答",
-        faq_title: "常见问题解答 (FAQ)",
-        faq_q1: "3D 高斯泼溅与传统 3D 多边形网格有何本质区别？",
-        faq_a1: "传统网格将二维贴图包裹在三角面片上，极难展现真实金属高光、透明折射与复杂轮廓。3D高斯泼溅通过数百万个空间微椭球体重建连续光场，实时还原物理光泽与亚毫米级超精细结构。",
-        faq_q2: "访问者需要安装任何额外应用或插件吗？",
-        faq_a2: "完全不需要。Points & Reality 视口基于纯 WebGL 着色器编译，在 Safari、Chrome、Edge 及移动端浏览器均可一键开启 60+ FPS 流畅交互。",
-        faq_q3: "光学采集与模型重建需要耗费多长时间？",
-        faq_a3: "使用任意普通手机环绕录制仅需约3分钟。上传至AI神经管线后，约1小时即可全自动生成生产级 3D 数字孪生资产。",
-        faq_q4: "如何集成至 Shopify 或自建独立站？",
-        faq_a4: "仅需将单行 HTML iframe 或 React/Liquid 代码嵌入商品详情页模板即可，全自动适配移动端触控手势与响应式布局。",
-        fcta_title: "立即打造您的首个 3D 数字孪生",
-        fcta_desc: "拍摄一段3分钟视频，上传至 Points & Reality，约1小时即可体验专属 3DGS 资产。",
-        fcta_btn_primary: "预约演示 / 商务咨询 →",
-        fcta_btn_sec: "探索展厅",
-        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. 硅谷级 3DGS 与空间 AI 工作室。"
-      },
-      mi: {
-        top_status: "Points & Reality 3DGS — Whakawhiti ataata ki te 3D matihiko i roto i te haora kotahi",
-        top_cta: "Tirohia te Pātaka →",
-        nav_stage: "Whakaaturanga 3D",
-        nav_bento: "Hangarau",
-        nav_protocol: "Ngā Hipanga e 6",
-        nav_roi: "Tatau ROI",
-        nav_embed: "Whakauru 1-Raina",
-        nav_showroom: "[ Whakaaturanga ↗ ]",
-        btn_inquire: "Whakapā mai →",
-        hero_eyebrow: "PŪKAHA 3D GAUSSIAN SPLATTING",
-        hero_h1: "Capture The Real World.<br /><span class=\"gradient-text\">Render In Neural 3D.</span>",
-        hero_desc: "Ko te 3D Gaussian Splatting he hangarau hou e whakaatu ana i te ao tūturu ki runga i te paetukutuku i roto i te haora kotahi me te 60+ FPS.",
-        hero_btn_explore: "Tirohia te Whakaaturanga ↗",
-        hero_btn_how: "Ngā Hipanga ↓",
-        hero_val_tag: "[ WHAKAMĀRAMA HANGARAU ]",
-        hero_val_title: "He hangarau 3D kairangi mō te ao matihiko",
-        hero_val_desc: "He mea tere, he mea māmā ki te tirotiro i runga paetukutuku me te kore he tono tāpiri.",
-        stage_hud_hotspots: "🏷️ Ngā Tohu 3D",
-        stage_hud_studio: "💡 Mārama Whare",
-        stage_hud_cyber: "⚡ Mārama Hangarau",
-        stage_hud_ar: "⛶ AR Tūturu 1:1",
-        stat_1_lbl: "Wā Hopu Whakaahua",
-        stat_2_lbl: "Wā Hanga 3D",
-        stat_3_lbl: "Rahi Kōnae SOG",
-        stat_4_lbl: "Tere WebGL",
-        bento_eyebrow: "PŪKORERO HANGARAU",
-        bento_title: "Hangarau Kairangi<br /><em>Pūhara AI Matihiko</em>",
-        bento_desc: "He hangarau hou mō te ao 3D me te hokohoko matihiko i runga ipurangi.",
-        b1_tag: "01 // PŪKAHA AROTURUKI",
-        b1_title: "Aroturuki 360° Pūmau",
-        b1_desc: "Whakahou i ngā tūnga kāmera katoa i roto i te wā tūturu me te tika.",
-        b1_footer_k: "● TŪNGA KĀMERA: <strong>148 TŪNGA</strong>",
-        b1_footer_v: "SFM WHAKAMAHI",
-        b2_tag: "02 // WHAKAITI KŌNAE",
-        b2_title: "Whakaiti Kōnae SOG",
-        b2_desc: "Whakaitihia ngā kōnae nui ki te 12MB me te pupuri i te kounga kairangi.",
-        b2_reduction: "Whakaiti Kōnae: <strong style=\"color: var(--brand-emerald);\">98.9%</strong>",
-        b3_tag: "03 // AR TŪTURU",
-        b3_title: "AR Tūturu 1:1",
-        b3_desc: "Whakanohoia te taonga ki tō rūma tūturu mā te waea pūkoro.",
-        b3_scan_qr: "[ MATI QR KI TE WAEA ]",
-        b4_tag: "04 // MĀRAMA TŪTURU",
-        b4_title: "Mārama Whakaata Tūturu",
-        b4_desc: "Whakaatuhia ngā tīrourou me ngā kirihou i roto i te pono me te ātaahua.",
-        b4_box_k: "MĀRAMA PŪTAIAO",
-        b4_box_v: "Kore hē o ngā mata 3D.",
-        b5_tag: "05 // TOHANGA AO",
-        b5_title: "Tohanga Ao Tere Tonu",
-        b5_desc: "Tuku kōnae ki te ao katoa i roto i ngā mirihēkona mā ngā tūāpapa 180+.",
-        b5_latency: "<45ms",
-        b5_uptime: "99.99%",
-        proto_eyebrow: "TIKANGA HOPU WHAKAAHUA",
-        proto_title: "Ngā Hipanga e 6 ki te<br /><em>3D Kairangi</em>",
-        proto_desc: "A pee i ēnei hipanga māmā e ono hei hanga i tō tauira 3D tuatahi.",
-        pr_t1: "01 Whakarite Hua",
-        pr_t2: "02 Mārama Ngāwari",
-        pr_t3: "03 Raka Kāmera",
-        pr_t4: "04 Neke Marie",
-        pr_t5: "05 Kapi Whānui",
-        pr_t6: "06 Tuku Pūkaha",
-        calc_eyebrow: "TATURANGA HOKO",
-        calc_title: "Tatau ROI<br /><em>Whakapiki Hoko</em>",
-        calc_desc: "Tātaihia ngā hua ka puta mai i te whakauru i te 3D ki tō toa ipurangi.",
-        calc_l1: "Kaihoko ia Marama",
-        calc_l2: "Utu Toharite o te Ota (AOV)",
-        calc_l3: "Ōrau Whakahoki Taonga",
-        calc_r1_lbl: "🚀 Pikinga Hoko ia Tau",
-        calc_r1_note: "Whakapiki +40% ki ngā kiritaki e whakamahi ana i te 3D",
-        calc_r2_lbl: "📉 Pūtea Whakaora Whakahoki",
-        calc_r2_note: "Whakaora -16% i ngā whakahoki taonga",
-        embed_eyebrow: "WHAKAURU MĀMĀ",
-        embed_title: "Whakaurua ki te<br /><em>Raina Waehere Kotahi</em>",
-        embed_desc: "He māmā te whakauru ki Shopify, WooCommerce, me ngā paetukutuku katoa.",
-        embed_btn_copy: "[ TĀRUATIA 📋 ]",
-        arch_eyebrow: "PĀTAKA 3D",
-        arch_title: "Ngā Hua 3DGS Kairangi",
-        arch_btn_all: "Whakaaturanga ↗",
-        faq_eyebrow: "PĀTAI AUAU",
-        faq_title: "Ngā Pātai Auau (FAQ)",
-        faq_q1: "He aha te rerekētanga o te 3DGS ki ngā tauira 3D o mua?",
-        faq_a1: "He mea hanga te 3D Gaussian Splatting ki ngā miriona tohu mārama, e whakaatu tūturu ana i te kanapa me ngā kirihou.",
-        faq_q2: "Me tikiake tono tāpiri te kaihoko?",
-        faq_a2: "Kāore rawa. E rere ana i runga i te WebGL ki ngā pūtirotiro katoa me te 60+ FPS tere tonu.",
-        faq_q3: "He pēhea te roa o te hanga 3D?",
-        faq_a3: "He 3 meneti te roa o te hopu ataata, ā, ka oti te tauira i roto i te haora kotahi.",
-        faq_q4: "Me pēhea te whakauru ki taku toa ipurangi?",
-        faq_a4: "Whakaurua te raina waehere kotahi ki tō whārangi ipurangi.",
-        fcta_title: "Kua rite koe mō tō 3D tuatahi?",
-        fcta_desc: "Hopukia he ataata 3 meneti, tukua mai, ka oti i roto i te haora kotahi.",
-        fcta_btn_primary: "Whakapā mai →",
-        fcta_btn_sec: "Tirohia te Pātaka",
-        footer_rights: "© 2026 POINTS & REALITY. ALL RIGHTS RESERVED. 3D GAUSSIAN SPLATTING STUDIO."
-      }
-    };
+<!-- ═══ Process ═══ -->
+<section class="s" id="process">
+  <div class="s-head reveal-on-scroll">
+    <div class="s-label" data-i18n="proc_label">Process</div>
+    <h2 data-i18n="proc_h2">From camera to browser</h2>
+  </div>
 
-    let activeProtocolStepIdx = 0;
-    function setLanguage(lang) {
-      currentLang = lang;
-      const t = translations[lang] || translations.en;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) {
-          el.innerHTML = t[key];
-        }
+  <div class="process">
+    <div class="step reveal-on-scroll stagger-1">
+      <div class="step-n">01</div>
+      <h4 data-i18n="s1_h">Capture</h4>
+      <p data-i18n="s1_p">Drone and handheld multi-angle optical capture with automated frame extraction and quality filtering.</p>
+    </div>
+    <div class="step reveal-on-scroll stagger-2">
+      <div class="step-n">02</div>
+      <h4 data-i18n="s2_h">Reconstruct</h4>
+      <p data-i18n="s2_p">GPU-accelerated COLMAP alignment and Postshot <span class="nowrap">3DGS synthesis</span> — millions of Gaussians trained to convergence.</p>
+    </div>
+    <div class="step reveal-on-scroll stagger-3">
+      <div class="step-n">03</div>
+      <h4 data-i18n="s3_h">Deliver</h4>
+      <p data-i18n="s3_p">Lossless <span class="nowrap">SOG compression</span> with a single iframe embed. Your clients view and interact — <span class="nowrap">no downloads</span>, <span class="nowrap">no logins</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Work ═══ -->
+<section class="s" id="work">
+  <div class="s-head reveal-on-scroll">
+    <div class="s-label" data-i18n="work_label">Work</div>
+    <h2 data-i18n="work_h2">Recent captures</h2>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <a href="05_web_build/Review_FordEscape_new_LF_09.html" target="_blank" class="g-card reveal-on-scroll stagger-1">
+      <div class="g-preview">
+        <iframe src="05_web_build/Review_FordEscape_new_LF_09.html" loading="lazy" title="LF_09"></iframe>
+      </div>
+      <div class="g-info">
+        <span class="g-title">FordEscape_new_LF_09</span>
+        <span class="g-tag">3DGS</span>
+      </div>
+    </a>
+    <a href="05_web_build/Review_FordEscape_new_LF_08.html" target="_blank" class="g-card reveal-on-scroll stagger-2">
+      <div class="g-preview">
+        <iframe src="05_web_build/Review_FordEscape_new_LF_08.html" loading="lazy" title="LF_08"></iframe>
+      </div>
+      <div class="g-info">
+        <span class="g-title">FordEscape_new_LF_08</span>
+        <span class="g-tag">3DGS</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="s" id="faq">
+  <div class="s-head reveal-on-scroll">
+    <div class="s-label" data-i18n="faq_label">FAQ</div>
+    <h2 data-i18n="faq_h2">Common questions</h2>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item reveal-on-scroll" onclick="PointsRealityMotion.toggleAccordion(this)">
+      <div class="faq-q">
+        <span data-i18n="q1">How is <span class="nowrap">3DGS</span> different from traditional <span class="nowrap">3D models</span>?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer" data-i18n="a1">Unlike polygon meshes that require manual retopology and texture baking, <span class="nowrap">3D Gaussian Splatting</span> captures radiance directly as millions of light-emitting ellipsoids — achieving photorealistic quality with <span class="nowrap">zero manual work</span>.</div>
+    </div>
+    <div class="faq-item reveal-on-scroll" onclick="PointsRealityMotion.toggleAccordion(this)">
+      <div class="faq-q">
+        <span data-i18n="q2">Do viewers need to install anything?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer" data-i18n="a2">No. Everything renders through standard <span class="nowrap">WebGL 2.0</span> — works in any modern browser on desktop and mobile with <span class="nowrap">zero plugins</span> or apps.</div>
+    </div>
+    <div class="faq-item reveal-on-scroll" onclick="PointsRealityMotion.toggleAccordion(this)">
+      <div class="faq-q">
+        <span data-i18n="q3">Can I embed the 3D viewer on my own site?</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-answer" data-i18n="a3">Yes — every deliverable includes a standalone URL and responsive iframe code ready for Shopify, WordPress, or any custom site.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Points & Reality</span>
+    <ul class="footer-links">
+      <li><a href="#stage" data-i18n="nav_stage">Stage</a></li>
+      <li><a href="#tech" data-i18n="nav_tech">Technology</a></li>
+      <li><a href="#work" data-i18n="nav_work">Work</a></li>
+      <li><a href="showroom.html" data-i18n="nav_showroom">Showroom ↗</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   PARTICLES — Floating Gaussian Splat Effect
+   ═══════════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: 0, y: 0, targetX: 0, targetY: 0 }, scrollY = 0;
+  const FOCAL = 380; // Focal length for 3D projection
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = [];
+    // Increase count slightly to form beautiful data clusters like LiDAR scans
+    const count = Math.min(Math.floor(W * H / 8000), 180);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        // 3D coordinates relative to center
+        x: (Math.random() - 0.5) * W * 2.2,
+        y: (Math.random() - 0.5) * H * 2.2,
+        z: Math.random() * 800 + 100, // Z depth
+        r: Math.random() * 1.5 + 0.6,
+        // Ethereal amber/orange/purple colors from the generated LiDAR forest image
+        hue: Math.random() > 0.4 ? (Math.random() > 0.5 ? 32 : 24) : 275,
+        alpha: Math.random() * 0.4 + 0.15,
+        speedZ: -Math.random() * 0.4 - 0.1 // Constant forward drift
       });
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById('btn-' + lang);
-      if (activeBtn) activeBtn.classList.add('active');
-      localStorage.setItem('pnr_lang', lang);
+    }
+  }
 
-      // Refresh protocol stepper in current language
-      switchProtocolStep(activeProtocolStepIdx);
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    
+    // Smoothly ease mouse movement to prevent jarring jumps
+    mouse.x += (mouse.targetX - mouse.x) * 0.08;
+    mouse.y += (mouse.targetY - mouse.y) * 0.08;
+    
+    // Convert scroll position into dynamic camera Z offset (creates scrolling fly-through)
+    const cameraZ = (scrollY * 0.35) % 800;
 
-      // Refresh Hotspots pins
-      const hs = hotspotsByLang[lang] || hotspotsByLang.en;
-      for (let i = 0; i < 3; i++) {
-        const lbl = document.getElementById('pin-label-' + i);
-        if (lbl && hs[i]) lbl.textContent = hs[i].label;
+    const centerX = W / 2;
+    const centerY = H / 2;
+
+    // Track projected points for triangulation line drawing
+    const projected = [];
+
+    for (const p of particles) {
+      // Apply forward speed drift in Z depth
+      p.z += p.speedZ;
+
+      // Wrap Z depth when it gets too close to the camera or drifts too far
+      let finalZ = p.z - cameraZ;
+      if (finalZ <= 10) {
+        p.z += 800;
+        finalZ = p.z - cameraZ;
+      } else if (finalZ > 900) {
+        p.z -= 800;
+        finalZ = p.z - cameraZ;
       }
 
-      // Recalculate ROI label formatting
-      calculateROI();
+      // Calculate perspective projection scale
+      const scale = FOCAL / finalZ;
+
+      // Add mouse shift parallax (further points shift less, closer points shift more)
+      const shiftX = mouse.x * (scale * 0.02);
+      const shiftY = mouse.y * (scale * 0.02);
+
+      const px = centerX + (p.x + shiftX) * scale;
+      const py = centerY + (p.y + shiftY) * scale;
+
+      // Only render if within screen bounds
+      if (px >= -20 && px <= W + 20 && py >= -20 && py <= H + 20) {
+        const size = p.r * scale * 0.6;
+        const opacity = p.alpha * (1 - finalZ / 900); // Fade out in distance
+
+        projected.push({ x: px, y: py, z: finalZ, hue: p.hue, opacity: opacity, size: size });
+      }
     }
 
-    /* --------------------------------------------------------------------------
-       02. Scroll Progress & Reveal Motion Engine
-       -------------------------------------------------------------------------- */
-    const progressBar = document.getElementById('scroll-progress');
-    window.addEventListener('scroll', () => {
-      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollTotal > 0) {
-        const pct = (window.scrollY / scrollTotal) * 100;
-        progressBar.style.width = pct + '%';
+    // Sort by depth (painters algorithm) to render back points first
+    projected.sort((a, b) => b.z - a.z);
+
+    // Draw Delaunay-like network lines between nearby projected points to mimic LiDAR mesh
+    ctx.lineWidth = 0.55;
+    for (let i = 0; i < projected.length; i++) {
+      const p1 = projected[i];
+      let connections = 0;
+      for (let j = i + 1; j < projected.length; j++) {
+        if (connections >= 2) break; // Limit lines per point for airy clean look
+        const p2 = projected[j];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Faint link if they are spatially close on screen and have similar depth
+        if (dist < 75 && Math.abs(p1.z - p2.z) < 80) {
+          const lineAlpha = Math.min(p1.opacity, p2.opacity) * 0.16;
+          ctx.strokeStyle = `hsla(${p1.hue}, 80%, 70%, ${lineAlpha})`;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          connections++;
+        }
+      }
+    }
+
+    // Draw the actual projected Gaussian glow splats
+    for (const p of projected) {
+      ctx.beginPath();
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2.8);
+      grad.addColorStop(0, `hsla(${p.hue}, 85%, 68%, ${p.opacity})`);
+      grad.addColorStop(1, `hsla(${p.hue}, 85%, 68%, 0)`);
+      ctx.fillStyle = grad;
+      ctx.arc(p.x, p.y, p.size * 2.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (!particlesPaused) {
+      rafId = requestAnimationFrame(draw);
+    }
+  }
+
+  let particlesPaused = false;
+  let rafId = null;
+
+  window.PointsRealityParticles = {
+    pause: () => {
+      particlesPaused = true;
+      if (rafId) cancelAnimationFrame(rafId);
+    },
+    resume: () => {
+      if (!particlesPaused) return;
+      particlesPaused = false;
+      rafId = requestAnimationFrame(draw);
+    }
+  };
+
+  window.addEventListener('resize', () => { resize(); createParticles(); });
+  
+  // Track scroll position
+  window.addEventListener('scroll', () => {
+    scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  }, { passive: true });
+
+  // Track mouse coordinates relative to center
+  document.addEventListener('mousemove', e => {
+    mouse.targetX = e.clientX - window.innerWidth / 2;
+    mouse.targetY = e.clientY - window.innerHeight / 2;
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    mouse.targetX = 0;
+    mouse.targetY = 0;
+  });
+
+  resize();
+  createParticles();
+  draw();
+})();
+
+/* ═══ Scroll-Responsive Canvas Sequence Scrubber & Resource Multiplexer ═══ */
+let bgScrubber = null;
+if (window.PointsRealityMotion && PointsRealityMotion.initScrollCanvasSequence) {
+  bgScrubber = PointsRealityMotion.initScrollCanvasSequence('#video-canvas', {
+    frameCount: 93,
+    framePath: (i) => `assets/hero-sequence/frame_${String(i).padStart(3, '0')}.webp`,
+    lerp: 0.18
+  });
+}
+
+// Resource Multiplexing: Conserve GPU cycles for 3DGS Stage when it enters viewport
+(function initResourceMultiplexing() {
+  const stage = document.querySelector('.stage-card');
+  if (!stage) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.35) {
+        // 3DGS Stage is active in view — pause background canvas & video scrubber for maximum FPS
+        if (window.PointsRealityParticles) window.PointsRealityParticles.pause();
+        if (bgScrubber) bgScrubber.pause();
+      } else {
+        // Stage scrolled out of focus — resume ambient visuals
+        if (window.PointsRealityParticles) window.PointsRealityParticles.resume();
+        if (bgScrubber) bgScrubber.resume();
       }
     });
+  }, { threshold: [0.1, 0.35, 0.6] });
 
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px'
+  observer.observe(stage);
+})();
+
+/* ═══ Nav scroll state ═══ */
+const nav = document.getElementById('nav');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+      ticking = false;
     });
+    ticking = true;
+  }
+}, { passive: true });
 
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
+/* ═══ Robust scroll reveal ═══ */
+(function() {
+  const els = document.querySelectorAll('.reveal-on-scroll');
+  if (!els.length) return;
 
-    /* --------------------------------------------------------------------------
-       03. Bento 1: Optical Trajectory Engine 2D/3D Orbit Visualizer
-       -------------------------------------------------------------------------- */
-    const tCanvas = document.getElementById('trajectory-canvas');
-    if (tCanvas) {
-      const tCtx = tCanvas.getContext('2d');
-      let tAngle = 0;
+  els.forEach(el => el.classList.add('will-reveal'));
 
-      function resizeTCanvas() {
-        tCanvas.width = tCanvas.offsetWidth;
-        tCanvas.height = 200;
+  function getDelay(el) {
+    for (let i = 1; i <= 6; i++) {
+      if (el.classList.contains('stagger-' + i)) return i * 80;
+    }
+    return 0;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const delay = getDelay(el);
+        setTimeout(() => {
+          el.classList.add('is-revealed');
+          el.classList.remove('will-reveal');
+        }, delay);
+        observer.unobserve(el);
       }
-      window.addEventListener('resize', resizeTCanvas);
-      resizeTCanvas();
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-      function drawTrajectory() {
-        const w = tCanvas.width;
-        const h = tCanvas.height;
-        tCtx.clearRect(0, 0, w, h);
+  els.forEach(el => observer.observe(el));
+})();
 
-        const cx = w / 2;
-        const cy = h / 2;
-        const rx = w * 0.38;
-        const ry = h * 0.28;
+/* ═══ Stage switcher ═══ */
+function switchModel(url, title, btn) {
+  document.getElementById('stage-title').textContent = title;
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
 
-        // Draw Elliptical Orbit Rings
-        for (let r = 0; r < 3; r++) {
-          tCtx.beginPath();
-          tCtx.ellipse(cx, cy + (r - 1) * 22, rx * (1 - r * 0.12), ry * (1 - r * 0.12), 0, 0, Math.PI * 2);
-          tCtx.strokeStyle = 'rgba(14, 118, 255, ' + (0.15 + r * 0.1) + ')';
-          tCtx.setLineDash([4, 6]);
-          tCtx.lineWidth = 1.2;
-          tCtx.stroke();
-          tCtx.setLineDash([]);
-        }
+  const iframe = document.getElementById('stage-iframe');
+  if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
+    PointsRealityMotion.transitionStage(iframe, url);
+  } else {
+    iframe.src = url;
+  }
+}
 
-        // Draw Central Target Box
-        tCtx.save();
-        tCtx.fillStyle = '#0E76FF';
-        tCtx.shadowColor = '#0E76FF';
-        tCtx.shadowBlur = 12;
-        tCtx.beginPath();
-        tCtx.arc(cx, cy, 7, 0, Math.PI * 2);
-        tCtx.fill();
-        tCtx.restore();
+function goFS() {
+  const el = document.getElementById('stage-iframe');
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
 
-        // Draw Rotating Camera Poses
-        tAngle += 0.015;
-        for (let i = 0; i < 18; i++) {
-          const a = tAngle + (i * (Math.PI * 2 / 18));
-          const px = cx + Math.cos(a) * rx;
-          const py = cy + Math.sin(a) * ry + Math.sin(a * 2) * 12;
-          
-          tCtx.beginPath();
-          tCtx.arc(px, py, 3.5, 0, Math.PI * 2);
-          tCtx.fillStyle = (i % 3 === 0) ? '#38BDF8' : 'rgba(255, 255, 255, 0.4)';
-          tCtx.fill();
+/* ═══ Dynamic models from manifest ═══ */
+async function loadModels() {
+  try {
+    const res = await fetch('05_web_build/models.json?v=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    const models = data.models || [];
+    if (!models.length) return;
 
-          // Connect sight ray to center
-          if (i % 4 === 0) {
-            tCtx.beginPath();
-            tCtx.moveTo(px, py);
-            tCtx.lineTo(cx, cy);
-            tCtx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
-            tCtx.stroke();
-          }
-        }
-
-        requestAnimationFrame(drawTrajectory);
+    // Update tabs
+    const tabs = document.getElementById('model-tabs');
+    if (tabs) {
+      const fsBtn = tabs.querySelector('[title="Fullscreen"]');
+      tabs.innerHTML = '';
+      models.slice(0, 5).forEach((m, i) => {
+        const label = (m.title || m.raw_title.replace(/^Review_/, '')).replace(/^FordEscape_new_/, '');
+        const btn = document.createElement('button');
+        btn.className = 'stage-btn' + (i === 0 ? ' active' : '');
+        btn.textContent = label;
+        btn.onclick = () => switchModel(m.path, m.title || m.raw_title.replace(/^Review_/, ''), btn);
+        tabs.appendChild(btn);
+      });
+      if (fsBtn) tabs.appendChild(fsBtn);
+      else {
+        const fb = document.createElement('button');
+        fb.className = 'stage-btn';
+        fb.textContent = '⛶';
+        fb.title = 'Fullscreen';
+        fb.onclick = goFS;
+        tabs.appendChild(fb);
       }
-      drawTrajectory();
+      // Load first model
+      const first = models[0];
+      switchModel(first.path, first.title || first.raw_title.replace(/^Review_/, ''), tabs.firstChild);
     }
 
-    function updateCompDisplay(val) {
-      document.getElementById('comp-val').textContent = val + '.4 MB';
-    }
-
-    /* --------------------------------------------------------------------------
-       04. 6-Step Protocol Stepper
-       -------------------------------------------------------------------------- */
-    function switchProtocolStep(idx, btnElem) {
-      activeProtocolStepIdx = idx;
-      const stepBtns = document.querySelectorAll('.protocol-tab-btn');
-      stepBtns.forEach((b, i) => {
-        if (i === idx) b.classList.add('active');
-        else b.classList.remove('active');
+    // Update gallery with lightweight interactive launchers (zero WebGL context overload)
+    const gallery = document.getElementById('gallery');
+    if (gallery) {
+      gallery.innerHTML = '';
+      models.forEach((m, i) => {
+        const t = m.title || m.raw_title.replace(/^Review_/, '');
+        const card = document.createElement('div');
+        card.className = `g-card reveal-on-scroll stagger-${(i % 3) + 1}`;
+        card.style.cursor = 'pointer';
+        card.innerHTML = `
+          <div class="g-preview">
+            <img src="assets/hero-pointcloud.jpg" alt="${t}" loading="lazy">
+            <span class="g-badge-launch">✨ Launch 3DGS</span>
+          </div>
+          <div class="g-info">
+            <span class="g-title">${t}</span>
+            <span class="g-tag">3DGS • SOG</span>
+          </div>
+        `;
+        // On click: scroll smoothly to Stage and load this model
+        card.onclick = () => {
+          const stageSection = document.getElementById('stage');
+          if (stageSection) stageSection.scrollIntoView({ behavior: 'smooth' });
+          switchModel(m.path, t);
+        };
+        gallery.appendChild(card);
       });
 
-      const list = protocolDataByLang[currentLang] || protocolDataByLang.en;
-      const data = list[idx] || list[0];
-      document.getElementById('proto-step-num').textContent = data.num;
-      document.getElementById('proto-step-heading').textContent = data.heading;
-      document.getElementById('proto-step-body').textContent = data.body;
-      document.getElementById('proto-k1').textContent = data.k1;
-      document.getElementById('proto-k2').textContent = data.k2;
-      document.getElementById('proto-k3').textContent = data.k3;
-    }
-
-    /* --------------------------------------------------------------------------
-       05. Interactive ROI Calculator Logic
-       -------------------------------------------------------------------------- */
-    function calculateROI() {
-      const traffic = parseInt(document.getElementById('slider-traffic').value, 10);
-      const aov = parseInt(document.getElementById('slider-aov').value, 10);
-      const retRate = parseInt(document.getElementById('slider-return').value, 10);
-
-      const visitorUnit = (currentLang === 'ko') ? ' 명' : (currentLang === 'zh') ? ' 人' : '';
-      document.getElementById('lbl-traffic').textContent = traffic.toLocaleString() + visitorUnit;
-      document.getElementById('lbl-aov').textContent = '$' + aov;
-      document.getElementById('lbl-return').textContent = retRate + '%';
-
-      // Base conversion 2.0%, uplift +40% = 0.8% extra conversion
-      const extraOrdersMonthly = traffic * 0.008;
-      const extraRevAnnual = extraOrdersMonthly * aov * 12;
-
-      // Return reduction: -16% relative decrease on returns
-      const totalOrdersMonthly = traffic * 0.028;
-      const savedReturnsAnnual = (totalOrdersMonthly * (retRate / 100) * 0.16) * (aov * 0.35) * 12;
-
-      document.getElementById('calc-uplift-rev').textContent = '+$' + Math.round(extraRevAnnual).toLocaleString();
-      document.getElementById('calc-saved-returns').textContent = '+$' + Math.round(savedReturnsAnnual).toLocaleString();
-    }
-
-    /* --------------------------------------------------------------------------
-       06. 1-Line Embed Code Generator
-       -------------------------------------------------------------------------- */
-    const embedCodes = {
-      html: `<iframe
-  src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
-  width="100%"
-  height="600"
-  frameborder="0"
-  allow="fullscreen; xr-spatial-tracking"
-  loading="lazy"
-  style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
-</iframe>`,
-      react: `import React from 'react';
-
-export default function Product3DViewer() {
-  return (
-    <div className="w-full h-[600px] rounded-lg overflow-hidden border border-white/10">
-      <iframe
-        src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
-        className="w-full h-full border-none"
-        allow="fullscreen; xr-spatial-tracking"
-        loading="lazy"
-      />
-    </div>
-  );
-}`,
-      shopify: `{% comment %} Points & Reality 3DGS Liquid Embed {% endcomment %}
-<div class="points-and-reality-stage" style="width: 100%; height: 600px;">
-  <iframe
-    src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
-    width="100%"
-    height="100%"
-    frameborder="0"
-    allow="fullscreen; xr-spatial-tracking"
-    loading="lazy">
-  </iframe>
-</div>`,
-      webflow: `<!-- Webflow Custom Code Embed -->
-<div style="width: 100%; height: 600px; position: relative;">
-  <iframe
-    src="https://points-and-reality.vercel.app/05_web_build/Review_FordEscape_new_LF_09.html"
-    style="width: 100%; height: 100%; border: none; border-radius: 8px;"
-    allow="fullscreen; xr-spatial-tracking">
-  </iframe>
-</div>`
-    };
-
-    let activeEmbedType = 'html';
-    function switchEmbedCode(type, btn) {
-      activeEmbedType = type;
-      document.querySelectorAll('.embed-tab').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      document.getElementById('embed-code-display').textContent = embedCodes[type];
-    }
-
-    function copyEmbedCode() {
-      const code = embedCodes[activeEmbedType];
-      navigator.clipboard.writeText(code).then(() => {
-        const btn = document.getElementById('btn-copy-code');
-        const originalText = btn.textContent;
-        btn.textContent = (currentLang === 'ko') ? '복사 완료! ✓' : (currentLang === 'zh') ? '已复制! ✓' : 'COPIED! ✓';
-        setTimeout(() => { btn.textContent = originalText; }, 2000);
-      });
-    }
-
-    /* --------------------------------------------------------------------------
-       07. FAQ Accordion Logic
-       -------------------------------------------------------------------------- */
-    function toggleFaq(elem) {
-      const item = elem.parentElement;
-      item.classList.toggle('open');
-    }
-
-    /* --------------------------------------------------------------------------
-       08. Hero Stage Controls & Hotspots
-       -------------------------------------------------------------------------- */
-    function switchHeroStage(url, title, btnElem) {
-      const iframe = document.getElementById('hero-stage-iframe');
-      const titleElem = document.getElementById('active-model-title');
-      
-      iframe.src = url;
-      titleElem.textContent = 'ACTIVE STAGE: ' + title;
-
-      if (btnElem) {
-        document.querySelectorAll('.model-pill').forEach(b => b.classList.remove('active'));
-        btnElem.classList.add('active');
+      if (window.PointsRealityMotion) {
+        PointsRealityMotion.initViewportReveals();
+        PointsRealityMotion.init3DCardTilt();
       }
     }
+  } catch(e) { /* use defaults */ }
+}
+loadModels();
 
-    function toggleHotspots(btn) {
-      const layer = document.getElementById('hotspot-layer');
-      if (layer.style.display === 'none') {
-        layer.style.display = 'block';
-        btn.classList.add('active');
-      } else {
-        layer.style.display = 'none';
-        btn.classList.remove('active');
-      }
-    }
+/* ═══ i18n ═══ */
+const i18n = {
+  en: {
+    nav_stage:"Stage", nav_tech:"Technology", nav_work:"Work", nav_faq:"FAQ", nav_showroom:"Showroom ↗",
+    hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
+    hero_h1:'Reality captured in <em>millions of light</em>',
+    hero_p:"We reconstruct physical spaces into photorealistic <span class=\"nowrap\">3D Gaussian Splats</span> — streamed instantly in your browser at <span class=\"nowrap\">60+ FPS</span>, <span class=\"nowrap\">zero plugins required</span>.",
+    hero_cta1:"Explore Live 3D ↓", hero_cta2:"Open Showroom ↗",
+    tech_label:"Technology", tech_h2:"Not polygons.<br>Pure radiance fields.", tech_p:"<span class=\"nowrap\">3D Gaussian Splatting</span> models light itself — millions of anisotropic ellipsoids that capture reflection, transparency, and geometry simultaneously.",
+    f1_h:"Photorealistic", f1_p:"Sub-millimeter fidelity. True reflections, glass transparency, and micro-geometry — <span class=\"nowrap\">no manual texturing</span> or retopology required.",
+    f2_h:"Instant WebGL", f2_p:"Hardware-accelerated rendering at <span class=\"nowrap\">60+ FPS</span>. Runs natively in Safari, Chrome, and Edge — <span class=\"nowrap\">zero installations</span>, <span class=\"nowrap\">zero plugins</span>.",
+    f3_h:"10× Compression", f3_p:"<span class=\"nowrap\">SOG container format</span> compresses <span class=\"nowrap\">300 MB</span> point clouds to <span class=\"nowrap\">~15 MB</span> for instant loading over mobile connections.",
+    proc_label:"Process", proc_h2:"From camera to browser",
+    s1_h:"Capture", s1_p:"Drone and handheld multi-angle optical capture with automated frame extraction and quality filtering.",
+    s2_h:"Reconstruct", s2_p:"GPU-accelerated COLMAP alignment and Postshot <span class=\"nowrap\">3DGS synthesis</span> — millions of Gaussians trained to convergence.",
+    s3_h:"Deliver", s3_p:"Lossless <span class=\"nowrap\">SOG compression</span> with a single iframe embed. Your clients view and interact — <span class=\"nowrap\">no downloads</span>, <span class=\"nowrap\">no logins</span>.",
+    work_label:"Work", work_h2:"Recent captures",
+    faq_label:"FAQ", faq_h2:"Common questions",
+    q1:"How is <span class=\"nowrap\">3DGS</span> different from traditional <span class=\"nowrap\">3D models</span>?", a1:"Unlike polygon meshes that require manual retopology and texture baking, <span class=\"nowrap\">3D Gaussian Splatting</span> captures radiance directly as millions of light-emitting ellipsoids — achieving photorealistic quality with <span class=\"nowrap\">zero manual work</span>.",
+    q2:"Do viewers need to install anything?", a2:"No. Everything renders through standard <span class=\"nowrap\">WebGL 2.0</span> — works in any modern browser on desktop and mobile with <span class=\"nowrap\">zero plugins</span> or apps.",
+    q3:"Can I embed the 3D viewer on my own site?", a3:"Yes — every deliverable includes a standalone URL and responsive iframe code ready for Shopify, WordPress, or any custom site."
+  },
+  ko: {
+    nav_stage:"스테이지", nav_tech:"기술", nav_work:"포트폴리오", nav_faq:"FAQ", nav_showroom:"쇼룸 ↗",
+    hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
+    hero_h1:'현실을 <em>수백만 개의 빛</em>으로 복원합니다',
+    hero_p:"물리적 공간을 실사 수준의 <span class=\"nowrap\">3D Gaussian Splat</span>으로 재구성합니다. 설치 없이 브라우저에서 <span class=\"nowrap\">60+ FPS</span>로 즉시 체험하세요.",
+    hero_cta1:"실시간 3D 체험 ↓", hero_cta2:"쇼룸 열기 ↗",
+    tech_label:"핵심 기술", tech_h2:"폴리곤이 아닙니다.<br>순수한 광선 필드입니다.", tech_p:"<span class=\"nowrap\">3DGS</span>는 빛 자체를 모델링합니다 — 반사, 투명도, 형상을 동시에 포착하는 수백만 개의 비등방 타원체.",
+    f1_h:"포토리얼리스틱", f1_p:"서브밀리미터 정밀도. 실제 반사광, 유리 투명도, 미세 형상 — 수작업 텍스처링이나 리토폴로지 없이 구현됩니다.",
+    f2_h:"즉각적인 WebGL", f2_p:"하드웨어 가속 렌더링으로 <span class=\"nowrap\">60+ FPS</span>. Safari, Chrome, Edge에서 설치 없이 네이티브 실행.",
+    f3_h:"10배 압축", f3_p:"<span class=\"nowrap\">SOG 포맷</span>이 <span class=\"nowrap\">300MB</span> 포인트 클라우드를 <span class=\"nowrap\">~15MB</span>로 압축하여 모바일에서도 즉시 로딩.",
+    proc_label:"프로세스", proc_h2:"카메라에서 브라우저까지",
+    s1_h:"캡처", s1_p:"드론과 핸드헬드 다각도 광학 촬영. 자동 프레임 추출 및 품질 필터링.",
+    s2_h:"복원", s2_p:"GPU 가속 COLMAP 정렬과 Postshot <span class=\"nowrap\">3DGS 합성</span> — 수백만 가우시안의 수렴 학습.",
+    s3_h:"납품", s3_p:"무손실 <span class=\"nowrap\">SOG 압축</span>과 <span class=\"nowrap\">1줄 iframe 임베드</span>. 다운로드도, 로그인도 필요 없습니다.",
+    work_label:"포트폴리오", work_h2:"최근 프로젝트",
+    faq_label:"FAQ", faq_h2:"자주 묻는 질문",
+    q1:"<span class=\"nowrap\">3DGS</span>는 기존 <span class=\"nowrap\">3D 모델</span>과 어떻게 다른가요?", a1:"폴리곤 메쉬처럼 수작업 리토폴로지와 텍스처 베이킹이 필요 없습니다. <span class=\"nowrap\">3DGS</span>는 수백만 개의 빛 방출 타원체로 직접 광선을 캡처하여 포토리얼리스틱 품질을 달성합니다.",
+    q2:"뷰어가 뭔가 설치해야 하나요?", a2:"아니요. 표준 <span class=\"nowrap\">WebGL 2.0</span>으로 렌더링 — 데스크톱과 모바일의 모든 최신 브라우저에서 바로 작동합니다.",
+    q3:"내 사이트에 3D 뷰어를 넣을 수 있나요?", a3:"네 — 모든 결과물에는 Shopify, WordPress 등 어디서나 바로 사용 가능한 iframe 코드가 포함됩니다."
+  },
+  zh: {
+    nav_stage:"舞台", nav_tech:"技术", nav_work:"作品", nav_faq:"常见问题", nav_showroom:"展厅 ↗",
+    hero_badge:"<span class=\"nowrap\">3D 高斯泼溅</span>",
+    hero_h1:'以 <em>数百万道光</em> 重现现实',
+    hero_p:"将物理空间重建为照片级真实感 <span class=\"nowrap\">3D 高斯泼溅</span> — 零安装，浏览器内 <span class=\"nowrap\">60+ FPS</span> 即时体验。",
+    hero_cta1:"体验实时 3D ↓", hero_cta2:"进入展厅 ↗",
+    tech_label:"核心技术", tech_h2:"不是多边形。<br>纯粹的光场。", tech_p:"<span class=\"nowrap\">3DGS</span> 直接对光进行建模 — 数百万各向异性椭球同时捕捉反射、透明度和几何。",
+    f1_h:"照片级真实感", f1_p:"亚毫米精度。真实反射、玻璃透明、微观几何 — 无需手动贴图或重拓扑。",
+    f2_h:"即时 WebGL", f2_p:"硬件加速渲染 <span class=\"nowrap\">60+ FPS</span>。Safari、Chrome、Edge 原生运行，零安装。",
+    f3_h:"10× 压缩", f3_p:"<span class=\"nowrap\">SOG 格式</span>将 <span class=\"nowrap\">300MB</span> 点云压缩至约 <span class=\"nowrap\">15MB</span>，移动网络秒级加载。",
+    proc_label:"流程", proc_h2:"从相机到浏览器",
+    s1_h:"采集", s1_p:"无人机与手持多角度光学拍摄，自动帧提取与质量筛选。",
+    s2_h:"重建", s2_p:"GPU 加速 COLMAP 对齐与 Postshot <span class=\"nowrap\">3DGS 合成</span> — 数百万高斯收敛训练。",
+    s3_h:"交付", s3_p:"无损 <span class=\"nowrap\">SOG 压缩</span>，一行 iframe 嵌入。无需下载、无需登录。",
+    work_label:"作品", work_h2:"近期项目",
+    faq_label:"常见问题", faq_h2:"常见问题解答",
+    q1:"<span class=\"nowrap\">3DGS</span> 与传统 <span class=\"nowrap\">3D 模型</span>有何不同？", a1:"无需手动重拓扑和贴图烘焙。<span class=\"nowrap\">3DGS</span> 以数百万发光椭球直接捕捉光线，实现照片级质量。",
+    q2:"查看者需要安装什么吗？", a2:"不需要。通过标准 <span class=\"nowrap\">WebGL 2.0</span> 渲染，任何现代浏览器即开即用。",
+    q3:"能嵌入我自己的网站吗？", a3:"可以 — 每个交付物都包含独立 URL 和响应式 iframe 代码。"
+  },
+  mi: {
+    nav_stage:"Whakaari", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_showroom:"Whare Whakaatu ↗",
+    hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
+    hero_h1:'Te ao tūturu i roto i <em>ngā miriona o te mārama</em>',
+    hero_p:"Ka hanga anō i ngā wāhi kikokiko hei <span class=\"nowrap\">3D Gaussian Splats</span> — ka tere kitea i roto i tō pūtirotiro i te <span class=\"nowrap\">60+ FPS</span>.",
+    hero_cta1:"Whakaari 3D ↓", hero_cta2:"Whare Whakaatu ↗",
+    tech_label:"Hangarau", tech_h2:"Ehara i te polygon.<br>He papa mārama.", tech_p:"Ka tauira te <span class=\"nowrap\">3DGS</span> i te mārama anō — ngā miriona o ngā kōpiri e hopu ana i te whakaata me te āhua.",
+    f1_h:"Pono ki te Ao", f1_p:"Tino tika. Whakaata tūturu, tirohanga karaihe — kāore he mahi ā-ringa.",
+    f2_h:"WebGL Tere", f2_p:"<span class=\"nowrap\">60+ FPS</span> mā te GPU. Kāore he tāutanga.",
+    f3_h:"10× Kopiri", f3_p:"Ka kopiri te <span class=\"nowrap\">SOG</span> i te <span class=\"nowrap\">300MB</span> ki te <span class=\"nowrap\">~15MB</span> mō te tere whakauta.",
+    proc_label:"Rerenga", proc_h2:"Mai i te kāmera ki te pūtirotiro",
+    s1_h:"Hopu", s1_p:"Hopu whakaahua mā te drone me te ringa.",
+    s2_h:"Hanga", s2_p:"Whakangungu GPU me te <span class=\"nowrap\">3DGS</span>.",
+    s3_h:"Tuku", s3_p:"Kopiri <span class=\"nowrap\">SOG</span> me te iframe kotahi.",
+    work_label:"Mahi", work_h2:"Ngā mahi hou",
+    faq_label:"Pātai", faq_h2:"Ngā pātai auau",
+    q1:"He aha te rerekē o te <span class=\"nowrap\">3DGS</span>?", a1:"Ka hopu i te mārama mā ngā kōpiri — kāore he mahi ā-ringa.",
+    q2:"Me tāuta he tono?", a2:"Kāo. <span class=\"nowrap\">WebGL 2.0</span> i roto i ngā pūtirotiro katoa.",
+    q3:"Ka taea te whakauru ki taku paetukutuku?", a3:"Āe — mā te waehere iframe kotahi."
+  }
+};
 
-    function showHotspotInfo(idx) {
-      const hs = hotspotsByLang[currentLang] || hotspotsByLang.en;
-      const item = hs[idx] || hs[0];
-      alert(`[ 3D HOTSPOT INSPECTION ]\n\nComponent: ${item.title}\nDetails: ${item.desc}`);
-    }
+function setLang(lang) {
+  const dict = i18n[lang];
+  if (!dict) return;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (dict[k]) el.innerHTML = dict[k];
+  });
+}
 
-    function openFullscreenStage() {
-      const iframe = document.getElementById('hero-stage-iframe');
-      if (iframe.requestFullscreen) iframe.requestFullscreen();
-      else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-    }
+document.getElementById('langSelect').addEventListener('change', e => setLang(e.target.value));
+</script>
 
-    function openARModal() {
-      if (currentLang === 'ko') {
-        alert('✦ 1:1 공간 실물 AR\n\niPhone 또는 Android 카메라로 QR 코드를 스캔하면 실제 공간에 1:1 실물 크기로 즉시 투영됩니다.');
-      } else if (currentLang === 'zh') {
-        alert('✦ 1:1 空间真实 AR\n\n使用手机扫描二维码，即可在真实物理空间中以 1:1 比例投射该模型。');
-      } else {
-        alert('✦ 1:1 Scale Spatial AR\n\nScan the QR code on your mobile device to place this 3D model in your physical space in real 1:1 scale.');
-      }
-    }
-
-    function setStageEnv(mode, btn) {
-      document.querySelectorAll('.stage-hud-controls .hud-chip').forEach(c => {
-        if (c.textContent.includes('Light') || c.textContent.includes('Neon') || c.textContent.includes('조명') || c.textContent.includes('네온')) c.classList.remove('active');
-      });
-      btn.classList.add('active');
-      const wrap = document.querySelector('.stage-viewport-wrap');
-      if (mode === 'cyber') {
-        wrap.style.boxShadow = 'inset 0 0 80px rgba(14, 118, 255, 0.4)';
-      } else {
-        wrap.style.boxShadow = 'none';
-      }
-    }
-
-    /* --------------------------------------------------------------------------
-       09. Dynamic Model Manifest Sync (models.json)
-       -------------------------------------------------------------------------- */
-    async function loadDynamicModels() {
-      try {
-        const res = await fetch('05_web_build/models.json?v=' + Date.now());
-        if (!res.ok) return;
-        const data = await res.json();
-        const models = data.models || [];
-        if (models.length === 0) return;
-
-        // Update Hero Pills
-        const pillsContainer = document.getElementById('hero-model-pills');
-        if (pillsContainer && models.length > 0) {
-          pillsContainer.innerHTML = '';
-          models.slice(0, 4).forEach((m, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'model-pill' + (idx === 0 ? ' active' : '');
-            const cleanTitle = m.title || m.raw_title.replace(/^Review_/, '');
-            btn.textContent = cleanTitle;
-            btn.onclick = () => switchHeroStage(m.path, cleanTitle, btn);
-            pillsContainer.appendChild(btn);
-          });
-          const first = models[0];
-          const firstTitle = first.title || first.raw_title.replace(/^Review_/, '');
-          switchHeroStage(first.path, firstTitle, pillsContainer.firstChild);
-        }
-
-        // Update Gallery Grid
-        const grid = document.getElementById('deliverables-grid');
-        if (grid) {
-          grid.innerHTML = '';
-          models.forEach((m, idx) => {
-            const cleanTitle = m.title || m.raw_title.replace(/^Review_/, '');
-            const card = document.createElement('a');
-            card.href = m.path;
-            card.target = '_blank';
-            card.className = `archive-card glow-border-card reveal-on-scroll stagger-${(idx % 4) + 1}`;
-            card.innerHTML = `
-              <div class="archive-thumb">
-                <iframe src="${m.path}" loading="lazy" title="${cleanTitle}"></iframe>
-              </div>
-              <div class="archive-body">
-                <div class="archive-title">${cleanTitle}</div>
-                <div class="archive-chips">
-                  <span class="chip-item">3DGS SOG</span>
-                  <span class="chip-item">WEBGL READY</span>
-                  <span class="chip-item">${m.date || '2026'}</span>
-                </div>
-              </div>
-            `;
-            grid.appendChild(card);
-            revealObserver.observe(card);
-          });
-        }
-      } catch (e) {
-        console.warn('Fallback layout maintained:', e);
-      }
-    }
-    loadDynamicModels();
-
-    /* --------------------------------------------------------------------------
-       10. Ambient Particle Background
-       -------------------------------------------------------------------------- */
-    const canvas = document.getElementById('ambient-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
-
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.35;
-        this.vy = (Math.random() - 0.5) * 0.35;
-        this.radius = Math.random() * 2 + 1;
-        this.color = Math.random() > 0.5 ? '#0E76FF' : '#38BDF8';
-        this.alpha = Math.random() * 0.45 + 0.1;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-      }
-      draw() {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.alpha;
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    for (let i = 0; i < 70; i++) particles.push(new Particle());
-
-    function animateParticles() {
-      ctx.clearRect(0, 0, width, height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // Initialize Language System with persistent memory
-    const savedLang = localStorage.getItem('pnr_lang') || 'en';
-    setLanguage(savedLang);
-  </script>
 </body>
 </html>

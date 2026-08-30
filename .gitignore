@@ -78,5 +78,14 @@ Works/
 *.mkv
 *.cube
 
+# Include web sequence assets
+!assets/hero-pointcloud.jpg
+!assets/hero-sequence/
+!assets/hero-sequence/*
+
 # Local Vercel build output
 .vercel/
+
+# Dependencies
+node_modules/
+
