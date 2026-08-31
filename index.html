@@ -335,12 +335,19 @@
     .stage-interact-overlay {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      pointer-events: none; z-index: 8;
-      transition: opacity .4s var(--ease), visibility .4s;
+      background: transparent;
+      pointer-events: auto; /* Catch click/tap to activate */
+      cursor: grab;
+      z-index: 8;
+      transition: opacity .35s var(--ease), visibility .35s;
+    }
+
+    .stage-interact-overlay:active {
+      cursor: grabbing;
     }
 
     .stage-interact-overlay.dismissed {
-      opacity: 0; visibility: hidden; pointer-events: none;
+      opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
     }
 
     .interact-card {
@@ -1505,7 +1512,7 @@ window.addEventListener('scroll', () => {
   els.forEach(el => observer.observe(el));
 })();
 
-/* ═══ Stage switcher & Bulletproof Interactive Prompt ═══ */
+/* ═══ Stage switcher & Interactive Prompt Activation ═══ */
 function dismissInteractPrompt() {
   const p = document.getElementById('stageInteractPrompt');
   if (p) p.classList.add('dismissed');
@@ -1516,18 +1523,19 @@ function hookIframeEvents(iframe, dismissFn) {
   try {
     const doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
     if (doc) {
-      ['mousedown', 'pointerdown', 'touchstart', 'touchmove', 'mousemove', 'wheel', 'keydown'].forEach(evt => {
+      // ONLY dismiss when the user actually clicks/touches - NEVER on hover/mousemove
+      ['mousedown', 'pointerdown', 'touchstart'].forEach(evt => {
         doc.addEventListener(evt, dismissFn, { passive: true, once: true });
       });
     }
   } catch(e) { /* cross-origin safety fallback */ }
 }
 
-const stageVp = document.getElementById('stageViewport');
-if (stageVp) {
-  ['mousedown', 'pointerdown', 'touchstart', 'mousemove', 'wheel'].forEach(evt => {
-    stageVp.addEventListener(evt, dismissInteractPrompt, { passive: true });
-  });
+const promptOverlay = document.getElementById('stageInteractPrompt');
+if (promptOverlay) {
+  promptOverlay.addEventListener('mousedown', dismissInteractPrompt);
+  promptOverlay.addEventListener('touchstart', dismissInteractPrompt, { passive: true });
+  promptOverlay.addEventListener('pointerdown', dismissInteractPrompt);
 }
 
 // Window blur detection when iframe gains focus from user click/interaction
