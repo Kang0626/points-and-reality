@@ -332,9 +332,10 @@
     /* Loader Overlay */
     .stage-loader {
       position: absolute; inset: 0;
-      background: #09090c;
+      background: rgba(9, 9, 12, 0.88);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; z-index: 7;
+      gap: 14px; z-index: 7; pointer-events: none;
       transition: opacity .35s var(--ease), visibility .35s;
     }
 
@@ -1172,23 +1173,33 @@ function setActiveStage(model) {
 
   if (titleEl) titleEl.textContent = getCleanTitle(model);
   if (btnOpen) btnOpen.href = model.path;
-  if (loader) loader.classList.remove('hidden');
-  if (prompt) prompt.classList.remove('dismissed');
-
-  if (iframe) {
-    iframe.onload = () => {
-      if (loader) loader.classList.add('hidden');
-    };
-    if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
-      PointsRealityMotion.transitionStage(iframe, model.path);
-    } else {
-      iframe.src = model.path;
-    }
-  }
 
   document.querySelectorAll('.model-card').forEach(c => {
     c.classList.toggle('active-stage', c.getAttribute('data-path') === model.path);
   });
+
+  if (!iframe) return;
+
+  const currentSrc = iframe.getAttribute('src') || '';
+  if (currentSrc === model.path || (currentSrc && currentSrc.endsWith(model.path))) {
+    if (loader) loader.classList.add('hidden');
+    return;
+  }
+
+  if (loader) loader.classList.remove('hidden');
+  if (prompt) prompt.classList.remove('dismissed');
+
+  let loadHandled = false;
+  const hideLoader = () => {
+    if (loadHandled) return;
+    loadHandled = true;
+    if (loader) loader.classList.add('hidden');
+  };
+
+  iframe.onload = hideLoader;
+  setTimeout(hideLoader, 1600); // 1.6s safety timeout
+
+  iframe.src = model.path;
 }
 
 /* ═══ Card renderer ═══ */

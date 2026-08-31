@@ -374,9 +374,10 @@
     /* Loader Overlay */
     .stage-loader {
       position: absolute; inset: 0;
-      background: #09090c;
+      background: rgba(9, 9, 12, 0.88);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; z-index: 7;
+      gap: 14px; z-index: 7; pointer-events: none;
       transition: opacity .35s var(--ease), visibility .35s;
     }
 
@@ -1522,23 +1523,33 @@ function switchModel(url, title, el) {
 
   const loader = document.getElementById('stageLoader');
   const prompt = document.getElementById('stageInteractPrompt');
-  if (loader) loader.classList.remove('hidden');
-  if (prompt) prompt.classList.remove('dismissed');
 
   document.querySelectorAll('.stage-thumb-card').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
 
   const iframe = document.getElementById('stage-iframe');
-  if (iframe) {
-    iframe.onload = () => {
-      if (loader) loader.classList.add('hidden');
-    };
-    if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
-      PointsRealityMotion.transitionStage(iframe, url);
-    } else {
-      iframe.src = url;
-    }
+  if (!iframe) return;
+
+  const currentSrc = iframe.getAttribute('src') || '';
+  if (currentSrc === url || (currentSrc && currentSrc.endsWith(url))) {
+    if (loader) loader.classList.add('hidden');
+    return;
   }
+
+  if (loader) loader.classList.remove('hidden');
+  if (prompt) prompt.classList.remove('dismissed');
+
+  let loadHandled = false;
+  const hideLoader = () => {
+    if (loadHandled) return;
+    loadHandled = true;
+    if (loader) loader.classList.add('hidden');
+  };
+
+  iframe.onload = hideLoader;
+  setTimeout(hideLoader, 1600); // 1.6s safety timeout prevents stuck spinner
+
+  iframe.src = url;
 }
 
 function goFS() {
