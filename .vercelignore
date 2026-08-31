@@ -43,6 +43,15 @@ node_modules/
 package.json
 package-lock.json
 
+# Heavy / duplicate media & assets
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+05_web_build/assets/
+05_web_build/libs/
+
 # Documentation & Git files
 .git/
 .gitignore

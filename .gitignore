@@ -74,11 +74,16 @@ Works/
 *.exr
 *.mp4
 *.mov
+*.webm
 *.avi
 *.mkv
 *.cube
 
-# Include web sequence assets
+# Ignore duplicate subfolder assets
+05_web_build/assets/
+05_web_build/libs/
+
+# Include essential web sequence assets
 !assets/hero-pointcloud.jpg
 !assets/hero-sequence/
 !assets/hero-sequence/*
