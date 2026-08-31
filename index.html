@@ -1505,17 +1505,38 @@ window.addEventListener('scroll', () => {
   els.forEach(el => observer.observe(el));
 })();
 
-/* ═══ Stage switcher & Interactive Prompt ═══ */
+/* ═══ Stage switcher & Bulletproof Interactive Prompt ═══ */
 function dismissInteractPrompt() {
   const p = document.getElementById('stageInteractPrompt');
   if (p) p.classList.add('dismissed');
 }
 
+function hookIframeEvents(iframe, dismissFn) {
+  if (!iframe) return;
+  try {
+    const doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+    if (doc) {
+      ['mousedown', 'pointerdown', 'touchstart', 'touchmove', 'mousemove', 'wheel', 'keydown'].forEach(evt => {
+        doc.addEventListener(evt, dismissFn, { passive: true, once: true });
+      });
+    }
+  } catch(e) { /* cross-origin safety fallback */ }
+}
+
 const stageVp = document.getElementById('stageViewport');
 if (stageVp) {
-  stageVp.addEventListener('mousedown', dismissInteractPrompt);
-  stageVp.addEventListener('touchstart', dismissInteractPrompt, { passive: true });
+  ['mousedown', 'pointerdown', 'touchstart', 'mousemove', 'wheel'].forEach(evt => {
+    stageVp.addEventListener(evt, dismissInteractPrompt, { passive: true });
+  });
 }
+
+// Window blur detection when iframe gains focus from user click/interaction
+window.addEventListener('blur', () => {
+  const iframe = document.getElementById('stage-iframe');
+  if (document.activeElement === iframe) {
+    dismissInteractPrompt();
+  }
+});
 
 function switchModel(url, title, el) {
   const titleEl = document.getElementById('stage-title');
@@ -1544,13 +1565,24 @@ function switchModel(url, title, el) {
     if (loadHandled) return;
     loadHandled = true;
     if (loader) loader.classList.add('hidden');
+    hookIframeEvents(iframe, dismissInteractPrompt);
   };
 
   iframe.onload = hideLoader;
-  setTimeout(hideLoader, 1600); // 1.6s safety timeout prevents stuck spinner
+  setTimeout(hideLoader, 1600); // 1.6s safety timeout
 
   iframe.src = url;
 }
+
+// Hook initial iframe once ready
+(function initIframeHooks() {
+  const iframe = document.getElementById('stage-iframe');
+  if (iframe) {
+    iframe.addEventListener('load', () => hookIframeEvents(iframe, dismissInteractPrompt));
+    // Also try immediately
+    hookIframeEvents(iframe, dismissInteractPrompt);
+  }
+})();
 
 function goFS() {
   const el = document.getElementById('stage-iframe');
