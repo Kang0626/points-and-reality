@@ -402,6 +402,55 @@
       font-size: 14px; color: var(--c-text-2); line-height: 1.6;
     }
 
+    /* ── Solutions / Use Cases Grid ── */
+    .solutions-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+      max-width: 1180px; margin: 0 auto;
+    }
+
+    @media(max-width:768px) {
+      .solutions-grid { grid-template-columns: 1fr; }
+    }
+
+    .solution-card {
+      background: var(--c-surface); border: 1px solid var(--c-border);
+      border-radius: 16px; padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 14px;
+      transition: all .3s var(--ease); position: relative;
+    }
+
+    .solution-card:hover {
+      background: var(--c-surface-hover); border-color: var(--c-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.08);
+    }
+
+    .solution-tag {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      color: var(--c-accent); text-transform: uppercase; letter-spacing: .04em;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+
+    .solution-card h3 {
+      font-size: 19px; font-weight: 700; letter-spacing: -.02em;
+      line-height: 1.35; color: var(--c-text);
+    }
+
+    .solution-card p {
+      font-size: 14px; color: var(--c-text-2); line-height: 1.65;
+    }
+
+    .solution-highlights {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: auto; padding-top: 8px;
+    }
+
+    .solution-pill {
+      font-family: var(--mono); font-size: 11px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      padding: 4px 10px; border-radius: 6px; color: var(--c-text-2);
+    }
+
     /* ── Process ── */
     .process {
       display: flex; gap: 48px; max-width: 1180px; margin: 0 auto;
@@ -753,7 +802,8 @@
 
     <div class="nav-right">
       <a href="#stage" class="nav-link" data-i18n="nav_stage">Stage</a>
-      <a href="#tech" class="nav-link" data-i18n="nav_tech">Technology</a>
+      <a href="#solutions" class="nav-link" data-i18n="nav_solutions">Solutions</a>
+      <a href="#tech" class="nav-link" data-i18n="nav_tech">Value</a>
       <a href="#work" class="nav-link" data-i18n="nav_work">Work</a>
       <a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
       <button onclick="openContactModal()" class="nav-btn-inquire" data-i18n="nav_inquire">💬 Inquire</button>
@@ -780,7 +830,7 @@
   </h1>
 
   <p class="hero-sub section-desc" data-i18n="hero_p">
-    We transform physical spaces into photorealistic <span class="nowrap">3D experiences</span> —<br>streamed instantly in your browser at <span class="nowrap">60+ FPS</span>, <span class="nowrap">with zero plugins required</span>.
+    We transform physical spaces, fine art, real estate, and real-world objects into photorealistic <span class="nowrap">3D experiences</span> —<br>streamed instantly in your browser at <span class="nowrap">60+ FPS</span>, <span class="nowrap">with zero plugins required</span>.
   </p>
 
   <div class="hero-actions hero-cta-group">
@@ -825,6 +875,61 @@
       </div>
       <div class="stage-hint">
         <span><span class="nowrap">WebGL 2.0</span> · <span class="nowrap">60+ FPS</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Industry Solutions / Use Cases ═══ -->
+<section class="s" id="solutions">
+  <div class="s-head reveal-on-scroll">
+    <div class="s-label" data-i18n="solutions_label">Industry Solutions</div>
+    <h2 data-i18n="solutions_h2">Recreating Reality for High-Impact Use Cases</h2>
+    <p data-i18n="solutions_p">Beyond simple spaces — we bring fine art, luxury accommodation, real estate properties, and real-world physical objects into flawless, interactive 3D web experiences.</p>
+  </div>
+
+  <div class="solutions-grid">
+    <div class="solution-card reveal-on-scroll stagger-1">
+      <div class="solution-tag" data-i18n="usecase_art_badge">🎨 Fine Art &amp; Museums</div>
+      <h3 data-i18n="usecase_art_h">Exhibition Archiving &amp; Artwork Digitization</h3>
+      <p data-i18n="usecase_art_p">Reconstruct sculptures, physical installations, and gallery environments into flawless 3D. Provide collectors and global audiences with an authentic viewing experience without spatial boundaries.</p>
+      <div class="solution-highlights">
+        <span class="solution-pill" data-i18n="usecase_art_pill1">Virtual Galleries</span>
+        <span class="solution-pill" data-i18n="usecase_art_pill2">Sculptures &amp; Relics</span>
+        <span class="solution-pill" data-i18n="usecase_art_pill3">Global Collectors</span>
+      </div>
+    </div>
+
+    <div class="solution-card reveal-on-scroll stagger-2">
+      <div class="solution-tag" data-i18n="usecase_airbnb_badge">🏡 Airbnb &amp; Luxury Stays</div>
+      <h3 data-i18n="usecase_airbnb_h">Zero-Doubt Virtual Stay Experience</h3>
+      <p data-i18n="usecase_airbnb_p">Flat photos cannot convey true spatial layout. Enable guests to walk through rooms, examine views, and experience the actual atmosphere before booking — eliminating hesitation and maximizing occupancy.</p>
+      <div class="solution-highlights">
+        <span class="solution-pill" data-i18n="usecase_airbnb_pill1">Spatial Walkthrough</span>
+        <span class="solution-pill" data-i18n="usecase_airbnb_pill2">Booking Conversion Boost</span>
+        <span class="solution-pill" data-i18n="usecase_airbnb_pill3">Guest Confidence</span>
+      </div>
+    </div>
+
+    <div class="solution-card reveal-on-scroll stagger-3">
+      <div class="solution-tag" data-i18n="usecase_realestate_badge">🏢 Real Estate &amp; Properties</div>
+      <h3 data-i18n="usecase_realestate_h">Realistic Showcase for Remote &amp; Global Buyers</h3>
+      <p data-i18n="usecase_realestate_p">Overcome geographical barriers by presenting high-end properties to overseas investors with 100% photorealism. Accelerate high-value sales decisions without requiring immediate on-site visits.</p>
+      <div class="solution-highlights">
+        <span class="solution-pill" data-i18n="usecase_realestate_pill1">Overseas Buyer Deals</span>
+        <span class="solution-pill" data-i18n="usecase_realestate_pill2">Architectural Pre-Sale</span>
+        <span class="solution-pill" data-i18n="usecase_realestate_pill3">Remote Closing</span>
+      </div>
+    </div>
+
+    <div class="solution-card reveal-on-scroll stagger-4">
+      <div class="solution-tag" data-i18n="usecase_product_badge">🚗 Real-World Objects &amp; Showrooms</div>
+      <h3 data-i18n="usecase_product_h">Interactive 360° Physical Product Experience</h3>
+      <p data-i18n="usecase_product_p">Move beyond artificial CAD models. Capture real material reflections, textures, and details of vehicles, luxury goods, and bespoke furniture directly into an interactive web viewer that converts customers.</p>
+      <div class="solution-highlights">
+        <span class="solution-pill" data-i18n="usecase_product_pill1">Automotive &amp; Luxury</span>
+        <span class="solution-pill" data-i18n="usecase_product_pill2">True Texture &amp; Lighting</span>
+        <span class="solution-pill" data-i18n="usecase_product_pill3">High-Converting Web</span>
       </div>
     </div>
   </div>
@@ -997,9 +1102,11 @@
       <div class="form-group">
         <label class="form-label" data-i18n="form_type">Inquiry Type</label>
         <select id="formType" class="form-select">
-          <option value="3DGS Drone / Handheld Optical Scan">3DGS Space Capture / Scanning</option>
-          <option value="Custom WebGL / Showroom Integration">Custom WebGL Showroom / Embedding</option>
-          <option value="Enterprise Pipeline Collaboration">Enterprise Pipeline Collaboration</option>
+          <option value="Fine Art / Gallery / Cultural Exhibition">Fine Art / Gallery / Cultural Exhibition</option>
+          <option value="Airbnb / Hotel / Hospitality Showcase">Airbnb / Hotel / Hospitality Showcase</option>
+          <option value="Real Estate / Architecture / Global Buyer Sales">Real Estate / Architecture / Global Buyer Sales</option>
+          <option value="Physical Product / Automotive / Showroom">Physical Product / Automotive / Showroom</option>
+          <option value="Custom WebGL & Enterprise Solution">Custom WebGL & Enterprise Solution</option>
           <option value="Other Inquiries">General / Other Inquiries</option>
         </select>
       </div>
@@ -1369,11 +1476,30 @@ loadModels();
 /* ═══ i18n ═══ */
 const i18n = {
   en: {
-    nav_stage:"Stage", nav_tech:"Value", nav_work:"Work", nav_faq:"FAQ", nav_inquire:"💬 Inquire", nav_showroom:"Showroom ↗",
+    nav_stage:"Stage", nav_solutions:"Solutions", nav_tech:"Value", nav_work:"Work", nav_faq:"FAQ", nav_inquire:"💬 Inquire", nav_showroom:"Showroom ↗",
     hero_badge:"<span class=\"nowrap\">Points &amp; Reality Studio</span>",
     hero_h1:'Reality captured in <em>millions of light</em>',
-    hero_p:"We transform physical spaces into photorealistic <span class=\"nowrap\">3D experiences</span> —<br>streamed instantly in your browser at <span class=\"nowrap\">60+ FPS</span>, <span class=\"nowrap\">with zero plugins required</span>.",
+    hero_p:"We transform physical spaces, fine art, real estate, and real-world objects into photorealistic <span class=\"nowrap\">3D experiences</span> —<br>streamed instantly in your browser at <span class=\"nowrap\">60+ FPS</span>, <span class=\"nowrap\">with zero plugins required</span>.",
     hero_cta1:"Explore Live 3D ↓", hero_cta_inquire:"Get a Quote 💬", hero_cta2:"Open Showroom ↗",
+    solutions_label:"Industry Solutions",
+    solutions_h2:"Recreating Reality for High-Impact Use Cases",
+    solutions_p:"Beyond simple spaces — we bring fine art, luxury accommodation, real estate properties, and real-world physical objects into flawless, interactive 3D web experiences.",
+    usecase_art_badge:"🎨 Fine Art &amp; Museums",
+    usecase_art_h:"Exhibition Archiving &amp; Artwork Digitization",
+    usecase_art_p:"Reconstruct sculptures, physical installations, and gallery environments into flawless 3D. Provide collectors and global audiences with an authentic viewing experience without spatial boundaries.",
+    usecase_art_pill1:"Virtual Galleries", usecase_art_pill2:"Sculptures &amp; Relics", usecase_art_pill3:"Global Collectors",
+    usecase_airbnb_badge:"🏡 Airbnb &amp; Luxury Stays",
+    usecase_airbnb_h:"Zero-Doubt Virtual Stay Experience",
+    usecase_airbnb_p:"Flat photos cannot convey true spatial layout. Enable guests to walk through rooms, examine views, and experience the actual atmosphere before booking — eliminating hesitation and maximizing occupancy.",
+    usecase_airbnb_pill1:"Spatial Walkthrough", usecase_airbnb_pill2:"Booking Conversion Boost", usecase_airbnb_pill3:"Guest Confidence",
+    usecase_realestate_badge:"🏢 Real Estate &amp; Properties",
+    usecase_realestate_h:"Realistic Showcase for Remote &amp; Global Buyers",
+    usecase_realestate_p:"Overcome geographical barriers by presenting high-end properties to overseas investors with 100% photorealism. Accelerate high-value sales decisions without requiring immediate on-site visits.",
+    usecase_realestate_pill1:"Overseas Buyer Deals", usecase_realestate_pill2:"Architectural Pre-Sale", usecase_realestate_pill3:"Remote Closing",
+    usecase_product_badge:"🚗 Real-World Objects &amp; Showrooms",
+    usecase_product_h:"Interactive 360° Physical Product Experience",
+    usecase_product_p:"Move beyond artificial CAD models. Capture real material reflections, textures, and details of vehicles, luxury goods, and bespoke furniture directly into an interactive web viewer that converts customers.",
+    usecase_product_pill1:"Automotive &amp; Luxury", usecase_product_pill2:"True Texture &amp; Lighting", usecase_product_pill3:"High-Converting Web",
     tech_label:"Why Points &amp; Reality", tech_h2:"Unmatched Realism.<br>Zero Friction for Viewers.", tech_p:"Transform physical showrooms, architecture, and commercial spaces into interactive 3D digital tours. Boost client engagement and sales conversion with seamless, zero-download spatial streaming.",
     f1_h:"Photorealistic Quality", f1_p:"Sub-millimeter visual precision. Captures real lighting, glass reflections, and rich textures with 100% fidelity — <span class=\"nowrap\">eliminating artificial 3D graphics feel</span>.",
     f2_h:"Zero-Install Web 3D", f2_p:"Runs natively at <span class=\"nowrap\">60+ FPS</span> across Safari, Chrome, and Mobile. <span class=\"nowrap\">Zero app downloads</span> or plugins required — <span class=\"nowrap\">preventing viewer drop-off</span>.",
@@ -1384,7 +1510,7 @@ const i18n = {
     s3_h:"One-Line Web Embed", s3_p:"Receive a simple embed code or direct URL. Seamlessly integrate into your website, Shopify, or sales presentations.",
     work_label:"Showcase", work_h2:"Recent spatial captures",
     faq_label:"FAQ", faq_h2:"Common questions",
-    q1:"How does this benefit my business over traditional 3D or 2D photos?", a1:"Unlike flat photos or artificial graphic models, spatial capture provides a 100% photorealistic interactive tour — <span class=\"nowrap\">significantly boosting client dwell time</span> and booking conversion rates.",
+    q1:"What industries and objects can this be applied to?", a1:"Our platform seamlessly captures and reconstructs fine art exhibitions and sculptures, Airbnb and luxury hotel stays, real estate properties for global buyers, and real-world physical products/vehicles for interactive 3D commerce.",
     q2:"Do viewers need to install any apps or software?", a2:"No installation needed. Viewers simply click your link — it loads instantly inside standard web browsers on PC, iPhone, and Android with <span class=\"nowrap\">zero friction</span>.",
     q3:"Can I easily embed the 3D showcase on our website?", a3:"Yes — every project includes a responsive iframe code and direct URL ready for Shopify, WordPress, custom portals, or sales decks in minutes.",
     contact_badge:"Start a Project",
@@ -1401,11 +1527,30 @@ const i18n = {
     form_submit:"Send Inquiry 🚀"
   },
   ko: {
-    nav_stage:"스테이지", nav_tech:"핵심 가치", nav_work:"포트폴리오", nav_faq:"FAQ", nav_inquire:"💬 견적 문의", nav_showroom:"쇼룸 ↗",
+    nav_stage:"스테이지", nav_solutions:"적용 분야", nav_tech:"핵심 가치", nav_work:"포트폴리오", nav_faq:"FAQ", nav_inquire:"💬 견적 문의", nav_showroom:"쇼룸 ↗",
     hero_badge:"<span class=\"nowrap\">Points &amp; Reality Studio</span>",
     hero_h1:'현실을 <em>수백만 개의 빛</em>으로 복원합니다',
-    hero_p:"물리적 공간을 실사 수준의 <span class=\"nowrap\">3D 경험</span>으로 변환합니다.<br>플러그인 설치 없이 브라우저에서 <span class=\"nowrap\">60+ FPS</span>로 즉시 스트리밍됩니다.",
+    hero_p:"공간을 넘어 예술 작품, 숙박 시설, 부동산 매물, 실물 제품까지 —<br>플러그인 설치 없이 브라우저에서 <span class=\"nowrap\">60+ FPS</span>로 즉시 실감형 3D로 경험하세요.",
     hero_cta1:"실시간 3D 체험 ↓", hero_cta_inquire:"견적 및 협업 문의 💬", hero_cta2:"쇼룸 열기 ↗",
+    solutions_label:"맞춤 적용 분야",
+    solutions_h2:"단순한 공간을 넘어, 다양한 실물을 웹 3D로 재구성합니다",
+    solutions_p:"예술가의 전시 작품부터 에어비앤비 숙소, 해외 바이어를 위한 부동산, 프리미엄 실물 제품까지 — 고객에게 가장 생생한 실물 경험을 제공합니다.",
+    usecase_art_badge:"🎨 예술가 &amp; 갤러리 전시",
+    usecase_art_h:"예술 작품 &amp; 전시 공간의 완벽한 3D 디지털화",
+    usecase_art_p:"회화, 조각, 설치 미술, 갤러리 전체를 왜곡 없는 3D로 완벽 재구성합니다. 공간의 한계를 넘어 전 세계 관객과 컬렉터에게 실제 갤러리에 방문한 듯한 몰입형 전시와 영구 디지털 아카이빙을 제공합니다.",
+    usecase_art_pill1:"온라인 가상 갤러리", usecase_art_pill2:"조각·미술품 디지털화", usecase_art_pill3:"글로벌 컬렉터 유치",
+    usecase_airbnb_badge:"🏡 에어비앤비 &amp; 프리미엄 숙박",
+    usecase_airbnb_h:"직접 가보지 않아도 신뢰할 수 있는 숙소 가상 투어",
+    usecase_airbnb_p:"단순 평면 사진으로는 실제 공간감과 분위기를 온전히 파악하기 어렵습니다. 투숙 전 실제와 동일한 3D 공간을 자유롭게 걸어보며 구조와 뷰를 확인하게 하여, 예약 망설임을 없애고 예약률과 신뢰도를 극대화합니다.",
+    usecase_airbnb_pill1:"실제 공간 구조 탐색", usecase_airbnb_pill2:"예약 전환율 극대화", usecase_airbnb_pill3:"투숙객 신뢰 확보",
+    usecase_realestate_badge:"🏢 부동산 &amp; 해외 바이어 분양",
+    usecase_realestate_h:"타 지역 및 해외 바이어를 위한 실물 기반 매물 쇼케이스",
+    usecase_realestate_p:"거리의 제약을 넘어 타 지역 및 해외 바이어에게 현장과 100% 일치하는 실감형 매물 투어를 제공합니다. 현장 방문 전 신속하고 확신 있는 의사결정을 유도하여 부동산 매매 및 분양 계약을 촉진합니다.",
+    usecase_realestate_pill1:"해외 바이어 원격 계약", usecase_realestate_pill2:"분양·건축 실감 쇼케이스", usecase_realestate_pill3:"매매 촉진 및 계약 가속",
+    usecase_product_badge:"🚗 실물 제품 &amp; 프리미엄 쇼룸",
+    usecase_product_h:"차량·가구·럭셔리 실물 제품의 360° 인터랙티브 체험",
+    usecase_product_p:"인위적인 3D 그래픽 모델링의 이질감을 없애고, 실제 차량, 가구, 프리미엄 실물 제품의 광택과 질감을 100% 실사로 브라우저에 재현합니다. 고객이 모든 각도를 직접 조작하며 감상하도록 하여 구매 결정을 촉진합니다.",
+    usecase_product_pill1:"자동차 &amp; 럭셔리 제품", usecase_product_pill2:"실물 질감·조명 100% 재현", usecase_product_pill3:"고전환 커머스 쇼룸",
     tech_label:"핵심 가치", tech_h2:"압도적인 실사감.<br>고객을 위한 완벽한 무설치 경험.", tech_p:"실제 오프라인 매장, 분양 공간, 쇼룸을 브라우저에 그대로 재현합니다. 별도 다운로드 없는 3D 투어로 방문자의 몰입도와 계약 전환율을 극대화합니다.",
     f1_h:"실사급 프리미엄 퀄리티", f1_p:"실제 공간의 미세한 질감, 유리 반사광, 자연 조명까지 100% 동일하게 재현하여 <span class=\"nowrap\">그래픽 티가 나지 않는</span> 압도적 실물감을 전달합니다.",
     f2_h:"설치 없는 클릭 접속", f2_p:"별도 앱이나 플러그인 설치 없이 모바일과 PC 브라우저에서 즉시 <span class=\"nowrap\">60+ FPS</span>로 구동되어 <span class=\"nowrap\">고객 이탈률을 최소화</span>합니다.",
@@ -1416,7 +1561,7 @@ const i18n = {
     s3_h:"1줄 코드 즉시 발행", s3_p:"자사 홈페이지, 쇼핑몰, SNS에 바로 삽입 가능한 1줄 코드와 단독 URL을 제공해 드립니다.",
     work_label:"포트폴리오", work_h2:"최근 공간 구축 사례",
     faq_label:"FAQ", faq_h2:"자주 묻는 질문",
-    q1:"기존 3D 모델이나 사진/영상 대비 어떤 비즈니스 이점이 있나요?", a1:"단순 사진이나 어색한 그래픽 3D와 달리, 실제 공간을 100% 실사로 탐색하는 경험을 제공합니다. <span class=\"nowrap\">고객 체류 시간</span>과 공간 계약 전환율을 극대화할 수 있습니다.",
+    q1:"어떤 분야(예술, 숙박, 부동산, 제품 등)에 적용할 수 있나요?", a1:"예술가 및 갤러리의 온·오프라인 전시와 영구 아카이빙, 에어비앤비 및 호텔의 예약 촉진 가상 투어, 부동산·분양 매물의 해외 바이어 대상 쇼케이스, 차량 및 프리미엄 실물 제품의 3D 뷰어까지 실제 존재하는 모든 공간과 사물에 완벽히 적용됩니다.",
     q2:"고객이 3D를 보려면 별도 앱이나 프로그램을 설치해야 하나요?", a2:"전혀 필요 없습니다. 웹 링크 클릭 한 번으로 스마트폰, 테블릿, PC 등 모든 웹 브라우저에서 <span class=\"nowrap\">즉시 실행</span>되므로 고객 접근성이 극대화됩니다.",
     q3:"기존 자사 홈페이지나 쇼핑몰에 쉽게 넣을 수 있나요?", a3:"네, 자사 몰, 워드프레스, 카페24 등 모든 웹사이트에 YouTube 동영상을 넣듯 <span class=\"nowrap\">1줄의 iframe 코드</span>만 붙여넣으면 즉시 구동됩니다.",
     contact_badge:"프로젝트 시작하기",
@@ -1433,11 +1578,30 @@ const i18n = {
     form_submit:"문의 보내기 🚀"
   },
   zh: {
-    nav_stage:"舞台", nav_tech:"核心价值", nav_work:"作品", nav_faq:"常见问题", nav_inquire:"💬 咨询报价", nav_showroom:"展厅 ↗",
+    nav_stage:"舞台", nav_solutions:"解决方案", nav_tech:"核心价值", nav_work:"作品", nav_faq:"常见问题", nav_inquire:"💬 咨询报价", nav_showroom:"展厅 ↗",
     hero_badge:"<span class=\"nowrap\">Points &amp; Reality Studio</span>",
     hero_h1:'以 <em>数百万道光</em> 重现现实',
-    hero_p:"将物理空间转化为照片级真实感 <span class=\"nowrap\">3D 体验</span> —<br>无需插件，浏览器内 <span class=\"nowrap\">60+ FPS</span> 即时体验。",
+    hero_p:"将物理空间、艺术展品、房产物业及各类实物重构为照片级真实感 <span class=\"nowrap\">3D 体验</span> —<br>无需插件，浏览器内 <span class=\"nowrap\">60+ FPS</span> 即时体验。",
     hero_cta1:"体验实时 3D ↓", hero_cta_inquire:"获取报价 💬", hero_cta2:"进入展厅 ↗",
+    solutions_label:"行业解决方案",
+    solutions_h2:"超越单一空间，为多行业打造实景 3D 体验",
+    solutions_p:"无论是艺术家的作品展厅、民宿酒店、面向海外买家的房产，还是实物产品与车辆 — 均可在 Web 端完美呈现。",
+    usecase_art_badge:"🎨 艺术与展厅",
+    usecase_art_h:"展厅归档与艺术品 3D 数字化",
+    usecase_art_p:"将雕塑、装置艺术及展厅环境完美重建为 3D 空间，为全球藏家与观众提供打破地域限制的真实观展体验与永久数字归档。",
+    usecase_art_pill1:"线上虚拟展厅", usecase_art_pill2:"雕塑与文物数字化", usecase_art_pill3:"全球藏家触达",
+    usecase_airbnb_badge:"🏡 民宿与高端酒店",
+    usecase_airbnb_h:"消除疑虑的实景住宿沉浸体验",
+    usecase_airbnb_p:"平面照片难以传递真实空间布局。让住客在预订前自由漫步、查看景观与实际氛围，消除预订犹豫，显著提升入住率。",
+    usecase_airbnb_pill1:"全景漫游", usecase_airbnb_pill2:"提高预订转化", usecase_airbnb_pill3:"增强住客信心",
+    usecase_realestate_badge:"🏢 地产与海外买家",
+    usecase_realestate_h:"面向远程及海外买家的实景看房",
+    usecase_realestate_p:"打破地理限制，为异地及海外投资者提供 100% 真实还原的实景房源展示，加速高价值房产的交易决策。",
+    usecase_realestate_pill1:"海外买家远程交易", usecase_realestate_pill2:"建筑预售实景", usecase_realestate_pill3:"加速签约成交",
+    usecase_product_badge:"🚗 实物产品与高端展厅",
+    usecase_product_h:"实物产品 360° 交互式沉浸体验",
+    usecase_product_p:"告别传统 CAD 建模的虚假感，将车辆、家具及奢侈品的真实光泽与材质细节 100% 还原于浏览器中，激发客户购买意愿。",
+    usecase_product_pill1:"汽车与高端商品", usecase_product_pill2:"真实材质光影", usecase_product_pill3:"高转化率展厅",
     tech_label:"核心价值", tech_h2:"极致真实感。<br>为客户提供零门槛体验。", tech_p:"将线下展厅、建筑与商业空间转化为互动式 3D 数字之旅。通过无缝、免下载的空间流传输，大幅提升客户参与度与转化率。",
     f1_h:"照片级画质", f1_p:"100% 精确还原真实光影、玻璃反射与材质细节，<span class=\"nowrap\">告别传统 3D 建模的虚假感</span>。",
     f2_h:"无需安装 即点即看", f2_p:"在手机与 PC 浏览器中均可 <span class=\"nowrap\">60+ FPS</span> 流畅运行，<span class=\"nowrap\">无需下载任何 App 或插件</span>，最大化降低客户流失。",
@@ -1448,7 +1612,7 @@ const i18n = {
     s3_h:"一行代码即刻上线", s3_p:"提供可直接嵌入网站、商城及客户端的 1 行代码与独立链接。",
     work_label:"作品集", work_h2:"近期空间案例",
     faq_label:"常见问题", faq_h2:"常见问题解答",
-    q1:"相比 Flat 照片或传统 3D 有何商业优势？", a1:"与平面照片或虚假 3D 建模不同，实景 3D 空间提供 100% 真实感与互动体验，<span class=\"nowrap\">显著提升客户停留时间与成交转化率</span>。",
+    q1:"可应用于哪些行业与实物？", a1:"涵盖艺术家与画廊展览归档、民宿酒店实景漫游、面向海外买家的房地产销售，以及汽车与高端实物产品的 3D 交互展示。",
     q2:"查看者需要下载 App 或软件吗？", a2:"完全不需要。只需点击链接，即可在手机和电脑浏览器中<span class=\"nowrap\">即开即用</span>。",
     q3:"可以轻松嵌入现有的网站吗？", a3:"是的，提供兼容 WordPress、Shopify 及各类自定义网站的响应式 iframe 代码。",
     contact_badge:"开启项目",
@@ -1465,27 +1629,38 @@ const i18n = {
     form_submit:"提交咨询 🚀"
   },
   mi: {
-    nav_stage:"Whakaari", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_inquire:"💬 Pātai Utu", nav_showroom:"Whare Whakaatu ↗",
-    hero_badge:"<span class=\"nowrap\">3D Gaussian Splatting</span>",
+    nav_stage:"Whakaari", nav_solutions:"Rongoā", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_inquire:"💬 Pātai Utu", nav_showroom:"Whare Whakaatu ↗",
+    hero_badge:"<span class=\"nowrap\">Points &amp; Reality Studio</span>",
     hero_h1:'Te ao tūturu i roto i <em>ngā miriona o te mārama</em>',
-    hero_p:"Ka hanga anō i ngā wāhi kikokiko hei <span class=\"nowrap\">3D Gaussian Splats</span> — ka tere kitea i roto i tō pūtirotiro i te <span class=\"nowrap\">60+ FPS</span>.",
+    hero_p:"Ka hanga anō i ngā wāhi kikokiko me ngā taonga hei <span class=\"nowrap\">3D</span> — ka tere kitea i roto i tō pūtirotiro i te <span class=\"nowrap\">60+ FPS</span>.",
     hero_cta1:"Whakaari 3D ↓", hero_cta_inquire:"Pātai Utu 💬", hero_cta2:"Whare Whakaatu ↗",
-    tech_label:"Hangarau", tech_h2:"Ehara i te polygon.<br>He papa mārama.", tech_p:"Ka tauira te <span class=\"nowrap\">3DGS</span> i te mārama anō — ngā miriona o ngā kōpiri e hopu ana i te whakaata me te āhua.",
+    solutions_label:"Ngā Rongoā Ahumahi",
+    solutions_h2:"Te Whakahou i te Ao Tūturu mō Ngā Hiahia Katoa",
+    solutions_p:"Ehara i te wāhi anake — ka kawea mai e mātou ngā mahi toi, ngā whare noho, ngā whenua, me ngā taonga tūturu ki te 3D.",
+    usecase_art_badge:"🎨 Ngā Mahi Toi", usecase_art_h:"Whare Taonga &amp; Whakaaturanga Toi", usecase_art_p:"Whakarerekēhia ngā whakairo me ngā whakaaturanga ki te 3D pono mō te ao katoa.",
+    usecase_art_pill1:"Whare Toi Mariko", usecase_art_pill2:"Whakairo", usecase_art_pill3:"Ao Katoa",
+    usecase_airbnb_badge:"🏡 Whare Noho Airbnb", usecase_airbnb_h:"Tirohanga Whare Tūturu", usecase_airbnb_p:"Kitea te whare i mua i te tono kia mārama ai te manuhiri.",
+    usecase_airbnb_pill1:"Haereere Mariko", usecase_airbnb_pill2:"Piki Whakataunga", usecase_airbnb_pill3:"Whakawhirinaki",
+    usecase_realestate_badge:"🏢 Whenua &amp; Whare", usecase_realestate_h:"Whakaaturanga mō Ngā Kaihoko Tawhiti", usecase_realestate_p:"Whakaatuhia ngā whare ki ngā kaihoko o tāwāhi me te kounga teitei.",
+    usecase_realestate_pill1:"Kaihoko Tāwāhi", usecase_realestate_pill2:"Hoko Whare", usecase_realestate_pill3:"Kōwhiringa Tere",
+    usecase_product_badge:"🚗 Taonga Tūturu", usecase_product_h:"Wheako 360° mō Ngā Taonga", usecase_product_p:"Whakaatuhia ngā motuka me ngā taonga papai i roto i te pūtirotiro.",
+    usecase_product_pill1:"Motuka &amp; Taonga", usecase_product_pill2:"Mārama Pono", usecase_product_pill3:"Hoko Mariko",
+    tech_label:"Hangarau", tech_h2:"Pono ki te Ao.<br>Kāore he tāutanga.", tech_p:"Whakarerekēhia ngā wāhi katoa ki te 3D tere tonu.",
     f1_h:"Pono ki te Ao", f1_p:"Tino tika. Whakaata tūturu, tirohanga karaihe — kāore he mahi ā-ringa.",
     f2_h:"WebGL Tere", f2_p:"<span class=\"nowrap\">60+ FPS</span> mā te GPU. Kāore he tāutanga.",
     f3_h:"10× Kopiri", f3_p:"Ka kopiri te <span class=\"nowrap\">SOG</span> i te <span class=\"nowrap\">300MB</span> ki te <span class=\"nowrap\">~15MB</span> mō te tere whakauta.",
     proc_label:"Rerenga", proc_h2:"Mai i te kāmera ki te pūtirotiro",
     s1_h:"Hopu", s1_p:"Hopu whakaahua mā te drone me te ringa.",
-    s2_h:"Hanga", s2_p:"Whakangungu GPU me te <span class=\"nowrap\">3DGS</span>.",
-    s3_h:"Tuku", s3_p:"Kopiri <span class=\"nowrap\">SOG</span> me te iframe kotahi.",
+    s2_h:"Hanga", s2_p:"Whakangungu GPU me te 3D.",
+    s3_h:"Tuku", s3_p:"Waehere iframe kotahi.",
     work_label:"Mahi", work_h2:"Ngā mahi hou",
     faq_label:"Pātai", faq_h2:"Ngā pātai auau",
-    q1:"He aha te rerekē o te <span class=\"nowrap\">3DGS</span>?", a1:"Ka hopu i te mārama mā ngā kōpiri — kāore he mahi ā-ringa.",
+    q1:"He aha ngā wāhi e taea ana?", a1:"Ngā mahi toi, ngā whare Airbnb, ngā whare whenua, me ngā taonga tūturu katoa.",
     q2:"Me tāuta he tono?", a2:"Kāo. <span class=\"nowrap\">WebGL 2.0</span> i roto i ngā pūtirotiro katoa.",
     q3:"Ka taea te whakauru ki taku paetukutuku?", a3:"Āe — mā te waehere iframe kotahi.",
     contact_badge:"Tīmatahia he Kaupapa",
     contact_h2:"Hangaia tō ao ki te 3D",
-    contact_p:"Me he hiahia koe ki te 3D Gaussian Splatting mō te hoahoanga me ngā taonga tuku iho — whakapā mai.",
+    contact_p:"Whakapā mai mō ngā mahi toi, whare, me ngā taonga tūturu.",
     contact_btn_quote:"Pātai Utu 💬",
     modal_badge:"Pātai & Mahi Tahi",
     modal_title:"Whakapā mai",
