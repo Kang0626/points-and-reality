@@ -267,83 +267,187 @@
 
     .btn-ghost:hover { background: var(--c-surface-hover); border-color: var(--c-border-hover); transform: translateY(-2px); }
 
-    /* ═════════════ 3D STAGE ═════════════ */
+    /* ═════════════ 3D STAGE (VOXELO-STYLE CLEAN VIEWER) ═════════════ */
     .stage-section {
-      padding: 0 24px 140px;
+      padding: 0 24px 120px; position: relative; z-index: 2;
     }
 
     .stage-container {
-      max-width: 1180px; margin: 0 auto;
-      border-radius: 20px; overflow: hidden;
-      border: 1px solid var(--c-border);
-      background: #000;
+      max-width: 1120px; margin: 0 auto;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #09090c;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,.04),
-        0 40px 80px -20px rgba(0,0,0,.8),
-        0 0 60px rgba(139,92,246,.06);
-      position: relative;
+        0 30px 80px -20px rgba(0, 0, 0, 0.8),
+        0 0 50px rgba(139, 92, 246, 0.06);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: border-color .3s var(--ease), box-shadow .3s var(--ease);
     }
-
-    .stage-chrome {
-      height: 44px; padding: 0 16px;
-      background: rgba(255,255,255,.03);
-      border-bottom: 1px solid var(--c-border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .stage-dots {
-      display: flex; gap: 6px;
-    }
-
-    .stage-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255,255,255,.08);
-    }
-
-    .stage-label {
-      font-family: var(--mono); font-size: 11px;
-      color: var(--c-text-3); display: flex; align-items: center; gap: 8px;
-    }
-
-    .stage-actions {
-      display: flex; gap: 6px;
-    }
-
-    .stage-btn {
-      background: none; border: 1px solid var(--c-border);
-      color: var(--c-text-2); font-family: var(--mono); font-size: 10px;
-      padding: 4px 10px; border-radius: 6px; cursor: pointer;
-      transition: all .2s;
-    }
-
-    .stage-btn:hover { background: var(--c-surface-hover); color: var(--c-text); border-color: var(--c-border-hover); }
-    .stage-btn.active { background: rgba(139,92,246,.15); color: var(--c-accent); border-color: rgba(139,92,246,.3); }
 
     .stage-viewport {
-      width: 100%; height: clamp(480px, 64vh, 720px);
-      background: #000; position: relative;
+      width: 100%; height: clamp(440px, 62vh, 680px);
+      position: relative; background: #000; overflow: hidden;
     }
 
     .stage-viewport iframe {
       width: 100%; height: 100%; border: none; display: block;
     }
 
-    .stage-footer {
-      height: 40px; padding: 0 16px;
-      background: rgba(255,255,255,.02);
-      border-top: 1px solid var(--c-border);
-      display: flex; align-items: center; justify-content: space-between;
+    /* Floating Top Controls (Minimal & Sleek) */
+    .stage-float-controls {
+      position: absolute; top: 18px; left: 20px; right: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 10;
     }
 
-    .stage-hint {
-      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+    .stage-model-badge {
+      pointer-events: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      background: rgba(15, 15, 20, 0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .stage-float-actions {
+      pointer-events: auto; display: flex; align-items: center; gap: 8px;
+    }
+
+    .stage-icon-btn {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(15, 15, 20, 0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.85);
+      display: grid; place-items: center; cursor: pointer;
+      transition: all .2s var(--ease);
+    }
+
+    .stage-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.25);
+      color: #fff; transform: scale(1.06);
+    }
+
+    /* Voxelo-style Interactive Overlay Card */
+    .stage-interact-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; z-index: 8;
+      transition: opacity .4s var(--ease), visibility .4s;
+    }
+
+    .stage-interact-overlay.dismissed {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+
+    .interact-card {
+      pointer-events: auto; cursor: pointer;
       display: flex; align-items: center; gap: 12px;
+      padding: 13px 24px; border-radius: 100px;
+      background: rgba(12, 12, 16, 0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(139, 92, 246, 0.18);
+      color: #fafafa; font-size: 13.5px; font-weight: 600;
+      transition: transform .25s var(--ease-spring), background .25s, border-color .25s;
+      animation: floatInteract 3.2s ease-in-out infinite;
     }
 
-    .kbd {
-      display: inline-flex; padding: 2px 6px; border-radius: 4px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
-      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+    @keyframes floatInteract {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .interact-card:hover {
+      background: rgba(22, 22, 30, 0.95); border-color: var(--c-accent);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(139, 92, 246, 0.35);
+      transform: scale(1.04);
+    }
+
+    .interact-icon {
+      color: var(--c-accent); display: grid; place-items: center;
+    }
+
+    /* Loader Overlay */
+    .stage-loader {
+      position: absolute; inset: 0;
+      background: #09090c;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; z-index: 7;
+      transition: opacity .35s var(--ease), visibility .35s;
+    }
+
+    .stage-loader.hidden {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+
+    .stage-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: var(--c-accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .stage-loader-text {
+      font-family: var(--mono); font-size: 11.5px;
+      color: var(--c-text-2); letter-spacing: .04em;
+    }
+
+    /* Voxelo-style Bottom Thumbnail Showcase Selector */
+    .stage-selector-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stage-thumb-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px; padding: 12px 14px;
+      display: flex; align-items: center; gap: 12px;
+      cursor: pointer; transition: all .25s var(--ease);
+    }
+
+    .stage-thumb-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .stage-thumb-card.active {
+      background: rgba(167, 139, 250, 0.08);
+      border-color: rgba(167, 139, 250, 0.45);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.12);
+    }
+
+    .thumb-img-wrap {
+      width: 48px; height: 48px; border-radius: 8px;
+      overflow: hidden; background: #000; flex-shrink: 0;
+    }
+
+    .thumb-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .thumb-info {
+      display: flex; flex-direction: column; gap: 3px; min-width: 0;
+    }
+
+    .thumb-title {
+      font-size: 13px; font-weight: 600; color: #fafafa;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .thumb-action {
+      font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+      color: var(--c-accent); letter-spacing: .04em;
     }
 
     /* ═════════════ SECTIONS ═════════════ */
@@ -848,41 +952,71 @@
   </div>
 </section>
 
-<!-- ═══ 3D Stage ═══ -->
+<!-- ═══ 3D Stage (Voxelo-Style Clean Viewer) ═══ -->
 <section class="stage-section" id="stage">
   <div class="stage-container reveal-on-scroll">
-    <div class="stage-chrome">
-      <div class="stage-dots">
-        <span class="stage-dot"></span>
-        <span class="stage-dot"></span>
-        <span class="stage-dot"></span>
-      </div>
-
-      <div class="stage-label">
-        <span class="pulse"></span>
-        <span id="stage-title">FordEscape_new_LF_09</span>
-      </div>
-
-      <div class="stage-actions" id="model-tabs">
-        <button class="stage-btn active" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_09.html','FordEscape_new_LF_09',this)">LF_09</button>
-        <button class="stage-btn" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_08.html','FordEscape_new_LF_08',this)">LF_08</button>
-        <button class="stage-btn" onclick="goFS()" title="Fullscreen">⛶</button>
-      </div>
-    </div>
-
-    <div class="stage-viewport">
+    <div class="stage-viewport" id="stageViewport">
+      <!-- 3D Iframe Viewer -->
       <iframe id="stage-iframe" src="05_web_build/Review_FordEscape_new_LF_09.html"
               allow="fullscreen; xr-spatial-tracking" title="3DGS Viewport"></iframe>
+
+      <!-- Preloader Overlay -->
+      <div class="stage-loader hidden" id="stageLoader">
+        <div class="stage-spinner"></div>
+        <span class="stage-loader-text" data-i18n="viewer_loading">Loading 3D Experience...</span>
+      </div>
+
+      <!-- Voxelo-style Interactive Prompt Badge Overlay -->
+      <div class="stage-interact-overlay" id="stageInteractPrompt" onclick="dismissInteractPrompt()">
+        <div class="interact-card">
+          <span class="interact-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+              <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+              <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+              <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+            </svg>
+          </span>
+          <span class="interact-text" data-i18n="interact_prompt">Click and drag to interact</span>
+        </div>
+      </div>
+
+      <!-- Floating Minimal Controls -->
+      <div class="stage-float-controls">
+        <div class="stage-model-badge">
+          <span class="pulse"></span>
+          <span id="stage-title">FordEscape_new_LF_09</span>
+        </div>
+        <div class="stage-float-actions">
+          <button class="stage-icon-btn" onclick="goFS()" title="Fullscreen" aria-label="Fullscreen">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="stage-footer">
-      <div class="stage-hint">
-        <span><kbd class="kbd">Drag</kbd> orbit</span>
-        <span><kbd class="kbd">Scroll</kbd> zoom</span>
-        <span><kbd class="kbd">Shift+Drag</kbd> pan</span>
+    <!-- Voxelo-style Bottom Thumbnail Showcase Selector -->
+    <div class="stage-selector-row" id="stageSelectorRow">
+      <div class="stage-thumb-card active" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_09.html','FordEscape_new_LF_09',this)">
+        <div class="thumb-img-wrap">
+          <img src="assets/hero-pointcloud.jpg" alt="LF_09" loading="lazy">
+        </div>
+        <div class="thumb-info">
+          <div class="thumb-title">Ford Escape (LF_09)</div>
+          <div class="thumb-action" data-i18n="view_3d_btn">VIEW IN 3D →</div>
+        </div>
       </div>
-      <div class="stage-hint">
-        <span><span class="nowrap">WebGL 2.0</span> · <span class="nowrap">60+ FPS</span></span>
+
+      <div class="stage-thumb-card" onclick="switchModel('05_web_build/Review_FordEscape_new_LF_08.html','FordEscape_new_LF_08',this)">
+        <div class="thumb-img-wrap">
+          <img src="assets/hero-pointcloud.jpg" alt="LF_08" loading="lazy">
+        </div>
+        <div class="thumb-info">
+          <div class="thumb-title">Ford Escape (LF_08)</div>
+          <div class="thumb-action" data-i18n="view_3d_btn">VIEW IN 3D →</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1370,17 +1504,40 @@ window.addEventListener('scroll', () => {
   els.forEach(el => observer.observe(el));
 })();
 
-/* ═══ Stage switcher ═══ */
-function switchModel(url, title, btn) {
-  document.getElementById('stage-title').textContent = title;
-  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+/* ═══ Stage switcher & Interactive Prompt ═══ */
+function dismissInteractPrompt() {
+  const p = document.getElementById('stageInteractPrompt');
+  if (p) p.classList.add('dismissed');
+}
+
+const stageVp = document.getElementById('stageViewport');
+if (stageVp) {
+  stageVp.addEventListener('mousedown', dismissInteractPrompt);
+  stageVp.addEventListener('touchstart', dismissInteractPrompt, { passive: true });
+}
+
+function switchModel(url, title, el) {
+  const titleEl = document.getElementById('stage-title');
+  if (titleEl) titleEl.textContent = title;
+
+  const loader = document.getElementById('stageLoader');
+  const prompt = document.getElementById('stageInteractPrompt');
+  if (loader) loader.classList.remove('hidden');
+  if (prompt) prompt.classList.remove('dismissed');
+
+  document.querySelectorAll('.stage-thumb-card').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
 
   const iframe = document.getElementById('stage-iframe');
-  if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
-    PointsRealityMotion.transitionStage(iframe, url);
-  } else {
-    iframe.src = url;
+  if (iframe) {
+    iframe.onload = () => {
+      if (loader) loader.classList.add('hidden');
+    };
+    if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
+      PointsRealityMotion.transitionStage(iframe, url);
+    } else {
+      iframe.src = url;
+    }
   }
 }
 
@@ -1399,31 +1556,26 @@ async function loadModels() {
     const models = data.models || [];
     if (!models.length) return;
 
-    // Update tabs
-    const tabs = document.getElementById('model-tabs');
-    if (tabs) {
-      const fsBtn = tabs.querySelector('[title="Fullscreen"]');
-      tabs.innerHTML = '';
-      models.slice(0, 5).forEach((m, i) => {
-        const label = (m.title || m.raw_title.replace(/^Review_/, '')).replace(/^FordEscape_new_/, '');
-        const btn = document.createElement('button');
-        btn.className = 'stage-btn' + (i === 0 ? ' active' : '');
-        btn.textContent = label;
-        btn.onclick = () => switchModel(m.path, m.title || m.raw_title.replace(/^Review_/, ''), btn);
-        tabs.appendChild(btn);
+    // Update bottom selector row
+    const row = document.getElementById('stageSelectorRow');
+    if (row) {
+      row.innerHTML = '';
+      models.forEach((m, i) => {
+        const title = m.title || m.raw_title.replace(/^Review_/, '');
+        const card = document.createElement('div');
+        card.className = 'stage-thumb-card' + (i === 0 ? ' active' : '');
+        card.innerHTML = `
+          <div class="thumb-img-wrap">
+            <img src="assets/hero-pointcloud.jpg" alt="${title}" loading="lazy">
+          </div>
+          <div class="thumb-info">
+            <div class="thumb-title">${title}</div>
+            <div class="thumb-action" data-i18n="view_3d_btn">VIEW IN 3D →</div>
+          </div>
+        `;
+        card.onclick = () => switchModel(m.path, title, card);
+        row.appendChild(card);
       });
-      if (fsBtn) tabs.appendChild(fsBtn);
-      else {
-        const fb = document.createElement('button');
-        fb.className = 'stage-btn';
-        fb.textContent = '⛶';
-        fb.title = 'Fullscreen';
-        fb.onclick = goFS;
-        tabs.appendChild(fb);
-      }
-      // Load first model
-      const first = models[0];
-      switchModel(first.path, first.title || first.raw_title.replace(/^Review_/, ''), tabs.firstChild);
     }
 
     // Update gallery with lightweight interactive launchers (zero WebGL context overload)
@@ -1516,7 +1668,10 @@ const i18n = {
     opt_realestate:"🏢 Real Estate / Architecture / Global Buyer Sales",
     opt_product:"🚗 Physical Product / Automotive / Showroom",
     opt_enterprise:"⚡ Custom WebGL & Enterprise Solution",
-    opt_other:"💬 General / Other Inquiries"
+    opt_other:"💬 General / Other Inquiries",
+    interact_prompt:"Click and drag to interact",
+    viewer_loading:"Loading 3D Experience...",
+    view_3d_btn:"VIEW IN 3D →"
   },
   ko: {
     nav_stage:"스테이지", nav_solutions:"적용 분야", nav_tech:"핵심 가치", nav_work:"포트폴리오", nav_faq:"FAQ", nav_inquire:"💬 견적 문의", nav_showroom:"쇼룸 ↗",
@@ -1569,7 +1724,10 @@ const i18n = {
     opt_realestate:"🏢 부동산 / 건축 / 해외 바이어 분양 쇼케이스",
     opt_product:"🚗 실물 제품 / 차량 / 럭셔리 쇼룸 360°",
     opt_enterprise:"⚡ 커스텀 WebGL 뷰어 & 엔터프라이즈 솔루션",
-    opt_other:"💬 일반 문의 및 기타 협업 제안"
+    opt_other:"💬 일반 문의 및 기타 협업 제안",
+    interact_prompt:"클릭하여 3D 회전 및 탐색",
+    viewer_loading:"3D 모델 로딩 중...",
+    view_3d_btn:"3D로 탐색하기 →"
   },
   zh: {
     nav_stage:"舞台", nav_solutions:"解决方案", nav_tech:"核心价值", nav_work:"作品", nav_faq:"常见问题", nav_inquire:"💬 咨询报价", nav_showroom:"展厅 ↗",
@@ -1622,7 +1780,10 @@ const i18n = {
     opt_realestate:"🏢 地产 / 建筑 / 海外买家展示方案",
     opt_product:"🚗 实物产品 / 汽车 / 高端展厅 360°",
     opt_enterprise:"⚡ 定制 WebGL 引擎与企业级解决方案",
-    opt_other:"💬 其他咨询与商务合作"
+    opt_other:"💬 其他咨询与商务合作",
+    interact_prompt:"点击并拖拽以 3D 交互",
+    viewer_loading:"正在加载 3D 场景...",
+    view_3d_btn:"进入 3D 体验 →"
   },
   mi: {
     nav_stage:"Whakaari", nav_solutions:"Rongoā", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_inquire:"💬 Pātai Utu", nav_showroom:"Whare Whakaatu ↗",
@@ -1667,7 +1828,10 @@ const i18n = {
     opt_realestate:"🏢 Whenua & Whare",
     opt_product:"🚗 Taonga Tūturu",
     opt_enterprise:"⚡ WebGL Hangarau",
-    opt_other:"💬 Pātai Whānui"
+    opt_other:"💬 Pātai Whānui",
+    interact_prompt:"Pāwhiri me te tō hei taunekeneke",
+    viewer_loading:"E whakauta ana i te 3D...",
+    view_3d_btn:"Tirohia ki te 3D →"
   }
 };
 

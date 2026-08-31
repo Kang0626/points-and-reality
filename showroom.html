@@ -230,78 +230,128 @@
       50% { opacity: .4; }
     }
 
-    /* ═══ STAGE (macOS window chrome) ═══ */
+    /* ═══ VOXELO-STYLE CLEAN STAGE ═══ */
     .stage-container {
-      border-radius: 20px; overflow: hidden;
-      border: 1px solid var(--c-border);
-      background: #000;
+      border-radius: 24px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #09090c;
       box-shadow:
-        0 0 0 1px rgba(255,255,255,.04),
-        0 40px 80px -20px rgba(0,0,0,.8),
-        0 0 60px rgba(139,92,246,.06);
+        0 30px 80px -20px rgba(0,0,0,0.8),
+        0 0 50px rgba(139,92,246,0.06);
       margin-bottom: 56px;
-    }
-
-    .stage-chrome {
-      height: 44px; padding: 0 16px;
-      background: rgba(255,255,255,.03);
-      border-bottom: 1px solid var(--c-border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .stage-dots {
-      display: flex; gap: 6px;
-    }
-
-    .stage-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(255,255,255,.08);
-    }
-
-    .stage-label {
-      font-family: var(--mono); font-size: 11px;
-      color: var(--c-text-3); display: flex; align-items: center; gap: 8px;
-    }
-
-    .stage-actions { display: flex; gap: 6px; }
-
-    .stage-btn {
-      background: none; border: 1px solid var(--c-border);
-      color: var(--c-text-2); font-family: var(--mono); font-size: 10px;
-      padding: 4px 10px; border-radius: 6px; cursor: pointer;
-      transition: all .2s;
-    }
-
-    .stage-btn:hover {
-      background: var(--c-surface-hover); color: var(--c-text);
-      border-color: var(--c-border-hover);
+      position: relative;
     }
 
     .stage-viewport {
-      width: 100%; height: clamp(400px, 56vh, 640px);
-      background: #000; position: relative;
+      width: 100%; height: clamp(440px, 62vh, 680px);
+      background: #000; position: relative; overflow: hidden;
     }
 
     .stage-viewport iframe {
       width: 100%; height: 100%; border: none; display: block;
     }
 
-    .stage-footer {
-      height: 40px; padding: 0 16px;
-      background: rgba(255,255,255,.02);
-      border-top: 1px solid var(--c-border);
-      display: flex; align-items: center; justify-content: space-between;
+    /* Floating Top Controls */
+    .stage-float-controls {
+      position: absolute; top: 18px; left: 20px; right: 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 10;
     }
 
-    .stage-hint {
-      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+    .stage-model-badge {
+      pointer-events: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 100px;
+      background: rgba(15, 15, 20, 0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .stage-float-actions {
+      pointer-events: auto; display: flex; align-items: center; gap: 8px;
+    }
+
+    .stage-action-link, .stage-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 6px 12px; border-radius: 8px;
+      background: rgba(15, 15, 20, 0.7);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.85); font-family: var(--mono); font-size: 11px;
+      text-decoration: none; cursor: pointer;
+      transition: all .2s var(--ease);
+    }
+
+    .stage-action-link:hover, .stage-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.25);
+      color: #fff; transform: translateY(-1px);
+    }
+
+    /* Voxelo-style Interactive Overlay Card */
+    .stage-interact-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; z-index: 8;
+      transition: opacity .4s var(--ease), visibility .4s;
+    }
+
+    .stage-interact-overlay.dismissed {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+
+    .interact-card {
+      pointer-events: auto; cursor: pointer;
       display: flex; align-items: center; gap: 12px;
+      padding: 13px 24px; border-radius: 100px;
+      background: rgba(12, 12, 16, 0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(139, 92, 246, 0.18);
+      color: #fafafa; font-size: 13.5px; font-weight: 600;
+      transition: transform .25s var(--ease-spring), background .25s, border-color .25s;
+      animation: floatInteract 3.2s ease-in-out infinite;
     }
 
-    .kbd {
-      display: inline-flex; padding: 2px 6px; border-radius: 4px;
-      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
-      font-family: var(--mono); font-size: 10px; color: var(--c-text-3);
+    @keyframes floatInteract {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .interact-card:hover {
+      background: rgba(22, 22, 30, 0.95); border-color: var(--c-accent);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(139, 92, 246, 0.35);
+      transform: scale(1.04);
+    }
+
+    .interact-icon {
+      color: var(--c-accent); display: grid; place-items: center;
+    }
+
+    /* Loader Overlay */
+    .stage-loader {
+      position: absolute; inset: 0;
+      background: #09090c;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; z-index: 7;
+      transition: opacity .35s var(--ease), visibility .35s;
+    }
+
+    .stage-loader.hidden {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+
+    .stage-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.08);
+      border-top-color: var(--c-accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .stage-loader-text {
+      font-family: var(--mono); font-size: 11.5px;
+      color: var(--c-text-2); letter-spacing: .04em;
     }
 
     /* ═══ FILTER BAR ═══ */
@@ -334,65 +384,59 @@
       font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
     }
 
-    /* ═══ MODEL CARDS GRID ═══ */
+    /* ═══ MODEL CARDS GRID (VOXELO STYLE) ═══ */
     .model-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
     }
 
     .model-card {
-      background: var(--c-bg);
+      background: var(--c-surface);
       border: 1px solid var(--c-border);
-      border-radius: 14px; overflow: hidden;
+      border-radius: 18px; overflow: hidden;
       display: flex; flex-direction: column;
       transition: all .35s var(--ease-spring);
-      position: relative;
+      position: relative; cursor: pointer;
     }
 
     .model-card:hover {
       border-color: var(--c-border-hover);
       transform: translateY(-4px);
-      box-shadow: 0 20px 50px -12px rgba(0,0,0,.7), 0 0 30px rgba(139,92,246,.05);
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,.7), 0 0 30px rgba(139,92,246,.1);
     }
 
     .model-card.active-stage {
-      border-color: rgba(139,92,246,.4);
-      box-shadow: 0 0 30px rgba(139,92,246,.1);
+      border-color: rgba(167, 139, 250, 0.5);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.18);
+      background: rgba(167, 139, 250, 0.04);
+    }
+
+    .card-thumb-wrap {
+      width: 100%; height: 180px;
+      background: #000; overflow: hidden; position: relative;
+    }
+
+    .card-thumb-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .4s var(--ease);
+    }
+
+    .model-card:hover .card-thumb-wrap img {
+      transform: scale(1.06);
+    }
+
+    .card-thumb-badge {
+      position: absolute; top: 12px; left: 12px;
+      display: flex; gap: 6px; z-index: 2;
     }
 
     .card-body {
-      padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
-    }
-
-    .card-header-row {
-      display: flex; justify-content: space-between; align-items: center;
-    }
-
-    .card-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-
-    .tag {
-      font-family: var(--mono); font-size: 10px; font-weight: 500;
-      padding: 2px 8px; border-radius: 4px;
-      background: var(--c-surface); color: var(--c-text-2);
-    }
-
-    .tag-accent {
-      background: rgba(139,92,246,.12); color: var(--c-accent);
-      border: 1px solid rgba(139,92,246,.2);
-    }
-
-    .tag-review {
-      background: rgba(245,158,11,.12); color: #fbbf24;
-      border: 1px solid rgba(245,158,11,.25);
-    }
-
-    .card-date {
-      font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
+      padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
     }
 
     .card-title {
-      font-size: 16px; font-weight: 700; letter-spacing: -.02em;
+      font-size: 16px; font-weight: 700; letter-spacing: -.02em; color: #fff;
     }
 
     .card-file {
@@ -401,31 +445,29 @@
     }
 
     .card-actions {
-      display: flex; gap: 8px; margin-top: 4px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
     }
 
-    .btn-view {
-      flex: 1; display: inline-flex; align-items: center; justify-content: center;
-      gap: 6px; padding: 8px 14px; border-radius: 8px;
-      background: #fff; color: #09090b; font-size: 12px; font-weight: 600;
-      border: none; cursor: pointer; font-family: var(--font);
-      transition: all .2s var(--ease-spring);
+    .btn-view-3d {
+      font-family: var(--mono); font-size: 11.5px; font-weight: 600;
+      color: var(--c-accent); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+      transition: gap .2s var(--ease), color .2s;
     }
 
-    .btn-view:hover { opacity: .85; transform: translateY(-1px); }
-
-    .btn-open {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 4px; padding: 8px 14px; border-radius: 8px;
-      background: transparent; color: var(--c-text);
-      border: 1px solid var(--c-border); font-size: 12px; font-weight: 600;
-      text-decoration: none; font-family: var(--font);
-      transition: all .2s var(--ease);
+    .model-card:hover .btn-view-3d {
+      color: #fff; gap: 8px;
     }
 
-    .btn-open:hover {
-      background: var(--c-surface-hover);
-      border-color: var(--c-border-hover);
+    .btn-open-link {
+      font-family: var(--mono); font-size: 11px; color: var(--c-text-3);
+      text-decoration: none; padding: 4px 8px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all .2s;
+    }
+
+    .btn-open-link:hover {
+      color: #fff; border-color: var(--c-border-hover); background: var(--c-surface-hover);
     }
 
     /* ═══ EMPTY STATE ═══ */
@@ -640,33 +682,48 @@
     </div>
   </div>
 
-  <!-- Live Stage -->
+  <!-- Live Stage (Voxelo-Style Clean Viewer) -->
   <div class="stage-container">
-    <div class="stage-chrome">
-      <div class="stage-dots">
-        <span class="stage-dot"></span>
-        <span class="stage-dot"></span>
-        <span class="stage-dot"></span>
-      </div>
-      <div class="stage-label">
-        <span class="pulse"></span>
-        <span id="activeModelTitle">3DGS Viewer</span>
-      </div>
-      <div class="stage-actions">
-        <a id="btnOpenStandalone" href="#" target="_blank" class="stage-btn" data-i18n="btn_standalone">Open ↗</a>
-        <button class="stage-btn" onclick="goFS()" title="Fullscreen">⛶</button>
-      </div>
-    </div>
-    <div class="stage-viewport">
+    <div class="stage-viewport" id="showroomViewport">
+      <!-- 3D Iframe Viewer -->
       <iframe id="stageIframe" src="" title="3DGS Viewer" allow="fullscreen; xr-spatial-tracking"></iframe>
-    </div>
-    <div class="stage-footer">
-      <div class="stage-hint">
-        <span><kbd class="kbd">Drag</kbd> orbit</span>
-        <span><kbd class="kbd">Scroll</kbd> zoom</span>
-        <span><kbd class="kbd">Shift+Drag</kbd> pan</span>
+
+      <!-- Preloader Overlay -->
+      <div class="stage-loader" id="showroomLoader">
+        <div class="stage-spinner"></div>
+        <span class="stage-loader-text" data-i18n="viewer_loading">Loading 3D Experience...</span>
       </div>
-      <div class="stage-hint">WebGL 2.0</div>
+
+      <!-- Voxelo-style Interactive Prompt Badge Overlay -->
+      <div class="stage-interact-overlay" id="showroomInteractPrompt" onclick="dismissShowroomPrompt()">
+        <div class="interact-card">
+          <span class="interact-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+              <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+              <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+              <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+            </svg>
+          </span>
+          <span class="interact-text" data-i18n="interact_prompt">Click and drag to interact</span>
+        </div>
+      </div>
+
+      <!-- Floating Minimal Controls -->
+      <div class="stage-float-controls">
+        <div class="stage-model-badge">
+          <span class="pulse"></span>
+          <span id="activeModelTitle">3DGS Viewer</span>
+        </div>
+        <div class="stage-float-actions">
+          <a id="btnOpenStandalone" href="#" target="_blank" class="stage-action-link" data-i18n="btn_standalone">Open ↗</a>
+          <button class="stage-icon-btn" onclick="goFS()" title="Fullscreen" aria-label="Fullscreen">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -908,7 +965,10 @@ const translations = {
     form_email:"Email Address",
     form_type:"Inquiry Type",
     form_message:"Project Details",
-    form_submit:"Send Inquiry 🚀"
+    form_submit:"Send Inquiry 🚀",
+    interact_prompt:"Click and drag to interact",
+    viewer_loading:"Loading 3D Experience...",
+    view_3d_btn:"VIEW IN 3D →"
   },
   ko: {
     nav_home:"홈", nav_showroom:"쇼룸", nav_tech:"기술", nav_process:"프로세스", nav_work:"포트폴리오", nav_inquire:"💬 견적 문의", nav_back:"← 홈",
@@ -931,7 +991,10 @@ const translations = {
     form_email:"이메일 주소",
     form_type:"문의 유형",
     form_message:"프로젝트 세부 내용",
-    form_submit:"문의 보내기 🚀"
+    form_submit:"문의 보내기 🚀",
+    interact_prompt:"클릭하여 3D 회전 및 탐색",
+    viewer_loading:"3D 모델 로딩 중...",
+    view_3d_btn:"3D로 탐색하기 →"
   },
   zh: {
     nav_home:"首页", nav_showroom:"展厅", nav_tech:"技术", nav_process:"流程", nav_work:"作品", nav_inquire:"💬 咨询报价", nav_back:"← 首页",
@@ -954,7 +1017,10 @@ const translations = {
     form_email:"电子邮箱",
     form_type:"咨询类型",
     form_message:"项目详情",
-    form_submit:"提交咨询 🚀"
+    form_submit:"提交咨询 🚀",
+    interact_prompt:"点击并拖拽以 3D 交互",
+    viewer_loading:"正在加载 3D 场景...",
+    view_3d_btn:"进入 3D 体验 →"
   },
   mi: {
     nav_home:"Kāinga", nav_showroom:"Whare Whakaari", nav_tech:"Hangarau", nav_process:"Rerenga", nav_work:"Mahi", nav_inquire:"💬 Pātai Utu", nav_back:"← Kāinga",
@@ -977,7 +1043,10 @@ const translations = {
     form_email:"Īmēra",
     form_type:"Momo Pātai",
     form_message:"Ngā taipitopito kaupapa",
-    form_submit:"Tuku Pātai 🚀"
+    form_submit:"Tuku Pātai 🚀",
+    interact_prompt:"Pāwhiri me te tō hei taunekeneke",
+    viewer_loading:"E whakauta ana i te 3D...",
+    view_3d_btn:"Tirohia ki te 3D →"
   }
 };
 
@@ -1079,7 +1148,18 @@ function sortNewest(arr) {
   });
 }
 
-/* ═══ Stage controller ═══ */
+/* ═══ Stage controller & Voxelo Prompt ═══ */
+function dismissShowroomPrompt() {
+  const p = document.getElementById('showroomInteractPrompt');
+  if (p) p.classList.add('dismissed');
+}
+
+const showVp = document.getElementById('showroomViewport');
+if (showVp) {
+  showVp.addEventListener('mousedown', dismissShowroomPrompt);
+  showVp.addEventListener('touchstart', dismissShowroomPrompt, { passive: true });
+}
+
 function setActiveStage(model) {
   if (!model || !model.path) return;
   currentActiveModel = model;
@@ -1087,14 +1167,23 @@ function setActiveStage(model) {
   const iframe = document.getElementById('stageIframe');
   const titleEl = document.getElementById('activeModelTitle');
   const btnOpen = document.getElementById('btnOpenStandalone');
+  const loader = document.getElementById('showroomLoader');
+  const prompt = document.getElementById('showroomInteractPrompt');
 
   if (titleEl) titleEl.textContent = getCleanTitle(model);
   if (btnOpen) btnOpen.href = model.path;
+  if (loader) loader.classList.remove('hidden');
+  if (prompt) prompt.classList.remove('dismissed');
 
-  if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
-    PointsRealityMotion.transitionStage(iframe, model.path);
-  } else if (iframe) {
-    iframe.src = model.path;
+  if (iframe) {
+    iframe.onload = () => {
+      if (loader) loader.classList.add('hidden');
+    };
+    if (window.PointsRealityMotion && PointsRealityMotion.transitionStage) {
+      PointsRealityMotion.transitionStage(iframe, model.path);
+    } else {
+      iframe.src = model.path;
+    }
   }
 
   document.querySelectorAll('.model-card').forEach(c => {
@@ -1133,26 +1222,30 @@ function renderCards(models) {
     if (currentActiveModel && currentActiveModel.path === m.path) card.classList.add('active-stage');
 
     card.innerHTML = `
-      <div class="card-body">
-        <div class="card-header-row">
-          <div class="card-tags">
-            <span class="tag">${isSog ? 'SOG' : 'WebGL'}</span>
-            ${isLatest ? `<span class="tag tag-accent">${dict.badge_latest || 'Latest'}</span>` : ''}
-            ${isReview ? `<span class="tag tag-review">${dict.badge_review || 'Review'}</span>` : ''}
-          </div>
-          <span class="card-date">${m.date || ''}</span>
+      <div class="card-thumb-wrap">
+        <img src="assets/hero-pointcloud.jpg" alt="${title}" loading="lazy">
+        <div class="card-thumb-badge">
+          <span class="tag">${isSog ? 'SOG' : 'WebGL'}</span>
+          ${isLatest ? `<span class="tag tag-accent">${dict.badge_latest || 'Latest'}</span>` : ''}
+          ${isReview ? `<span class="tag tag-review">${dict.badge_review || 'Review'}</span>` : ''}
         </div>
+      </div>
+      <div class="card-body">
         <div class="card-title">${title}</div>
         <div class="card-file">${m.filename || ''}</div>
         <div class="card-actions">
-          <button type="button" class="btn-view" data-action="stage" data-idx="${idx}">
-            ${dict.btn_stage || '▶ View in Stage'}
-          </button>
-          <a href="${m.path}" target="_blank" rel="noopener" class="btn-open">
+          <span class="btn-view-3d">${dict.view_3d_btn || 'VIEW IN 3D →'}</span>
+          <a href="${m.path}" target="_blank" rel="noopener" class="btn-open-link" onclick="event.stopPropagation()">
             ${dict.btn_open || '↗ Open'}
           </a>
         </div>
       </div>`;
+
+    card.onclick = () => {
+      setActiveStage(m);
+      const stageEl = document.querySelector('.stage-container');
+      if (stageEl) stageEl.scrollIntoView({ behavior: 'smooth' });
+    };
 
     grid.appendChild(card);
   });
@@ -1206,15 +1299,6 @@ document.addEventListener('DOMContentLoaded', () => {
     langSelect.addEventListener('change', e => applyLanguage(e.target.value));
   }
   applyLanguage(saved);
-
-  // Card grid delegation
-  document.getElementById('showroomGrid').addEventListener('click', e => {
-    const btn = e.target.closest('[data-action="stage"]');
-    if (btn) {
-      const idx = parseInt(btn.getAttribute('data-idx'), 10);
-      if (!isNaN(idx) && currentFilteredModels[idx]) setActiveStage(currentFilteredModels[idx]);
-    }
-  });
 
   // Filter pills
   document.querySelectorAll('.filter-pill').forEach(pill => {
