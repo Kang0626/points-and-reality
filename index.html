@@ -741,13 +741,28 @@
       margin-bottom: 6px;
     }
     .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 10px 14px; border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04); border: 1px solid var(--c-border);
-      color: #fff; font-family: var(--font); font-size: 13px;
-      outline: none; transition: border-color .2s, background .2s;
+      width: 100%; padding: 11px 14px; border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--c-border);
+      color: #fff; font-family: var(--font); font-size: 13.5px;
+      outline: none; transition: border-color .2s, background .2s, box-shadow .2s;
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--c-accent); background: rgba(255, 255, 255, 0.07);
+      border-color: var(--c-accent); background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+    .form-select {
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      padding-right: 38px;
+      cursor: pointer;
+    }
+    .form-select option {
+      background-color: #16161c;
+      color: #f4f4f5;
+      padding: 12px;
     }
     .form-textarea {
       resize: vertical; min-height: 80px;
@@ -1059,7 +1074,7 @@
       <span data-i18n="modal_badge">Inquiry & Collaboration</span>
     </div>
     <h3 class="modal-title" data-i18n="modal_title">Get in touch with us</h3>
-    <p class="modal-desc" data-i18n="modal_desc">Tell us about your project or required 3DGS deliverables. We will get back to you within 24 hours.</p>
+    <p class="modal-desc" data-i18n="modal_desc">Tell us about your space, artwork, or 3D project requirements. We will get back to you within 24 hours.</p>
 
     <form id="contactForm" onsubmit="submitContactForm(event)">
       <div class="form-group">
@@ -1075,12 +1090,12 @@
       <div class="form-group">
         <label class="form-label" data-i18n="form_type">Inquiry Type</label>
         <select id="formType" class="form-select">
-          <option value="Fine Art / Gallery / Cultural Exhibition">Fine Art / Gallery / Cultural Exhibition</option>
-          <option value="Airbnb / Hotel / Hospitality Showcase">Airbnb / Hotel / Hospitality Showcase</option>
-          <option value="Real Estate / Architecture / Global Buyer Sales">Real Estate / Architecture / Global Buyer Sales</option>
-          <option value="Physical Product / Automotive / Showroom">Physical Product / Automotive / Showroom</option>
-          <option value="Custom WebGL & Enterprise Solution">Custom WebGL & Enterprise Solution</option>
-          <option value="Other Inquiries">General / Other Inquiries</option>
+          <option value="Fine Art / Gallery / Cultural Exhibition" data-i18n="opt_art">🎨 Fine Art / Gallery / Cultural Exhibition</option>
+          <option value="Airbnb / Hotel / Hospitality Showcase" data-i18n="opt_stay">🏡 Airbnb / Hotel / Hospitality Showcase</option>
+          <option value="Real Estate / Architecture / Global Buyer Sales" data-i18n="opt_realestate">🏢 Real Estate / Architecture / Global Buyer Sales</option>
+          <option value="Physical Product / Automotive / Showroom" data-i18n="opt_product">🚗 Physical Product / Automotive / Showroom</option>
+          <option value="Custom WebGL & Enterprise Solution" data-i18n="opt_enterprise">⚡ Custom WebGL &amp; Enterprise Solution</option>
+          <option value="Other Inquiries" data-i18n="opt_other">💬 General / Other Inquiries</option>
         </select>
       </div>
 
@@ -1488,12 +1503,18 @@ const i18n = {
     contact_btn_quote:"Request a Quote 💬",
     modal_badge:"Inquiry & Collaboration",
     modal_title:"Get in touch with us",
-    modal_desc:"Tell us about your space, scale, or required web 3D showcase. We will get back to you within 24 hours.",
+    modal_desc:"Tell us about your space, artwork, or 3D project requirements. We will get back to you within 24 hours.",
     form_name:"Name / Company",
     form_email:"Email Address",
     form_type:"Inquiry Type",
     form_message:"Project Details",
-    form_submit:"Send Inquiry 🚀"
+    form_submit:"Send Inquiry 🚀",
+    opt_art:"🎨 Fine Art / Gallery / Cultural Exhibition",
+    opt_stay:"🏡 Airbnb / Hotel / Hospitality Showcase",
+    opt_realestate:"🏢 Real Estate / Architecture / Global Buyer Sales",
+    opt_product:"🚗 Physical Product / Automotive / Showroom",
+    opt_enterprise:"⚡ Custom WebGL & Enterprise Solution",
+    opt_other:"💬 General / Other Inquiries"
   },
   ko: {
     nav_stage:"스테이지", nav_solutions:"적용 분야", nav_tech:"핵심 가치", nav_work:"포트폴리오", nav_faq:"FAQ", nav_inquire:"💬 견적 문의", nav_showroom:"쇼룸 ↗",
@@ -1535,12 +1556,18 @@ const i18n = {
     contact_btn_quote:"견적 및 협업 문의 💬",
     modal_badge:"견적 및 프로젝트 문의",
     modal_title:"프로젝트 문의하기",
-    modal_desc:"원하시는 공간 스캔 규모나 WebGL 뷰어 요구사항을 알려주시면 24시간 이내에 상세히 안내해 드립니다.",
+    modal_desc:"공간, 전시 작품, 부동산 매물 또는 3D 프로젝트 요구사항을 알려주시면 24시간 이내에 상세히 안내해 드립니다.",
     form_name:"성함 / 회사명",
     form_email:"이메일 주소",
     form_type:"문의 유형",
     form_message:"프로젝트 세부 내용",
-    form_submit:"문의 보내기 🚀"
+    form_submit:"문의 보내기 🚀",
+    opt_art:"🎨 예술가 / 갤러리 / 문화 전시 3D 아카이빙",
+    opt_stay:"🏡 에어비앤비 / 호텔 / 프리미엄 숙박 가상 투어",
+    opt_realestate:"🏢 부동산 / 건축 / 해외 바이어 분양 쇼케이스",
+    opt_product:"🚗 실물 제품 / 차량 / 럭셔리 쇼룸 360°",
+    opt_enterprise:"⚡ 커스텀 WebGL 뷰어 & 엔터프라이즈 솔루션",
+    opt_other:"💬 일반 문의 및 기타 협업 제안"
   },
   zh: {
     nav_stage:"舞台", nav_solutions:"解决方案", nav_tech:"核心价值", nav_work:"作品", nav_faq:"常见问题", nav_inquire:"💬 咨询报价", nav_showroom:"展厅 ↗",
@@ -1582,12 +1609,18 @@ const i18n = {
     contact_btn_quote:"获取报价 💬",
     modal_badge:"项目咨询与合作",
     modal_title:"联系我们",
-    modal_desc:"告诉我们您的空间规模与 3D 需求，我们将在 24 小时内为您回复。",
+    modal_desc:"告诉我们您的空间、展品或 3D 项目需求，我们将在 24 小时内为您回复。",
     form_name:"姓名 / 公司名称",
     form_email:"电子邮箱",
     form_type:"咨询类型",
     form_message:"项目详情",
-    form_submit:"提交咨询 🚀"
+    form_submit:"提交咨询 🚀",
+    opt_art:"🎨 艺术 / 画廊 / 文化展览 3D 数字化",
+    opt_stay:"🏡 民宿 / 酒店 / 高端住宿实景漫游",
+    opt_realestate:"🏢 地产 / 建筑 / 海外买家展示方案",
+    opt_product:"🚗 实物产品 / 汽车 / 高端展厅 360°",
+    opt_enterprise:"⚡ 定制 WebGL 引擎与企业级解决方案",
+    opt_other:"💬 其他咨询与商务合作"
   },
   mi: {
     nav_stage:"Whakaari", nav_solutions:"Rongoā", nav_tech:"Hangarau", nav_work:"Mahi", nav_faq:"Pātai", nav_inquire:"💬 Pātai Utu", nav_showroom:"Whare Whakaatu ↗",
@@ -1626,7 +1659,13 @@ const i18n = {
     form_email:"Īmēra",
     form_type:"Momo Pātai",
     form_message:"Ngā taipitopito kaupapa",
-    form_submit:"Tuku Pātai 🚀"
+    form_submit:"Tuku Pātai 🚀",
+    opt_art:"🎨 Ngā Mahi Toi",
+    opt_stay:"🏡 Whare Noho",
+    opt_realestate:"🏢 Whenua & Whare",
+    opt_product:"🚗 Taonga Tūturu",
+    opt_enterprise:"⚡ WebGL Hangarau",
+    opt_other:"💬 Pātai Whānui"
   }
 };
 
