@@ -968,6 +968,17 @@
       <iframe id="stage-iframe" src="05_web_build/Review_FordEscape_new_LF_09.html"
               allow="fullscreen; xr-spatial-tracking" title="3DGS Viewport"></iframe>
 
+      <!-- Floating Top Controls -->
+      <div class="stage-float-controls">
+        <div class="stage-model-badge">
+          <span class="pulse"></span>
+          <span id="stage-title">Ford Escape (LF_09)</span>
+        </div>
+        <div class="stage-float-actions">
+          <button class="stage-icon-btn" onclick="goFS()" title="Fullscreen">⛶</button>
+        </div>
+      </div>
+
       <!-- Preloader Overlay -->
       <div class="stage-loader hidden" id="stageLoader">
         <div class="stage-spinner"></div>
@@ -987,6 +998,7 @@
           </span>
           <span class="interact-text" data-i18n="interact_prompt">Click and drag to interact</span>
         </div>
+      </div>
     </div>
 
     <!-- Voxelo-style Bottom Thumbnail Showcase Selector -->

@@ -696,6 +696,20 @@
       <!-- 3D Iframe Viewer -->
       <iframe id="stageIframe" src="" title="3DGS Viewer" allow="fullscreen; xr-spatial-tracking"></iframe>
 
+      <!-- Floating Top Bar Controls -->
+      <div class="stage-float-controls">
+        <div class="stage-model-badge">
+          <span class="pulse"></span>
+          <span id="activeModelTitle">Loading model...</span>
+        </div>
+        <div class="stage-float-actions">
+          <button class="stage-icon-btn" onclick="goFS()" title="Fullscreen">⛶</button>
+          <a id="btnOpenStandalone" href="#" target="_blank" rel="noopener" class="stage-action-link">
+            <span data-i18n="btn_standalone">Open ↗</span>
+          </a>
+        </div>
+      </div>
+
       <!-- Preloader Overlay -->
       <div class="stage-loader" id="showroomLoader">
         <div class="stage-spinner"></div>
@@ -715,6 +729,7 @@
           </span>
           <span class="interact-text" data-i18n="interact_prompt">Click and drag to interact</span>
         </div>
+      </div>
     </div>
   </div>
 
