@@ -47,8 +47,7 @@ class ShowroomUploadWorker(QThread):
             src_libs = os.path.join(self.src_web_dir, "libs")
             dst_libs = os.path.join(target_web_dir, "libs")
             if os.path.exists(src_libs):
-                if not os.path.exists(dst_libs):
-                    shutil.copytree(src_libs, dst_libs)
+                shutil.copytree(src_libs, dst_libs, dirs_exist_ok=True)
 
             # 2. Copy selected HTML files and associated assets
             copied_count = 0
@@ -64,7 +63,7 @@ class ShowroomUploadWorker(QThread):
 
                 # Copy corresponding .sog or .ply if it exists in local output
                 base_name = os.path.splitext(html_name)[0]
-                for ext in [".sog", ".ply"]:
+                for ext in [".sog", ".ply", ".spz", ".splat", ".ksplat", ".lcc"]:
                     model_candidate = os.path.join(self.src_web_dir, base_name + ext)
                     if os.path.exists(model_candidate):
                         dst_model = os.path.join(target_web_dir, base_name + ext)
@@ -145,7 +144,7 @@ class ShowroomDeleteWorker(QThread):
 
                 # Also delete associated .sog / .ply
                 base_name = os.path.splitext(fname)[0]
-                for ext in [".sog", ".ply"]:
+                for ext in [".sog", ".ply", ".spz", ".splat", ".ksplat", ".lcc"]:
                     asset = os.path.join(target_web_dir, base_name + ext)
                     if os.path.exists(asset):
                         os.remove(asset)
@@ -428,7 +427,7 @@ class ShowroomTab(QWidget):
             base = os.path.splitext(h)[0]
             linked_asset = "Embedded"
             total_size = h_size
-            for ext in [".sog", ".ply"]:
+            for ext in [".sog", ".ply", ".spz", ".splat", ".ksplat", ".lcc"]:
                 m_path = os.path.join(self.repo_web_dir, base + ext)
                 if os.path.exists(m_path):
                     m_size = os.path.getsize(m_path)
@@ -594,7 +593,7 @@ class ShowroomTab(QWidget):
             base = os.path.splitext(h)[0]
             linked_asset = "Embedded"
             total_size = h_size
-            for ext in [".sog", ".ply"]:
+            for ext in [".sog", ".ply", ".spz", ".splat", ".ksplat", ".lcc"]:
                 m_path = os.path.join(local_dir, base + ext)
                 if os.path.exists(m_path):
                     m_size = os.path.getsize(m_path)
@@ -664,7 +663,7 @@ class ShowroomTab(QWidget):
             if os.path.exists(hp):
                 total_bytes += os.path.getsize(hp)
             base = os.path.splitext(h)[0]
-            for ext in [".sog", ".ply"]:
+            for ext in [".sog", ".ply", ".spz", ".splat", ".ksplat", ".lcc"]:
                 mp = os.path.join(local_dir, base + ext)
                 if os.path.exists(mp):
                     total_bytes += os.path.getsize(mp)

@@ -1,7 +1,17 @@
 {
-  "updated_at": "2026-08-29 21:25:44",
-  "total_models": 2,
+  "updated_at": "2026-09-03 23:11:00",
+  "total_models": 3,
   "models": [
+    {
+      "title": "caseStudy01",
+      "raw_title": "caseStudy01",
+      "filename": "caseStudy01.html",
+      "path": "05_web_build/caseStudy01.html",
+      "is_index": false,
+      "is_review": false,
+      "mtime": 1788433785.8814642,
+      "date": "2026-09-03 23:09"
+    },
     {
       "title": "FordEscape_new_LF_09",
       "raw_title": "Review_FordEscape_new_LF_09",
@@ -9,8 +19,8 @@
       "path": "05_web_build/Review_FordEscape_new_LF_09.html",
       "is_index": false,
       "is_review": true,
-      "mtime": 1787995544.8926375,
-      "date": "2026-08-29 21:25"
+      "mtime": 1788174044.0419922,
+      "date": "2026-08-31 23:00"
     },
     {
       "title": "FordEscape_new_LF_08",

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Points & Reality 3DGS - caseStudy01</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            width: 100%; height: 100%; overflow: hidden;
+            background: #090a0d; color: #e2e8f0;
+            font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        #canvas-container {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1; outline: none;
+        }
+        #canvas-container canvas {
+            width: 100% !important; height: 100% !important; display: block;
+        }
+
+        /* ─── HUD Header ─── */
+        #hud-header {
+            position: fixed; top: 16px; left: 16px; z-index: 100;
+            background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 10px;
+            padding: 9px 16px; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6); pointer-events: auto;
+            transition: opacity 0.3s ease;
+        }
+        .brand {
+            font-weight: 900; font-size: 13.5px; color: #38bdf8;
+            letter-spacing: 0.8px; display: flex; align-items: center; gap: 6px;
+        }
+        .sep { color: #475569; font-size: 13px; }
+        .model-name {
+            font-size: 13px; font-weight: 600; color: #f8fafc;
+            letter-spacing: 0.3px; max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .fps-badge {
+            font-size: 11px; color: #38bdf8; font-family: 'JetBrains Mono', monospace;
+            background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 5px; padding: 2px 7px; font-weight: 600;
+        }
+        .format-badge {
+            font-size: 10px; color: #a855f7; font-family: 'JetBrains Mono', monospace;
+            background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 4px; padding: 2px 6px; font-weight: 700; text-transform: uppercase;
+        }
+
+        /* ─── HUD Help Controls Hint ─── */
+        #hud-help {
+            position: fixed; top: 16px; right: 16px; z-index: 100;
+            background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;
+            padding: 8px 14px; font-size: 11px; color: #94a3b8; pointer-events: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        #hud-help span { color: #e2e8f0; font-weight: 600; }
+
+        /* ─── HUD Controls Toolbar ─── */
+        #hud-controls {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+            padding: 7px 12px; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+        }
+        .hud-btn {
+            background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1; padding: 7px 13px; border-radius: 7px;
+            font-size: 11.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s ease; font-family: 'Inter', sans-serif;
+        }
+        .hud-btn:hover {
+            background: rgba(51, 65, 85, 0.95); border-color: #38bdf8; color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .hud-btn.active {
+            background: #0284c7; border-color: #38bdf8; color: #ffffff;
+        }
+
+        /* ─── Engine Attribution Badge ─── */
+        #engine-credit {
+            position: fixed; bottom: 24px; right: 20px; z-index: 99;
+            height: 24px; display: flex; align-items: center; gap: 5px;
+            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;
+            padding: 0 10px; font-size: 10px; color: #94a3b8; pointer-events: auto;
+            text-decoration: none; opacity: 0.65; transition: opacity 0.3s ease;
+        }
+        #engine-credit:hover { opacity: 1.0; color: #f1f5f9; }
+
+        /* ─── Loading Overlay ─── */
+        #loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 200;
+            background: #090a0d; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 18px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loading.done { opacity: 0; visibility: hidden; pointer-events: none; }
+        .spinner {
+            width: 46px; height: 46px; border: 3.5px solid rgba(56, 189, 248, 0.18);
+            border-top-color: #38bdf8; border-radius: 50%;
+            animation: spin 0.85s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #load-text {
+            font-size: 13px; font-weight: 600; color: #94a3b8; letter-spacing: 0.3px;
+        }
+        .pbar-wrap {
+            width: 240px; height: 4px; background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px; overflow: hidden;
+        }
+        .pbar {
+            width: 0%; height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8);
+            transition: width 0.25s ease;
+        }
+
+        /* ─── Error Message Overlay ─── */
+        #error-msg {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 300;
+            background: rgba(220, 38, 38, 0.95); color: #ffffff; padding: 22px 30px; border-radius: 12px;
+            font-size: 13px; max-width: 480px; text-align: center; display: none; line-height: 1.6;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 3DGS Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD Header -->
+    <div id="hud-header">
+        <div class="brand">✨ Points & Reality</div>
+        <div class="sep">|</div>
+        <div class="model-name">caseStudy01</div>
+        <div class="format-badge" id="lbl-format">3DGS</div>
+        <div class="fps-badge" id="lbl-fps">FPS: --</div>
+    </div>
+
+    <!-- Controls Help -->
+    <div id="hud-help">
+        🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom
+    </div>
+
+    <!-- Controls Toolbar -->
+    <div id="hud-controls">
+        
+        <button class="hud-btn" id="btn-perspective" title="수직선 왜곡을 보정하는 건축용 2점 투시 모드 토글">📐 2-Point</button>
+        <button class="hud-btn" id="btn-reset">🎥 Reset View</button>
+        <button class="hud-btn" id="btn-orbit">🔄 Auto Orbit</button>
+        <button class="hud-btn" id="btn-bg">🎨 Background</button>
+        <button class="hud-btn" id="btn-fs">⛶ Fullscreen</button>
+    </div>
+
+    <!-- OpenSource Attribution (MIT License Compliance) -->
+    <a id="engine-credit" href="https://github.com/manycoretech/aholo-viewer" target="_blank" rel="noopener">
+        <span>Powered by</span>
+        <strong style="color:#e2e8f0;">Manycore Aholo Viewer</strong>
+        <span style="opacity:0.6;">(MIT)</span>
+    </a>
+
+    <!-- Client Watermark Overlay -->
+    
+
+    <!-- Loading Spinner & Progress -->
+    <div id="loading">
+        <div class="spinner"></div>
+        <div id="load-text">Initializing Manycore Aholo 3DGS Engine...</div>
+        <div class="pbar-wrap"><div class="pbar" id="pbar"></div></div>
+    </div>
+
+    <!-- Error Box -->
+    <div id="error-msg"></div>
+
+    <!-- Import Map for Offline / CDN Fallback -->
+    <script type="importmap">
+    {
+        "imports": {
+            "@manycore/aholo-viewer": "./libs/aholo/index.js",
+            "./camera-control.js": "./libs/aholo/camera-control.js"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import {
+            createViewer,
+            setViewerConfig,
+            PerspectiveCamera,
+            BackgroundMode,
+            Vector3,
+            Color,
+            SplatLoader,
+            SplatUtils,
+            ToneMapping
+        } from '@manycore/aholo-viewer';
+        import { CameraControl } from './camera-control.js';
+
+        const container = document.getElementById('canvas-container');
+        const loading = document.getElementById('loading');
+        const loadText = document.getElementById('load-text');
+        const pbar = document.getElementById('pbar');
+        const errorMsg = document.getElementById('error-msg');
+        const lblFps = document.getElementById('lbl-fps');
+        const lblFormat = document.getElementById('lbl-format');
+        const btnReset = document.getElementById('btn-reset');
+        const btnOrbit = document.getElementById('btn-orbit');
+        const btnBg = document.getElementById('btn-bg');
+        const btnFs = document.getElementById('btn-fs');
+        const btnPerspective = document.getElementById('btn-perspective');
+        const hudHelp = document.getElementById('hud-help');
+
+        // Configurable Parameters injected from Pipeline
+        const MODEL_URL = './caseStudy01.sog';
+        const INITIAL_CAM_POS = [18.593, -3.229, -19.453];
+        const INITIAL_CAM_TARGET = [0.0, 0.0, 0.0];
+        const INITIAL_CAM_FOV = 50.0;
+        const GROUND_LOCK = true;
+        const MIN_DISTANCE = 0.5000000000000001;
+        const MAX_DISTANCE = 50.0;
+        const PRESET_NAME = 'quality_first'; // max_quality, quality_first, balanced, performance_first, extreme_performance
+        const INIT_TWO_POINT = false;
+        const TONE_MAPPING_CURVE = ToneMapping.Neutral;
+
+        let viewer = null;
+        let camera = null;
+        let control = null;
+        let autoOrbit = false;
+        let bgIndex = 0;
+        const bgPalettes = [
+            new Color(0.035, 0.039, 0.051), // Deep Dark Slate #090a0d
+            new Color(0.0, 0.0, 0.0),         // Pure Pitch Black
+            new Color(0.09, 0.11, 0.15),      // Studio Slate Gray
+            new Color(0.95, 0.96, 0.98)       // Studio Clean White
+        ];
+
+        function showError(msg) {
+            console.error('[AholoViewer]', msg);
+            if (errorMsg) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerHTML = '<b>⚠️ Aholo 3DGS Viewer Error</b><br><br>' + msg;
+            }
+            if (loading) loading.classList.add('done');
+        }
+
+        // Update Touch vs Mouse control hints dynamically
+        function updateControlHints() {
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+            if (hudHelp) {
+                if (isTouch) {
+                    hudHelp.innerHTML = '👆 <span>1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span>2-Finger:</span> Pan & Zoom';
+                } else {
+                    hudHelp.innerHTML = '🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom';
+                }
+            }
+        }
+        window.addEventListener('resize', updateControlHints);
+        updateControlHints();
+
+        async function initScene() {
+            try {
+                pbar.style.width = '15%';
+                loadText.textContent = 'Initializing Aholo WebGL Engine...';
+
+                // 1. Create Aholo Viewer Instance
+                viewer = createViewer('aholo-viewer-viewport', container, {
+                    antialiasing: true,
+                    pixelRatio: Math.min(window.devicePixelRatio || 1, 2)
+                });
+
+                // 2. Setup Perspective Camera
+                const aspect = container.clientWidth / Math.max(1, container.clientHeight);
+                camera = new PerspectiveCamera(INITIAL_CAM_FOV, aspect, 0.1, 2000);
+                camera.up.set(0, -1, 0); // OpenCV coordinate standard for 3DGS
+                camera.position.set(INITIAL_CAM_POS[0], INITIAL_CAM_POS[1], INITIAL_CAM_POS[2]);
+                camera.lookAt(new Vector3(INITIAL_CAM_TARGET[0], INITIAL_CAM_TARGET[1], INITIAL_CAM_TARGET[2]));
+
+                if (INIT_TWO_POINT) {
+                    camera.isTwoPointPerspectiveViewEnabled = true;
+                    if (btnPerspective) btnPerspective.classList.add('active');
+                }
+
+                viewer.setCamera(camera);
+
+                // 3. Setup Custom Orbit CameraControl
+                control = new CameraControl(camera, container, {
+                    enabled: true,
+                    useOrbit: true,
+                    orbitCenter: { x: INITIAL_CAM_TARGET[0], y: INITIAL_CAM_TARGET[1], z: INITIAL_CAM_TARGET[2] },
+                    orbitMinDistance: MIN_DISTANCE,
+                    orbitMaxDistance: MAX_DISTANCE,
+                    groundLock: GROUND_LOCK,
+                    lookSpeed: 0.004,
+                    wheelSpeed: 0.008,
+                    panSpeed: 0.006
+                });
+
+                // 4. Load 3DGS Model Data
+                pbar.style.width = '30%';
+                loadText.textContent = 'Streaming 3D Gaussian Splats...';
+
+                
+        const resp = await fetch(MODEL_URL);
+        if (!resp.ok) throw new Error(`Failed to load model file: ${resp.statusText} (${resp.status})`);
+        const buffer = await resp.arrayBuffer();
+        const u8Data = new Uint8Array(buffer);
+    
+
+                pbar.style.width = '75%';
+                loadText.textContent = 'Parsing Splat Geometry & SH...';
+
+                // Detect file type if not explicitly known
+                let fileType = SplatLoader.SplatFileType.PLY;
+                const lowerUrl = MODEL_URL.toLowerCase();
+                if (lowerUrl.endsWith('.sog')) fileType = SplatLoader.SplatFileType.SOG;
+                else if (lowerUrl.endsWith('.spz')) fileType = SplatLoader.SplatFileType.SPZ;
+                else if (lowerUrl.endsWith('.splat')) fileType = SplatLoader.SplatFileType.SPLAT;
+                else if (lowerUrl.endsWith('.ksplat')) fileType = SplatLoader.SplatFileType.KSPLAT;
+                else if (lowerUrl.endsWith('.lcc')) fileType = SplatLoader.SplatFileType.LCC;
+                else {
+                    const detected = SplatLoader.detectSplatFileType ? SplatLoader.detectSplatFileType(MODEL_URL, u8Data) : undefined;
+                    if (detected !== undefined) fileType = detected;
+                }
+
+                const formatNames = {
+                    0: 'PLY', 1: 'SPZ', 2: 'SPLAT', 3: 'KSPLAT', 4: 'SOG', 5: 'LCC', 6: 'ESZ'
+                };
+                if (lblFormat) lblFormat.textContent = formatNames[fileType] || '3DGS';
+
+                // Determine packType based on preset
+                let packType = SplatLoader.SplatPackType.Compressed;
+                if (PRESET_NAME === 'extreme_performance' || fileType === SplatLoader.SplatFileType.SOG) {
+                    packType = SplatLoader.SplatPackType.Sog;
+                } else if (PRESET_NAME === 'performance_first') {
+                    packType = SplatLoader.SplatPackType.SuperCompressed;
+                }
+
+                const splatData = await SplatLoader.parseSplatData(fileType, u8Data, packType);
+                const splat = await SplatUtils.createSplat(splatData);
+                splat.autoFreeResourceOnGpuPacked = true;
+
+                viewer.getScene().add(splat);
+
+                // 5. Apply Pipeline & Preset Configuration
+                applyAholoPreset(PRESET_NAME);
+
+                pbar.style.width = '100%';
+                loadText.textContent = 'Ready!';
+                setTimeout(() => {
+                    if (loading) loading.classList.add('done');
+                }, 200);
+
+                // 6. Animation & Render Loop
+                let lastTime = performance.now();
+                let frameCount = 0;
+                let lastFpsTime = lastTime;
+
+                function renderLoop(time) {
+                    requestAnimationFrame(renderLoop);
+                    const delta = (time - lastTime) / 1000;
+                    lastTime = time;
+
+                    if (autoOrbit && control) {
+                        control.orbit(0.012, 0);
+                    }
+
+                    control.update(delta);
+                    viewer.render();
+
+                    frameCount++;
+                    if (time - lastFpsTime >= 1000) {
+                        const fps = Math.round((frameCount * 1000) / (time - lastFpsTime));
+                        if (lblFps) lblFps.textContent = `FPS: ${fps}`;
+                        frameCount = 0;
+                        lastFpsTime = time;
+                    }
+                }
+                requestAnimationFrame(renderLoop);
+
+                // 7. Handle Window Resize
+                window.addEventListener('resize', () => {
+                    if (camera && viewer && container) {
+                        camera.bounds.set(0, 0, container.clientWidth, container.clientHeight);
+                        viewer.render();
+                    }
+                });
+
+                // 8. Wire Up Toolbar Buttons
+                if (btnReset) {
+                    btnReset.addEventListener('click', () => {
+                        camera.position.set(INITIAL_CAM_POS[0], INITIAL_CAM_POS[1], INITIAL_CAM_POS[2]);
+                        camera.lookAt(new Vector3(INITIAL_CAM_TARGET[0], INITIAL_CAM_TARGET[1], INITIAL_CAM_TARGET[2]));
+                        control.setOptions({
+                            orbitCenter: { x: INITIAL_CAM_TARGET[0], y: INITIAL_CAM_TARGET[1], z: INITIAL_CAM_TARGET[2] }
+                        });
+                    });
+                }
+
+                if (btnOrbit) {
+                    btnOrbit.addEventListener('click', () => {
+                        autoOrbit = !autoOrbit;
+                        btnOrbit.classList.toggle('active', autoOrbit);
+                    });
+                }
+
+                if (btnPerspective) {
+                    btnPerspective.addEventListener('click', () => {
+                        camera.isTwoPointPerspectiveViewEnabled = !camera.isTwoPointPerspectiveViewEnabled;
+                        btnPerspective.classList.toggle('active', camera.isTwoPointPerspectiveViewEnabled);
+                    });
+                }
+
+                if (btnBg) {
+                    btnBg.addEventListener('click', () => {
+                        bgIndex = (bgIndex + 1) % bgPalettes.length;
+                        setViewerConfig(viewer, {
+                            pipeline: {
+                                Background: {
+                                    background: {
+                                        active: BackgroundMode.BasicBackground,
+                                        basic: { color: bgPalettes[bgIndex] }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+
+                if (btnFs) {
+                    btnFs.addEventListener('click', () => {
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen().catch(() => {});
+                        } else {
+                            document.exitFullscreen().catch(() => {});
+                        }
+                    });
+                }
+
+                
+
+            } catch (err) {
+                showError(err.message || String(err));
+            }
+        }
+
+        function applyAholoPreset(preset) {
+            const isHighQuality = (preset === 'max_quality' || preset === 'quality_first');
+            const isLowEnd = (preset === 'performance_first' || preset === 'extreme_performance');
+
+            setViewerConfig(viewer, {
+                pipeline: {
+                    Background: {
+                        background: {
+                            active: BackgroundMode.BasicBackground,
+                            basic: { color: bgPalettes[0] }
+                        },
+                        ground: { enabled: false }
+                    },
+                    Splatting: {
+                        enabled: true,
+                        pack: {
+                            highPrecisionEnabled: isHighQuality,
+                            cameraRelativeEnabled: isLowEnd,
+                            precalculateEnabled: true
+                        },
+                        raster: {
+                            normalizedFalloff: !isLowEnd,
+                            detailCullingThreshold: isLowEnd ? 2 : 0,
+                            preBlurAmount: 0.2
+                        },
+                        sort: {
+                            highPrecisionEnabled: isHighQuality
+                        },
+                        toneMapping: {
+                            enabled: true,
+                            toneMapping: TONE_MAPPING_CURVE,
+                            exposure: 1.0
+                        }
+                    },
+                    TAA: {
+                        enabled: (preset === 'max_quality')
+                    }
+                }
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initScene);
+        } else {
+            initScene();
+        }
+    </script>
+</body>
+</html>

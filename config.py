@@ -1,4 +1,4 @@
-APP_VERSION = "v2.248"
+APP_VERSION = "v2.250"
 
 # Points & Reality 표준 프로젝트 서브폴더 구조
 PROJECT_SUBFOLDERS = [
@@ -9,6 +9,14 @@ PROJECT_SUBFOLDERS = [
     "04_splats_cleaned",
     "05_web_build"
 ]
+
+# Manycore Aholo Viewer 3DGS 표준 렌더링 엔진 기본 설정
+AHOLO_DEFAULT_PRESET = "quality_first"  # max_quality, quality_first, balanced, performance_first, extreme_performance
+AHOLO_GROUND_LOCK = True               # 지면 하단 회전 방지 (-89°~0°)
+AHOLO_MIN_DIST = 0.8                   # 최소 접근 거리 (m)
+AHOLO_MAX_DIST = 50.0                  # 최대 궤도 거리 (m)
+AHOLO_TWO_POINT_PERSPECTIVE = False    # 건축용 2점 투시 모드 (수직선 수평 평행 보정)
+AHOLO_DEFAULT_TONE_MAPPING = "Neutral" # ToneMapping: Neutral, ACES, ACESFilmic, Reinhard, Linear
 
 # Points & Reality 전문 스튜디오 다크 테마 (Pro Studio High-Visibility Unified Dark QSS)
 DARK_THEME_CSS = """

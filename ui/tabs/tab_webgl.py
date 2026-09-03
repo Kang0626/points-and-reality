@@ -205,305 +205,81 @@ def _generate_watermark_html(text="Points & Reality", font_size_px=140, opacity_
     </div>'''
 
 
-def _generate_ply_viewer_html(title, display_model_title, cam_pos=[0, 1.2, 3.8], cam_target=[0, 0, 0], cam_fov=50, is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6, ground_lock=True, min_dist=0.8, max_dist=50.0):
-    """Generate a complete 100% offline 3DGS PLY viewer HTML with custom initial camera view and constraints."""
-    copy_cam_btn_html = '<button class="hud-btn" id="btn-copy-cam">📷 현재 시점 복사 (Copy View)</button>' if is_preview else ''
-    copy_cam_js = f'''
-            const btnCopyCam = document.getElementById('btn-copy-cam');
-            if (btnCopyCam) {{
-                btnCopyCam.addEventListener('click', () => {{
-                    if (viewer.camera && viewer.controls) {{
-                        const pos = viewer.camera.position;
-                        const tgt = viewer.controls.target;
-                        const camData = {{
-                            position: [parseFloat(pos.x.toFixed(3)), parseFloat(pos.y.toFixed(3)), parseFloat(pos.z.toFixed(3))],
-                            target: [parseFloat(tgt.x.toFixed(3)), parseFloat(tgt.y.toFixed(3)), parseFloat(tgt.z.toFixed(3))],
-                            fov: {cam_fov}
-                        }};
-                        navigator.clipboard.writeText(JSON.stringify(camData));
+def _generate_aholo_viewer_html(
+    title, display_model_title, model_filename, 
+    cam_pos=[0.0, 1.2, 3.8], cam_target=[0.0, 0.0, 0.0], cam_fov=50, 
+    preset="quality_first", two_point=False, tone_mapping="Neutral",
+    ground_lock=True, min_dist=0.8, max_dist=50.0,
+    is_preview=False, enable_watermark=False, watermark_text="", watermark_size=140, watermark_opacity=6
+):
+    """Generate standalone 100% offline HTML5 viewer powered by Manycore Aholo Viewer."""
+    template_file = os.path.normpath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates", "aholo_template.html"))
+    if not os.path.exists(template_file):
+        raise FileNotFoundError(f"Aholo template not found: {template_file}")
+
+    with open(template_file, 'r', encoding='utf-8', errors='ignore') as f:
+        template_content = f.read()
+
+    copy_cam_btn_html = '<button class="hud-btn" id="btn-copy-cam" style="background:#0284c7; border-color:#38bdf8; color:#fff;">📷 현재 시점 복사 (Copy View)</button>' if is_preview else ''
+    copy_cam_js_logic = '''
+        const btnCopyCam = document.getElementById('btn-copy-cam');
+        if (btnCopyCam) {
+            btnCopyCam.addEventListener('click', () => {
+                if (camera && control) {
+                    const pos = camera.position;
+                    const center = control.orbitCenter || { x: 0, y: 0, z: 0 };
+                    const camData = {
+                        position: [parseFloat(pos.x.toFixed(3)), parseFloat(pos.y.toFixed(3)), parseFloat(pos.z.toFixed(3))],
+                        target: [parseFloat(center.x.toFixed(3)), parseFloat(center.y.toFixed(3)), parseFloat(center.z.toFixed(3))],
+                        fov: camera.fov || 50
+                    };
+                    const jsonStr = JSON.stringify(camData);
+                    navigator.clipboard.writeText(jsonStr).then(() => {
                         btnCopyCam.innerText = '✅ 복사 완료: [' + camData.position.join(', ') + ']';
-                        setTimeout(() => btnCopyCam.innerText = '📷 현재 시점 복사 (Copy View)', 3000);
-                    }}
-                }});
-            }}
+                        setTimeout(() => btnCopyCam.innerText = '📷 현재 시점 복사 (Copy View)', 3500);
+                    }).catch(() => {
+                        const ta = document.createElement('textarea');
+                        ta.value = jsonStr;
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                        btnCopyCam.innerText = '✅ 복사 완료!';
+                        setTimeout(() => btnCopyCam.innerText = '📷 현재 시점 복사 (Copy View)', 3500);
+                    });
+                }
+            });
+        }
     ''' if is_preview else ''
 
     watermark_html = _generate_watermark_html(watermark_text, font_size_px=watermark_size, opacity_pct=watermark_opacity) if (not is_preview and enable_watermark) else ''
 
-    return f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>{title}</title>
-    <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body, html {{
-            width: 100%; height: 100%; overflow: hidden;
-            background: #0d0f12; color: #e2e8f0;
-            font-family: 'Segoe UI', -apple-system, sans-serif;
-        }}
-        #hud-header {{
-            position: fixed; top: 16px; left: 16px; z-index: 100;
-            background: rgba(15,23,42,0.85); backdrop-filter: blur(14px);
-            border: 1px solid rgba(56,189,248,0.35); border-radius: 10px;
-            padding: 9px 18px; display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 10px 32px rgba(0,0,0,0.6);
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            user-select: none;
-        }}
-        .brand {{ font-size: 14px; font-weight: 900; color: #38bdf8; letter-spacing: 0.8px; display: flex; align-items: center; gap: 6px; }}
-        .model-name {{ color: #f8fafc; font-size: 13px; font-weight: 600; letter-spacing: 0.3px; }}
-        .fps-badge {{ font-size: 11px; color: #94a3b8; font-family: monospace; margin-left: 4px; }}
-        
-        #hud-help {{
-            position: fixed; top: 16px; right: 16px; z-index: 100;
-            background: rgba(15,23,42,0.55); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
-            padding: 8px 14px; font-size: 11.5px; color: #94a3b8;
-            opacity: 0.5; transition: opacity 0.5s ease, visibility 0.5s ease;
-        }}
-        #hud-help:hover {{ opacity: 0.95; }}
-        #hud-help span {{ color: #e2e8f0; font-weight: 600; }}
+    contents_fetch_logic = '''
+        const resp = await fetch(MODEL_URL);
+        if (!resp.ok) throw new Error(`Failed to load model file: ${resp.statusText} (${resp.status})`);
+        const buffer = await resp.arrayBuffer();
+        const u8Data = new Uint8Array(buffer);
+    '''
 
-        #hud-controls {{
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
-            background: rgba(20,22,27,0.85); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
-            padding: 6px 12px; display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }}
-        .hud-btn {{
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-            color: #f1f5f9; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 5px;
-        }}
-        .hud-btn:hover {{ background: #0284c7; border-color: #38bdf8; color: #fff; transform: translateY(-1px); }}
-        .hud-btn.active {{ background: #0284c7; border-color: #38bdf8; color: #fff; }}
+    final_html = template_content
+    final_html = final_html.replace('{{TITLE}}', title)
+    final_html = final_html.replace('{{DISPLAY_MODEL_TITLE}}', display_model_title)
+    final_html = final_html.replace('{{MODEL_URL}}', f"./{model_filename}")
+    final_html = final_html.replace('{{CAM_POS}}', json.dumps(cam_pos))
+    final_html = final_html.replace('{{CAM_TARGET}}', json.dumps(cam_target))
+    final_html = final_html.replace('{{CAM_FOV}}', str(cam_fov))
+    final_html = final_html.replace('{{GROUND_LOCK}}', str(ground_lock).lower())
+    final_html = final_html.replace('{{MIN_DIST}}', str(min_dist))
+    final_html = final_html.replace('{{MAX_DIST}}', str(max_dist))
+    final_html = final_html.replace('{{AHOLO_PRESET}}', str(preset).lower())
+    final_html = final_html.replace('{{TWO_POINT_PERSPECTIVE}}', str(two_point).lower())
+    final_html = final_html.replace('{{TONE_MAPPING_NAME}}', str(tone_mapping))
+    final_html = final_html.replace('{{COPY_CAM_BTN_HTML}}', copy_cam_btn_html)
+    final_html = final_html.replace('{{COPY_CAM_JS_LOGIC}}', copy_cam_js_logic)
+    final_html = final_html.replace('{{POINTS_REALITY_WATERMARK}}', watermark_html)
+    final_html = final_html.replace('{{CONTENTS_FETCH_LOGIC}}', contents_fetch_logic)
+    return final_html
 
-        #loading {{
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 200;
-            background: radial-gradient(circle at center, #181b22, #0d0f12);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease;
-        }}
-        #loading.done {{ opacity: 0; pointer-events: none; }}
-        .spinner {{
-            width: 48px; height: 48px;
-            border: 4px solid rgba(56,189,248,0.2); border-top-color: #38bdf8;
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px;
-        }}
-        @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
-        #load-text {{ font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }}
-        .pbar-wrap {{ width: 220px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }}
-        .pbar {{ width: 0%; height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); transition: width 0.15s; }}
-        
-        #error-msg {{
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 300;
-            background: rgba(220,38,38,0.95); color: white; padding: 20px 30px; border-radius: 12px;
-            font-size: 14px; max-width: 500px; text-align: center; display: none; line-height: 1.5;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-        }}
-    </style>
-</head>
-<body>
-    <div id="hud-header">
-        <div class="brand">✨ Points & Reality</div>
-        <div style="color:#475569; font-size:13px;">|</div>
-        <div class="model-name">{display_model_title}</div>
-        <div class="fps-badge" id="lbl-fps">FPS: --</div>
-    </div>
-    
-    <div id="hud-help">
-        🖱️ <span>Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span>Right:</span> Pan &nbsp;|&nbsp; 🔍 <span>Wheel:</span> Zoom
-    </div>
-
-    <!-- Engine Attribution (MIT License Compliance - Fade synced with HUD controls) -->
-    <div id="points-reality-engine-credit" style="position:fixed; bottom:24px; right:20px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; opacity:0.4; letter-spacing:0.2px; transition:opacity 0.5s ease, visibility 0.5s ease;">
-        <span style="opacity:0.75;">Powered by</span>
-        <span style="color:#cbd5e1; font-weight:600;">Three.js</span>
-        <span style="opacity:0.45;">&</span>
-        <span style="color:#cbd5e1; font-weight:600;">GaussianSplats3D</span>
-    </div>
-
-
-    <div id="hud-controls">
-        {copy_cam_btn_html}
-        <button class="hud-btn" id="btn-reset">🎥 Reset View</button>
-        <button class="hud-btn" id="btn-orbit">🔄 Auto Orbit</button>
-        <button class="hud-btn" id="btn-bg">🎨 Background</button>
-        <button class="hud-btn" id="btn-fs">⛶ Fullscreen</button>
-    </div>
-
-    {watermark_html}
-
-    <div id="loading">
-        <div class="spinner"></div>
-        <div id="load-text">Loading 3D Gaussian Splats...</div>
-        <div class="pbar-wrap"><div class="pbar" id="pbar"></div></div>
-    </div>
-    
-    <div id="error-msg"></div>
-
-    <script type="importmap">
-    {{
-        "imports": {{
-            "three": "./libs/three.module.js",
-            "@mkkellogg/gaussian-splats-3d": "./libs/gaussian-splats-3d.module.min.js"
-        }}
-    }}
-    </script>
-    <script type="module">
-        import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
-        import * as THREE from 'three';
-
-        const loading = document.getElementById('loading');
-        const loadText = document.getElementById('load-text');
-        const pbar = document.getElementById('pbar');
-        const errorMsg = document.getElementById('error-msg');
-        const lblFps = document.getElementById('lbl-fps');
-        const btnReset = document.getElementById('btn-reset');
-        const btnOrbit = document.getElementById('btn-orbit');
-        const btnBg = document.getElementById('btn-bg');
-        const btnFs = document.getElementById('btn-fs');
-
-        let autoOrbit = false;
-        let bgMode = 0;
-        const bgColors = [0x0d0f12, 0x000000, 0x1e222a, 0xffffff];
-
-        const defaultPos = {cam_pos};
-        const defaultTarget = {cam_target};
-
-        function showError(msg) {{
-            errorMsg.style.display = 'block';
-            errorMsg.innerHTML = '<b>⚠️ Viewer Error</b><br><br>' + msg;
-            loading.classList.add('done');
-        }}
-
-        try {{
-            const viewer = new GaussianSplats3D.Viewer({{
-                cameraUp: [0, -1, 0],
-                initialCameraPosition: defaultPos,
-                initialCameraLookAt: defaultTarget,
-                sphericalHarmonicsDegree: 0,
-                gpuAcceleratedSort: true,
-                sharedMemoryForWorkers: false,
-                dynamicScene: false
-            }});
-
-            await viewer.addSplatScene('./{model_filename}', {{
-                splatAlphaRemovalThreshold: 1,
-                showLoadingUI: false,
-                progressiveLoad: false,
-                position: [0, 0, 0],
-                rotation: [0, 0, 0, 1],
-                scale: [1, 1, 1],
-                onProgress: (percent) => {{
-                    const p = Math.min(100, Math.round(percent));
-                    pbar.style.width = p + '%';
-                    loadText.textContent = 'Loading Splats: ' + p + '%';
-                }}
-            }});
-
-            loading.classList.add('done');
-            viewer.start();
-
-            // Apply camera navigation constraints (Ground Lock & Min/Max Distance)
-            if (viewer.controls) {{
-                viewer.controls.minDistance = {min_dist};
-                viewer.controls.maxDistance = {max_dist};
-                if ({str(ground_lock).lower()}) {{
-                    viewer.controls.maxPolarAngle = Math.PI / 2; // Ground clamp (90 deg)
-                }}
-            }}
-
-            {copy_cam_js}
-
-            btnReset.addEventListener('click', () => {{
-                viewer.camera.position.set(defaultPos[0], defaultPos[1], defaultPos[2]);
-                viewer.camera.lookAt(defaultTarget[0], defaultTarget[1], defaultTarget[2]);
-                if (viewer.controls) viewer.controls.target.set(defaultTarget[0], defaultTarget[1], defaultTarget[2]);
-            }});
-
-            btnOrbit.addEventListener('click', () => {{
-                autoOrbit = !autoOrbit;
-                btnOrbit.classList.toggle('active', autoOrbit);
-            }});
-
-            btnBg.addEventListener('click', () => {{
-                bgMode = (bgMode + 1) % bgColors.length;
-                viewer.renderer.setClearColor(bgColors[bgMode], 1);
-            }});
-
-            btnFs.addEventListener('click', () => {{
-                if (!document.fullscreenElement) {{
-                    document.documentElement.requestFullscreen();
-                }} else {{
-                    document.exitFullscreen();
-                }}
-            }});
-
-            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-            const hudHelp = document.getElementById('hud-help');
-            if (hudHelp && isTouch) {{
-                hudHelp.innerHTML = '👆 <span>1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span>2-Finger:</span> Pan & Zoom';
-            }}
-
-            // --- HUD Auto-Fade System (synced with fullscreen button behavior) ---
-            const hudHeader = document.getElementById('hud-header');
-            const hudCredit = document.getElementById('points-reality-engine-credit');
-            const fadableEls = [hudHeader, hudHelp, hudCredit, document.getElementById('hud-controls')].filter(Boolean);
-            let hudTimeout = null;
-            function showHUD() {{
-                if (hudTimeout) clearTimeout(hudTimeout);
-                fadableEls.forEach(el => {{
-                    el.style.opacity = el.id === 'hud-help' ? '0.5' : (el.id === 'points-reality-engine-credit' ? '0.4' : '1');
-                    el.style.visibility = 'visible';
-                }});
-                hudTimeout = setTimeout(() => {{
-                    fadableEls.forEach(el => {{
-                        if (el.id !== 'hud-controls') {{
-                            el.style.opacity = '0';
-                            el.style.visibility = 'hidden';
-                        }}
-                    }});
-                }}, 4000);
-            }}
-            showHUD();
-            ['pointermove', 'mousemove', 'wheel', 'keydown', 'touchstart', 'click'].forEach(evt => {{
-                window.addEventListener(evt, showHUD, {{ passive: true }});
-            }});
-
-            let lastTime = performance.now();
-            let frameCount = 0;
-            function animate() {{
-                requestAnimationFrame(animate);
-                if (autoOrbit && viewer.controls) {{
-                    const angle = 0.008;
-                    const x = viewer.camera.position.x;
-                    const z = viewer.camera.position.z;
-                    viewer.camera.position.x = x * Math.cos(angle) - z * Math.sin(angle);
-                    viewer.camera.position.z = x * Math.sin(angle) + z * Math.cos(angle);
-                    viewer.camera.lookAt(defaultTarget[0], defaultTarget[1], defaultTarget[2]);
-                }}
-
-                frameCount++;
-                const now = performance.now();
-                if (now - lastTime >= 1000) {{
-                    lblFps.innerText = 'FPS: ' + frameCount;
-                    frameCount = 0;
-                    lastTime = now;
-                }}
-            }}
-            animate();
-
-        }} catch (err) {{
-            console.error('Viewer Error:', err);
-            showError('Failed to load model: ' + err.message);
-        }}
-    </script>
-</body>
-</html>'''
 
 
 class WebGLTab(QWidget):
@@ -813,6 +589,52 @@ class WebGLTab(QWidget):
         row2_layout.addStretch()
         cam_frame_layout.addLayout(row2_layout)
 
+        # Row 3: Manycore Aholo Engine Quality & View Modes
+        row3_layout = QHBoxLayout()
+        row3_layout.setSpacing(14)
+
+        self.lbl_preset_title = QLabel("Aholo Preset:")
+        self.lbl_preset_title.setStyleSheet("font-weight: 600; color: #38bdf8; font-size: 11px;")
+        row3_layout.addWidget(self.lbl_preset_title)
+
+        self.combo_preset = QComboBox()
+        self.combo_preset.addItem("Quality First (Standard)", "quality_first")
+        self.combo_preset.addItem("Max Quality (Full f32/TAA)", "max_quality")
+        self.combo_preset.addItem("Balanced (LOD/Adaptive)", "balanced")
+        self.combo_preset.addItem("Performance First (Culling)", "performance_first")
+        self.combo_preset.addItem("Extreme Performance (Low VRAM)", "extreme_performance")
+        self.combo_preset.setCurrentIndex(0)
+        self.combo_preset.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 3px 6px; color: #cbd5e1; font-weight: 600; font-size: 11px;")
+        self.combo_preset.setToolTip("Aholo 3DGS rendering quality profile preset")
+        self.combo_preset.currentIndexChanged.connect(self._on_cam_inputs_edited)
+        row3_layout.addWidget(self.combo_preset)
+
+        row3_layout.addSpacing(6)
+
+        self.chk_two_point = QCheckBox("📐 2-Point Perspective (Vertical Alignment)")
+        self.chk_two_point.setChecked(False)
+        self.chk_two_point.setStyleSheet("color: #a78bfa; font-weight: 600; font-size: 11px;")
+        self.chk_two_point.setToolTip("Architectural 2-Point Perspective keeps all vertical building lines parallel and upright")
+        self.chk_two_point.stateChanged.connect(self._on_cam_inputs_edited)
+        row3_layout.addWidget(self.chk_two_point)
+
+        row3_layout.addSpacing(6)
+
+        self.lbl_tone_title = QLabel("Tone Mapping:")
+        self.lbl_tone_title.setStyleSheet("font-weight: 600; color: #94a3b8; font-size: 11px;")
+        row3_layout.addWidget(self.lbl_tone_title)
+
+        self.combo_tone_mapping = QComboBox()
+        self.combo_tone_mapping.addItems(["Neutral", "ACES", "ACESFilmic", "Reinhard", "Linear"])
+        self.combo_tone_mapping.setCurrentText("Neutral")
+        self.combo_tone_mapping.setStyleSheet("background: #0c0d11; border: 1px solid #232732; border-radius: 4px; padding: 3px 6px; color: #cbd5e1; font-weight: 600; font-size: 11px;")
+        self.combo_tone_mapping.setToolTip("Color post-processing tone mapping curve")
+        self.combo_tone_mapping.currentIndexChanged.connect(self._on_cam_inputs_edited)
+        row3_layout.addWidget(self.combo_tone_mapping)
+
+        row3_layout.addStretch()
+        cam_frame_layout.addLayout(row3_layout)
+
         c2_layout.addWidget(cam_frame)
         self.card_camera.setContentLayout(c2_layout)
         main_layout.addWidget(self.card_camera)
@@ -1075,7 +897,7 @@ class WebGLTab(QWidget):
         fname = os.path.basename(norm_path)
         fmt = _detect_model_format(norm_path).upper()
         size_mb = os.path.getsize(norm_path) / (1024 * 1024)
-        item_source = QTableWidgetItem(f"{fname}  [{fmt}, {size_mb:.1f}MB]")
+        item_source = QTableWidgetItem(f"{fname}  [Aholo {fmt}, {size_mb:.1f}MB]")
         item_source.setToolTip(norm_path)
         item_source.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         self.table_models.setItem(row, 1, item_source)
@@ -1099,6 +921,12 @@ class WebGLTab(QWidget):
             "pos": [0.0, 1.2, 3.8], 
             "target": [0.0, 0.0, 0.0], 
             "fov": 50, 
+            "ground_lock": True,
+            "min_dist": 0.8,
+            "max_dist": 50.0,
+            "preset": "quality_first",
+            "two_point": False,
+            "tone_mapping": "Neutral",
             "label": "Front View"
         }
         if norm_path not in self.model_configs:
@@ -1171,7 +999,7 @@ class WebGLTab(QWidget):
             self, 
             "Select 3DGS Model Files", 
             start_dir, 
-            "All Splat Files (*.ply *.splat *.spz *.sog);;SuperSplat Models (*.sog);;PLY 3DGS Models (*.ply);;Compressed Splat (*.splat *.spz);;All Files (*.*)"
+            "All 3DGS Splat Files (*.ply *.splat *.spz *.sog *.ksplat *.lcc);;PLY Models (*.ply);;SuperSplat Models (*.sog);;Compressed Splat (*.spz *.splat *.ksplat);;LCC Models (*.lcc);;All Files (*.*)"
         )
         if file_paths:
             for p in file_paths:
@@ -1195,7 +1023,7 @@ class WebGLTab(QWidget):
             sub_path = os.path.normpath(os.path.join(self.proj_dir, sub))
             if os.path.exists(sub_path):
                 for f in os.listdir(sub_path):
-                    if f.lower().endswith(('.ply', '.splat', '.spz', '.sog')) and not f.startswith('model.'):
+                    if f.lower().endswith(('.ply', '.splat', '.spz', '.sog', '.ksplat', '.lcc')) and not f.startswith('model.'):
                         full_p = os.path.normpath(os.path.join(sub_path, f))
                         self.add_model_file(full_p, checked=True)
                         found_count += 1
@@ -1294,6 +1122,9 @@ class WebGLTab(QWidget):
             "ground_lock": True,
             "min_dist": 0.8,
             "max_dist": 50.0,
+            "preset": "quality_first",
+            "two_point": False,
+            "tone_mapping": "Neutral",
             "label": "Front View"
         })
         p = profile.get("pos", [0.0, 1.2, 3.8])
@@ -1302,6 +1133,9 @@ class WebGLTab(QWidget):
         ground_lock = profile.get("ground_lock", True)
         min_dist = profile.get("min_dist", 0.8)
         max_dist = profile.get("max_dist", 50.0)
+        preset = profile.get("preset", "quality_first")
+        two_point = profile.get("two_point", False)
+        tone_mapping = profile.get("tone_mapping", "Neutral")
         label = profile.get("label", "Front View")
 
         self.input_cam_pos.blockSignals(True)
@@ -1310,6 +1144,9 @@ class WebGLTab(QWidget):
         if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.blockSignals(True)
         if hasattr(self, 'spin_min_dist'): self.spin_min_dist.blockSignals(True)
         if hasattr(self, 'spin_max_dist'): self.spin_max_dist.blockSignals(True)
+        if hasattr(self, 'combo_preset'): self.combo_preset.blockSignals(True)
+        if hasattr(self, 'chk_two_point'): self.chk_two_point.blockSignals(True)
+        if hasattr(self, 'combo_tone_mapping'): self.combo_tone_mapping.blockSignals(True)
 
         self.input_cam_pos.setText(f"{p[0]}, {p[1]}, {p[2]}")
         self.input_cam_target.setText(f"{t_pos[0]}, {t_pos[1]}, {t_pos[2]}")
@@ -1317,6 +1154,11 @@ class WebGLTab(QWidget):
         if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.setChecked(ground_lock)
         if hasattr(self, 'spin_min_dist'): self.spin_min_dist.setValue(min_dist)
         if hasattr(self, 'spin_max_dist'): self.spin_max_dist.setValue(max_dist)
+        if hasattr(self, 'combo_preset'):
+            idx = self.combo_preset.findData(preset)
+            if idx >= 0: self.combo_preset.setCurrentIndex(idx)
+        if hasattr(self, 'chk_two_point'): self.chk_two_point.setChecked(two_point)
+        if hasattr(self, 'combo_tone_mapping'): self.combo_tone_mapping.setCurrentText(tone_mapping)
         self.pill_camera.set_status(label, "ready")
         self._update_cam_preset_styles(label)
 
@@ -1326,6 +1168,9 @@ class WebGLTab(QWidget):
         if hasattr(self, 'chk_ground_lock'): self.chk_ground_lock.blockSignals(False)
         if hasattr(self, 'spin_min_dist'): self.spin_min_dist.blockSignals(False)
         if hasattr(self, 'spin_max_dist'): self.spin_max_dist.blockSignals(False)
+        if hasattr(self, 'combo_preset'): self.combo_preset.blockSignals(False)
+        if hasattr(self, 'chk_two_point'): self.chk_two_point.blockSignals(False)
+        if hasattr(self, 'combo_tone_mapping'): self.combo_tone_mapping.blockSignals(False)
 
     def _update_cam_preset_styles(self, active_label=None):
         if not hasattr(self, 'btn_cam_front') or not hasattr(self, 'btn_cam_quarter') or not hasattr(self, 'btn_cam_side') or not hasattr(self, 'btn_cam_top'):
@@ -1385,6 +1230,9 @@ class WebGLTab(QWidget):
         ground_lock = self.chk_ground_lock.isChecked() if hasattr(self, 'chk_ground_lock') else True
         min_dist = self.spin_min_dist.value() if hasattr(self, 'spin_min_dist') else 0.8
         max_dist = self.spin_max_dist.value() if hasattr(self, 'spin_max_dist') else 50.0
+        preset = self.combo_preset.currentData() if hasattr(self, 'combo_preset') else "quality_first"
+        two_point = self.chk_two_point.isChecked() if hasattr(self, 'chk_two_point') else False
+        tone_mapping = self.combo_tone_mapping.currentText() if hasattr(self, 'combo_tone_mapping') else "Neutral"
         html_name = self.table_models.item(r, 2).text().strip() if self.table_models.item(r, 2) else f"{os.path.basename(file_path)}.html"
 
         self.model_configs[file_path] = {
@@ -1395,6 +1243,9 @@ class WebGLTab(QWidget):
             "ground_lock": ground_lock,
             "min_dist": min_dist,
             "max_dist": max_dist,
+            "preset": preset,
+            "two_point": two_point,
+            "tone_mapping": tone_mapping,
             "label": label
         }
 
@@ -1588,7 +1439,7 @@ class WebGLTab(QWidget):
             os.startfile(norm_dir)
 
     def _ensure_local_libs(self, web_dir):
-        """Ensure local offline JS libraries exist in destination libs/."""
+        """Ensure local offline JS libraries exist in destination libs/ and libs/aholo/."""
         dst_libs = os.path.normpath(os.path.join(web_dir, "libs"))
         os.makedirs(dst_libs, exist_ok=True)
         
@@ -1599,6 +1450,20 @@ class WebGLTab(QWidget):
                 d = os.path.join(dst_libs, f)
                 if os.path.isfile(s) and (not os.path.exists(d) or os.path.getsize(s) != os.path.getsize(d)):
                     shutil.copyfile(s, d)
+
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        src_aholo_libs = os.path.normpath(os.path.join(project_root, "libs", "aholo"))
+        dst_aholo_libs = os.path.normpath(os.path.join(dst_libs, "aholo"))
+        if os.path.exists(src_aholo_libs):
+            try:
+                os.makedirs(dst_aholo_libs, exist_ok=True)
+                for item in os.listdir(src_aholo_libs):
+                    s = os.path.join(src_aholo_libs, item)
+                    d = os.path.join(dst_aholo_libs, item)
+                    if os.path.isfile(s) and (not os.path.exists(d) or os.path.getsize(s) != os.path.getsize(d)):
+                        shutil.copy2(s, d)
+            except Exception as e:
+                self.log_signal.emit(f"Warning: could not sync libs/aholo: {e}", "warning")
 
     # ----------------------------------------------------------------------
     # Live Interactive Preview (Direct & Per-Model)
@@ -1799,224 +1664,39 @@ class WebGLTab(QWidget):
             except Exception:
                 shutil.copyfile(src_file, dst_model)
 
-        # --- Route A: .sog (SuperSplat) Standalone Engine ---
-        if fmt == 'sog':
-            template_file = os.path.normpath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "templates", "supersplat_template.html"))
-            with open(template_file, 'r', encoding='utf-8', errors='ignore') as f:
-                template_content = f.read()
+        # Ensure libs/aholo is present in out_dir/libs/aholo
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        src_aholo_libs = os.path.normpath(os.path.join(project_root, "libs", "aholo"))
+        dst_aholo_libs = os.path.normpath(os.path.join(out_dir, "libs", "aholo"))
+        if os.path.exists(src_aholo_libs) and not os.path.exists(dst_aholo_libs):
+            try:
+                os.makedirs(os.path.dirname(dst_aholo_libs), exist_ok=True)
+                shutil.copytree(src_aholo_libs, dst_aholo_libs)
+            except Exception as e:
+                self.log_signal.emit(f"Warning: could not copy libs/aholo: {e}", "warning")
 
-            with open(src_file, 'rb') as bf:
-                b64_data = base64.b64encode(bf.read()).decode('ascii')
+        # Extended Aholo Viewer rendering parameters
+        preset = config.get("preset", getattr(self, 'combo_preset', None) and self.combo_preset.currentData() or "quality_first")
+        two_point = config.get("two_point", getattr(self, 'chk_two_point', None) and self.chk_two_point.isChecked() or False)
+        tone_mapping = config.get("tone_mapping", getattr(self, 'combo_tone_mapping', None) and self.combo_tone_mapping.currentText() or "Neutral")
 
-            camera_settings = {
-                "camera": {
-                    "fov": cam_fov,
-                    "position": cam_pos,
-                    "target": cam_target,
-                    "startAnim": "none",
-                    "groundLock": ground_lock,
-                    "minDistance": min_dist,
-                    "maxDistance": max_dist
-                },
-                "background": {"color": [0, 0, 0]},
-                "animTracks": []
-            }
-            settings_json = json.dumps(camera_settings)
-
-            if is_preview:
-                overlays_html = '''
-    <!-- Points & Reality Camera Sync Tool (Preview Only) -->
-    <div id="points-reality-cam-hud" style="position:fixed; top:16px; left:16px; z-index:999999; display:flex; flex-direction:column; gap:6px; font-family:'Segoe UI',-apple-system,sans-serif;">
-        <button id="btn-copy-cam" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; border:1px solid #38bdf8; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; backdrop-filter:blur(10px); box-shadow:0 8px 24px rgba(0,0,0,0.6); display:flex; align-items:center; gap:8px; transition:all 0.2s ease;">
-            📷 현재 카메라 시점 복사 (Copy View)
-        </button>
-        <div id="cam-coords-display" style="background:rgba(15,23,42,0.92); color:#7dd3fc; border:1px solid rgba(56,189,248,0.5); border-radius:6px; padding:8px 12px; font-size:11px; font-family:monospace; backdrop-filter:blur(8px); box-shadow:0 4px 16px rgba(0,0,0,0.6); line-height:1.5;">
-            <div><b>Camera Pos:</b> <span id="lbl-cam-pos">[0.000, 0.000, 0.000]</span></div>
-            <div><b>Look Target:</b> <span id="lbl-cam-tgt">[0.000, 0.000, 0.000]</span></div>
-            <div><b>FOV:</b> <span id="lbl-cam-fov">50</span>° &nbsp;|&nbsp; <b>Pitch/Yaw:</b> <span id="lbl-cam-rot">0°, 0°</span></div>
-        </div>
-    </div>
-    <script>
-        (function() {
-            const btn = document.getElementById('btn-copy-cam');
-            const lblPos = document.getElementById('lbl-cam-pos');
-            const lblTgt = document.getElementById('lbl-cam-tgt');
-            const lblFov = document.getElementById('lbl-cam-fov');
-            const lblRot = document.getElementById('lbl-cam-rot');
-
-            function getActiveCameraData() {
-                let pos = [0.0, 1.2, 3.8];
-                let target = [0.0, 0.0, 0.0];
-                let fov = 50;
-                let pitch = 0;
-                let yaw = 0;
-
-                try {
-                    let camObj = null;
-                    if (window.viewerInstance && window.viewerInstance.cameraManager && window.viewerInstance.cameraManager.camera) {
-                        camObj = window.viewerInstance.cameraManager.camera;
-                    }
-
-                    if (camObj && camObj.position) {
-                        pos = [
-                            parseFloat(camObj.position.x.toFixed(3)),
-                            parseFloat(camObj.position.y.toFixed(3)),
-                            parseFloat(camObj.position.z.toFixed(3))
-                        ];
-
-                        pitch = camObj.angles.x;
-                        yaw = camObj.angles.y;
-
-                        const rad = Math.PI / 180;
-                        const p_rad = pitch * rad;
-                        const y_rad = yaw * rad;
-
-                        const fwd_x = -Math.sin(y_rad) * Math.cos(p_rad);
-                        const fwd_y = Math.sin(p_rad);
-                        const fwd_z = -Math.cos(y_rad) * Math.cos(p_rad);
-                        const dist = camObj.distance || 3.0;
-
-                        target = [
-                            parseFloat((pos[0] + fwd_x * dist).toFixed(3)),
-                            parseFloat((pos[1] + fwd_y * dist).toFixed(3)),
-                            parseFloat((pos[2] + fwd_z * dist).toFixed(3))
-                        ];
-
-                        fov = Math.round(camObj.fov || 50);
-                    }
-                } catch(e) {
-                    console.warn("Camera read error:", e);
-                }
-
-                return { position: pos, target: target, fov: fov, pitch: pitch, yaw: yaw };
-            }
-
-            function updateHUDLoop() {
-                const data = getActiveCameraData();
-                if (lblPos) lblPos.innerText = '[' + data.position.map(n => n.toFixed(3)).join(', ') + ']';
-                if (lblTgt) lblTgt.innerText = '[' + data.target.map(n => n.toFixed(3)).join(', ') + ']';
-                if (lblFov) lblFov.innerText = data.fov;
-                if (lblRot) lblRot.innerText = data.pitch.toFixed(1) + '°, ' + data.yaw.toFixed(1) + '°';
-                requestAnimationFrame(updateHUDLoop);
-            }
-            requestAnimationFrame(updateHUDLoop);
-
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    const data = getActiveCameraData();
-                    const jsonStr = JSON.stringify({
-                        position: data.position,
-                        target: data.target,
-                        fov: data.fov
-                    });
-
-                    if (navigator.clipboard && window.isSecureContext) {
-                        navigator.clipboard.writeText(jsonStr);
-                    } else {
-                        const el = document.createElement('textarea');
-                        el.value = jsonStr;
-                        el.style.position = 'fixed';
-                        el.style.left = '-9999px';
-                        document.body.appendChild(el);
-                        el.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(el);
-                    }
-
-                    btn.style.background = '#16a34a';
-                    btn.style.borderColor = '#4ade80';
-                    btn.innerHTML = '✅ 복사 완료! (Points & Reality 앱에서 [Paste] 클릭)';
-
-                    setTimeout(function() {
-                        btn.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
-                        btn.style.borderColor = '#38bdf8';
-                        btn.innerHTML = '📷 현재 카메라 시점 복사 (Copy View)';
-                    }, 4000);
-                });
-            }
-        })();
-    </script>
-'''
-            else:
-                # Final Release / Delivery Mode: Brand Header + Dynamic Touch/Mouse Hint + MIT License Attribution
-                overlays_html = f'''
-    <!-- Points & Reality Final Branding Header -->
-    <div id="points-reality-brand-header" class="points-reality-hud" style="position:fixed; top:16px; left:16px; z-index:99999; display:flex; align-items:center; gap:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(14px); border:1px solid rgba(56,189,248,0.35); border-radius:10px; padding:9px 18px; box-shadow:0 10px 32px rgba(0,0,0,0.6); pointer-events:auto; font-family:'Segoe UI',-apple-system,sans-serif; user-select:none;">
-        <span style="font-weight:900; font-size:14px; color:#38bdf8; letter-spacing:0.8px; display:flex; align-items:center; gap:6px;">✨ Points & Reality</span>
-        <span style="color:#475569; font-size:13px;">|</span>
-        <span style="color:#f8fafc; font-size:13px; font-weight:600; letter-spacing:0.3px;">{display_model_title}</span>
-    </div>
-
-    <!-- Controls Hint (Auto Mouse / Touch Aware) -->
-    <div id="points-reality-controls-hint" class="points-reality-hud" style="position:fixed; top:16px; right:16px; z-index:99999; display:flex; align-items:center; gap:8px; background:rgba(15,23,42,0.55); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:8px 14px; font-size:11.5px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none;">
-        🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom
-    </div>
-
-    <!-- Engine Attribution (MIT License Compliance - Fade synced with fullscreen button via .points-reality-hud) -->
-    <div id="points-reality-engine-credit" class="points-reality-hud" style="position:fixed; bottom:24px; right:60px; z-index:99999; height:24px; box-sizing:border-box; display:flex; align-items:center; gap:4px; background:rgba(15,23,42,0.45); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:0 10px; font-size:10px; color:#94a3b8; font-family:'Segoe UI',-apple-system,sans-serif; pointer-events:none; user-select:none; letter-spacing:0.2px;">
-        <span style="opacity:0.75;">Powered by</span>
-        <span style="color:#cbd5e1; font-weight:600;">PlayCanvas</span>
-        <span style="opacity:0.45;">&</span>
-        <span style="color:#cbd5e1; font-weight:600;">SuperSplat</span>
-    </div>
-
-
-    <script>
-        (function() {{
-            function updateControlHints() {{
-                const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-                const hintEl = document.getElementById('points-reality-controls-hint');
-                if (hintEl) {{
-                    if (isTouch) {{
-                        hintEl.innerHTML = '👆 <span style="color:#e2e8f0; font-weight:600;">1-Finger:</span> Orbit &nbsp;|&nbsp; ✌️ <span style="color:#e2e8f0; font-weight:600;">2-Finger:</span> Pan & Zoom';
-                    }} else {{
-                        hintEl.innerHTML = '🖱️ <span style="color:#e2e8f0; font-weight:600;">Left:</span> Orbit &nbsp;|&nbsp; 🖱️ <span style="color:#e2e8f0; font-weight:600;">Right:</span> Pan &nbsp;|&nbsp; 🔍 <span style="color:#e2e8f0; font-weight:600;">Wheel:</span> Zoom';
-                    }}
-                }}
-            }}
-            window.addEventListener('resize', updateControlHints);
-            if (document.readyState === 'loading') {{
-                document.addEventListener('DOMContentLoaded', updateControlHints);
-            }} else {{
-                updateControlHints();
-            }}
-        }})();
-    </script>
-'''
-                if enable_watermark:
-                    overlays_html += _generate_watermark_html(watermark_text, font_size_px=watermark_size, opacity_pct=watermark_opacity)
-
-            contents_line = f'contents: fetch("data:application/octet-stream;base64,{b64_data}"),\n                '
-            final_html = template_content.replace('{{TITLE}}', display_title)
-            final_html = final_html.replace('{{MODEL_URL}}', f"./{src_name}")
-            final_html = final_html.replace('{{CONTENTS_LINE}}', contents_line)
-            final_html = final_html.replace('{{SETTINGS_JSON}}', settings_json)
-            final_html = final_html.replace('{{POINTS_REALITY_OVERLAYS}}', overlays_html).replace('{{SPLATIAL_OVERLAYS}}', overlays_html)
-
-            html_path = os.path.normpath(os.path.join(out_dir, html_filename))
-            with open(html_path, 'w', encoding='utf-8') as f:
-                f.write(final_html)
-
-            size_mb = os.path.getsize(html_path) / (1024 * 1024)
-            wm_tag = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
-            self.log_signal.emit(f"Built SuperSplat Standalone{wm_tag}: {html_filename} ({size_mb:.1f} MB) [Cam: {cam_pos}]", "info")
-            self._update_models_manifest(out_dir)
-            return html_filename
-
-        # --- Route B: .ply / .splat / .spz Offline GaussianSplats3D Viewer ---
-        html_content = _generate_ply_viewer_html(
-            display_title, display_model_title, cam_pos, cam_target, cam_fov, 
+        # Build Unified Aholo 3DGS Standalone HTML
+        html_content = _generate_aholo_viewer_html(
+            display_title, display_model_title, src_name,
+            cam_pos=cam_pos, cam_target=cam_target, cam_fov=cam_fov,
+            preset=preset, two_point=two_point, tone_mapping=tone_mapping,
+            ground_lock=ground_lock, min_dist=min_dist, max_dist=max_dist,
             is_preview=is_preview, enable_watermark=enable_watermark, watermark_text=watermark_text,
-            watermark_size=watermark_size, watermark_opacity=watermark_opacity,
-            ground_lock=ground_lock, min_dist=min_dist, max_dist=max_dist
+            watermark_size=watermark_size, watermark_opacity=watermark_opacity
         )
+
         html_path = os.path.normpath(os.path.join(out_dir, html_filename))
         with open(html_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
 
         size_kb = os.path.getsize(html_path) / 1024
-        wm_tag = " [🛡️ Watermark]" if (enable_watermark and watermark_text) else ""
-        self.log_signal.emit(f"Built 3DGS Viewer{wm_tag}: {html_filename} ({size_kb:.1f} KB) [Cam: {cam_pos}]", "info")
+        wm_tag = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
+        self.log_signal.emit(f"Built Aholo 3DGS Standalone{wm_tag}: {html_filename} ({size_kb:.1f} KB) [Preset: {preset}, Cam: {cam_pos}]", "info")
         self._update_models_manifest(out_dir)
         return html_filename
 

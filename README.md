@@ -1,6 +1,6 @@
-# ✨ Points & Reality 3DGS Pipeline Controller (v2.248)
+# ✨ Points & Reality 3DGS Pipeline Controller (v2.250)
 
-Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 초고속 오프라인 WebGL 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
+Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스플래팅(3D Gaussian Splatting) 학습, 스플랫 클린업, 그리고 Manycore Aholo Viewer 기반 초고속 오프라인 WebGL/WebGPU 뷰어 패키징 및 클라우드 쇼룸 배포까지 한 번에 제어할 수 있는 올인원 파이프라인 소프트웨어입니다.
 
 ---
 
@@ -16,9 +16,10 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ├── 03_splats_exports/       # Postshot, Lichtfeld 등 AI 트레이너에서 내보낸 3DGS 모델 (.ply, .sog)
 ├── 04_splats_cleaned/       # SuperSplat 또는 Crop Box로 배경/노이즈가 정리된 스플랫 모델
 └── 05_web_build/           # 독립 실행형 100% 오프라인 HTML5 3DGS 웹 뷰어 번들
-    ├── index.html          # WebGL 3DGS 뷰어 메인 페이지
-    ├── libs/               # 100% 오프라인 내장 JS 라이브러리 (Three.js, GaussianSplats3D)
-    └── [model_name].sog/.ply # 초고속 하드링크된 3DGS 모델 데이터
+    ├── index.html          # Manycore Aholo 3DGS 뷰어 메인 페이지
+    ├── libs/
+    │   └── aholo/          # 100% 오프라인 Manycore Aholo Viewer 1.8.1 (ESM 번들 + 워커 스크립트)
+    └── [model_name].*      # 초고속 링크된 3DGS 모델 데이터 (.ply, .sog, .spz, .splat, .ksplat, .lcc)
 ```
 
 ---
@@ -49,25 +50,28 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ---
 
 ### 🔹 Tab 3. WebGL 빌드 (`3. WebGL Build`)
+* **차세대 Manycore Aholo Viewer 단일 통합 엔진 도입**:
+  * 기존 Route A(SuperSplat) / Route B(GaussianSplats3D) 분기를 폐지하고, Manycore Tech의 초고성능 WebGL/WebGPU 3DGS 렌더러인 `aholo-viewer 1.8.1` 단일 엔진으로 전면 통합.
+  * **범용 멀티 포맷 네이티브 지원**: `.ply`, `.sog`, `.spz`, `.splat`, `.ksplat`, `.lcc` 포맷을 자동 감지하여 무변환 초고속 렌더링.
 * **STEP 1. WebGL 모델 목록 및 개별 출력 파일명 설정 (인라인 테이블 편집)**:
-  * 프로젝트 내 복수 모델(`FordEscape01.ply`, `fordEscape01.sog` 등)을 스캔하여 테이블로 구성.
-  * **Build 컬럼 헤더 토글 (`☑️ Build`)**: 별도의 툴바 버튼 없이 헤더 클릭 한 번으로 모든 모델의 빌드 체크박스를 일괄 선택/해제.
-  * **가운데 정렬 체크박스**: 시각적 피로도를 낮추고 깔끔한 레이아웃을 유지하며 포커스 점선 박스 제거.
+  * 프로젝트 내 복수 모델을 일괄 스캔하여 테이블로 구성 (`[Aholo PLY]`, `[Aholo SOG]`, `[Aholo SPZ]` 등 포맷 뱃지 표시).
+  * **Build 컬럼 헤더 토글 (`☑️ Build`)**: 헤더 클릭 한 번으로 모든 모델의 빌드 체크박스를 일괄 선택/해제.
   * **출력 파일명 테이블 직접 편집 (✏️)**: 각 행의 `Output HTML File` 컬럼을 더블클릭하여 `index.html`, `MyCar.html` 등 원하는 이름을 개별 지정 가능.
   * **원클릭 단축 버튼**: `🏷️ 첫 번째 모델을 index.html로 설정` 클릭 시 첫 번째 파일을 대표 `index.html`로 즉시 지정.
   * **행별 `🌐 Preview` 즉시 미리보기**: 특정 모델의 행에서 버튼 클릭 시 해당 모델만 즉시 빌드 및 브라우저 오픈.
-* **STEP 2. 선택 모델 초기 카메라 시점 & 인터랙션 제약 설정 (카메라 프로필 관리)**:
+* **STEP 2. 선택 모델 초기 카메라 시점 & Aholo 렌더링 엔진 옵션**:
   * Step 1에서 선택한 모델의 시점(`Position`, `Target`, `FOV`)을 독립 설정.
   * **`🌐 1. 브라우저에서 시점 맞추기 (Open Viewer to Adjust)`**: 브라우저 뷰어를 바로 띄워 자유롭게 마우스로 앵글을 잡을 수 있음.
   * **`📋 2. 복사한 시점 적용하기 (Paste Copied View)`**: 브라우저에서 복사한 좌표를 1클릭으로 해당 모델 프로필에 영구 저장.
-  * **🛡️ 지면 하단 회전 방지 (Ground Lock)**: 카메라가 지평선(바닥) 아래로 파고들지 못하도록 Pitch 고도각을 지면 수평(`-89° ~ 0°`)으로 안전 제한.
+  * **🛡️ 지면 하단 회전 방지 (Ground Lock)**: 카메라가 바닥 아래로 파고들지 못하도록 고도각을 지면 수평(`-89° ~ 0°`)으로 안전 제한.
   * **🔍 최소/최대 접근 거리 제약 (Min/Max Distance)**: 줌인 시 피사체 내부를 뚫고 들어가지 않도록 최소 줌 거리(기본 `0.8m`) 및 최대 후퇴 거리를 개별 모델 프로필로 고정.
-  * **퀵 프리셋 지원**: `🎯 Front View`, `📐 Quarter (3/4)`, `🚗 Side View`, `🚁 Top-Down`.
+  * **⚡ 5단계 Aholo 렌더링 품질 프리셋**: `Quality First`, `Max Quality (Full f32/TAA)`, `Balanced (LOD/Adaptive)`, `Performance First`, `Extreme Performance (Low VRAM)` 선택 지원.
+  * **📐 건축 2점 투시 (2-Point Perspective)**: 수직 건물의 평행선을 왜곡 없이 수직 정렬하는 건축 전용 2점 투시 모드 탑재.
+  * **🎨 시네마틱 톤 매핑 (Tone Mapping)**: `Neutral`, `ACES`, `ACESFilmic`, `Reinhard`, `Linear` 컬러 그레이딩 곡선 지원.
 * **STEP 3. 출력 디렉토리 및 일괄 패키징**:
   * **출력 폴더 지정**: 기본 `05_web_build` 외에 자유롭게 변경 가능.
   * **`🛡️ 워터마크 크기/불투명도 & Review_ 자동 네이밍`**: `Client Review Watermark` 체크 시 글자 크기(px) 및 불투명도(%)를 정밀하게 설정 가능하며, 출력 파일명 앞에 `'Review_'` 접두사가 자동 부여됨.
-  * **`🚀 Orbit 카메라 기본 고정 & 디바이스(마우스/터치) 자동 감지`**: 뷰어 실행 시 Orbit 카메라로 시작하며 모바일/데스크톱 조작 가이드 자동 전환 및 불필요한 컨트롤러를 가리고 전체화면만 깔끔하게 노출.
-  * **`⚡ 선택된 모델 WebGL 일괄 빌드`**: 체크된 모든 모델을 각자의 파일명과 카메라 세팅으로 일괄 패키징.
+  * **`⚡ 선택된 모델 WebGL 일괄 빌드`**: 체크된 모든 모델을 각자의 파일명과 Aholo 엔진 세팅으로 일괄 패키징.
   * **`🟢 로컬 웹 서버 상태 인디케이터`**: Card 3 상단 헤더의 컴팩트 원형 뱃지(`🟢 8080` / `⚪ Off`)로 즉시 토글.
 
 ---
@@ -75,7 +79,7 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ### 🔹 Tab 4. 클라우드 쇼룸 (`4. Cloud Showroom`)
 * **STEP 1. 로컬 패키지 배포 및 선택적 업로드 (Selective Local Deployer)**:
   * 로컬 `05_web_build`에 빌드된 패키지 중 원하는 모델만 체크박스로 선별.
-  * 실시간 선택 용량 계산 및 하단 중앙의 **`▼ 쇼룸으로 업로드`** 버튼 클릭으로 백그라운드 안전 업로드.
+  * `.sog`, `.ply`, `.spz`, `.splat`, `.ksplat`, `.lcc` 모든 3DGS 에셋 및 `libs/aholo` 자동 동기화.
 * **STEP 2. 실시간 웹 쇼룸 및 Vercel 배포 자산 관리 (Live Cloud Showroom & Resources)**:
   * 현재 Vercel 웹에 배포된 실시간 3DGS 모델 목록 및 용량 실시간 스캔.
   * 각 모델별 라이브 URL 접속 버튼(`🌐 Open`) 및 원클릭 URL 복사(`📋 URL`).
@@ -89,23 +93,11 @@ Points & Reality 3DGS Controller는 비디오 캡처부터 3D 가우시안 스�
 ```text
 Points & Reality Pipeline/
 ├── main.pyw                         # 애플리케이션 진입점 (High DPI 지원)
-├── ui/
-│   ├── ui_main_master.py            # 메인 윈도우 컨트롤러, 프리셋 관리, 통합 로그
-│   ├── ui_components.py            # ModernStepCard, StatusPill 커스텀 위젯
-│   ├── ui_translations.py          # 한국어(KO) / 영어(EN) 완전 다국어 사전
-│   ├── tabs/
-│   │   ├── capture_sections/       # Tab 1 세부 섹션 (프로젝트, 인제스트, 런처)
-│   │   ├── tab_cleanup.py          # Tab 2 스플랫 클린업 컨트롤러
-│   │   ├── tab_webgl.py            # Tab 3 WebGL 빌더 & 로컬 서버
-│   │   └── tab_showroom.py         # Tab 4 클라우드 쇼룸 & Vercel 리소스 관리자
-│   └── templates/
-│       ├── supersplat_template.html # SuperSplat 독립 실행 엔진 템플릿
-│       └── libs/                   # Three.js (0.164.0), GaussianSplats3D (0.4.5) 오프라인 모듈
-```
-├── Run_Points_Reality_Pipeline.bat  # 원클릭 백그라운드 GUI 실행 배치 스크립트
-├── config.py                        # 앱 버전(APP_VERSION = v2.222), 다크 테마 QSS, 폴더 상수
+├── config.py                        # 앱 버전(APP_VERSION = v2.250), Aholo 상수, 다크 테마 QSS
 ├── utils.py                         # FFmpeg 추출 스레드, 폴더 감시 스레드
 ├── CHANGELOG.md                     # 전체 릴리즈 및 버전 히스토리 영구 기록
+├── libs/
+│   └── aholo/                       # Manycore Aholo Viewer 1.8.1 코어 번들 & 워커 & 카메라 컨트롤
 ├── ui/
 │   ├── ui_main_master.py            # 메인 윈도우 컨트롤러, 프리셋 관리, 통합 로그
 │   ├── ui_components.py            # ModernStepCard, StatusPill, ElideLeftDelegate 커스텀 위젯
@@ -113,10 +105,11 @@ Points & Reality Pipeline/
 │   ├── tabs/
 │   │   ├── capture_sections/       # Tab 1 세부 섹션 (프로젝트, 인제스트, 런처, 와처)
 │   │   ├── tab_cleanup.py          # Tab 2 스플랫 클린업 컨트롤러
-│   │   └── tab_webgl.py            # Tab 3 WebGL 빌더 & HTTP 서버 스레드
+│   │   ├── tab_webgl.py            # Tab 3 Manycore Aholo 3DGS 빌더 & 로컬 서버
+│   │   ├── tab_showroom.py         # Tab 4 클라우드 쇼룸 & Vercel 리소스 관리자
+│   │   └── dialog_web_publish.py   # Vercel 클라우드 배포 다이얼로그
 │   └── templates/
-│       ├── supersplat_template.html # SuperSplat 독립 실행 엔진 템플릿 (카메라 동기화 HUD 포함)
-│       └── libs/                   # Three.js (0.164.0), GaussianSplats3D (0.4.5) 오프라인 모듈
+│       └── aholo_template.html      # Manycore Aholo Viewer 독립 실행 엔진 템플릿
 ```
 
 ---

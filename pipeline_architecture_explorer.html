@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points & Reality — 3DGS Pipeline Architecture & Logic Explorer</title>
+  <meta name="description" content="Interactive Architecture & Logic Visualizer for Points & Reality 3D Gaussian Splatting Pipeline Suite (v2.250)">
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       DESIGN TOKENS & STUDIO SYSTEM (Points & Reality Pro)
+       ═══════════════════════════════════════════════════════ */
+    :root {
+      --c-bg: #07080a;
+      --c-bg-subtle: #0d0f14;
+      --c-card: #12151c;
+      --c-card-hover: #171b24;
+      --c-card-active: #1d222e;
+      --c-border: rgba(255, 255, 255, 0.08);
+      --c-border-subtle: rgba(255, 255, 255, 0.04);
+      --c-border-hover: rgba(129, 140, 248, 0.35);
+      --c-border-active: #6366f1;
+      
+      --c-text-primary: #f8fafc;
+      --c-text-secondary: #94a3b8;
+      --c-text-muted: #64748b;
+      --c-text-inverse: #09090b;
+
+      --c-accent-primary: #6366f1;
+      --c-accent-secondary: #a855f7;
+      --c-accent-cyan: #06b6d4;
+      --c-accent-emerald: #10b981;
+      --c-accent-amber: #f59e0b;
+      --c-accent-rose: #f43f5e;
+      
+      --c-glow-primary: rgba(99, 102, 241, 0.22);
+      --c-glow-emerald: rgba(16, 185, 129, 0.2);
+      --c-glow-cyan: rgba(6, 182, 212, 0.2);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Cascadia Code', monospace;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      
+      --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 30px -5px var(--c-glow-primary);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: var(--font-sans);
+      background-color: var(--c-bg);
+      color: var(--c-text-primary);
+      line-height: 1.5;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Background Particle Canvas ── */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    /* ── App Shell Container ── */
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
+    }
+
+    /* ── Global Header (2-Tier Concept from ui_main_master.py) ── */
+    .app-header {
+      background: rgba(15, 18, 25, 0.85);
+      backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--c-border);
+      padding: 10px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .header-tier1 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--c-accent-primary), var(--c-accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #ffffff;
+      box-shadow: 0 0 15px var(--c-glow-primary);
+    }
+
+    .brand-title-group h1 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-version-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      font-weight: 600;
+    }
+
+    .brand-subtitle {
+      font-size: 11.5px;
+      color: var(--c-text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 220px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px 6px 30px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--c-text-primary);
+      outline: none;
+      transition: all 0.2s var(--ease);
+    }
+
+    .search-input:focus {
+      border-color: var(--c-accent-primary);
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 10px var(--c-glow-primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: var(--c-text-muted);
+    }
+
+    .header-btn {
+      background: #171922;
+      border: 1px solid #282d3c;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s var(--ease);
+    }
+
+    .header-btn:hover {
+      background: #202636;
+      border-color: #3b465c;
+      color: #ffffff;
+    }
+
+    .header-btn.primary {
+      background: #283344;
+      border-color: #3d4f68;
+      color: #f1f5f9;
+    }
+
+    .header-btn.primary:hover {
+      background: #324056;
+      border-color: #51698a;
+    }
+
+    .header-btn.lang-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      background: rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+    }
+
+    /* ── Header Tier 2: Primary Nav Tabs (Segmented Buttons) ── */
+    .header-tier2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 6px;
+    }
+
+    .nav-tabs-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-tab-btn {
+      background: #141720;
+      border: 1px solid #222736;
+      border-radius: var(--radius-sm);
+      padding: 6px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s var(--ease);
+    }
+
+    .nav-tab-btn:hover {
+      background: #1c2230;
+      color: #ffffff;
+      border-color: #333d54;
+    }
+
+    .nav-tab-btn.active {
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      border-color: #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+    }
+
+    .nav-tab-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      font-weight: 700;
+    }
+
+    .live-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      font-size: 11.5px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* ── Main Content Area ── */
+    .app-main-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tab-view-container {
+      width: 100%;
+      height: 100%;
+      display: none;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
+    .tab-view-container.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TAB 1: 6-STAGE PIPELINE SIMULATOR
+       ═══════════════════════════════════════════════════════ */
+    .pipeline-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 340px 1fr 340px;
+      gap: 14px;
+      padding: 16px 20px;
+      overflow-y: auto;
+    }
+
+    .studio-panel {
+      background: rgba(18, 21, 28, 0.85);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-body {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Pipeline Step Cards Sequence */
+    .pipeline-stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stage-node-card {
+      background: #141722;
+      border: 1px solid #232838;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      position: relative;
+    }
+
+    .stage-node-card:hover {
+      background: #1b2030;
+      border-color: #3d4968;
+      transform: translateX(3px);
+    }
+
+    .stage-node-card.active {
+      background: #1e2538;
+      border-color: #6366f1;
+      box-shadow: 0 0 16px var(--c-glow-primary);
+    }
+
+    .stage-node-card.running {
+      border-color: #38bdf8;
+      animation: border-glow 1.5s infinite alternate;
+    }
+
+    .stage-node-card.completed {
+      border-left: 3px solid #10b981;
+    }
+
+    @keyframes border-glow {
+      from { box-shadow: 0 0 4px rgba(56, 189, 248, 0.2); }
+      to { box-shadow: 0 0 16px rgba(56, 189, 248, 0.6); }
+    }
+
+    .stage-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .stage-card-num {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.15);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .stage-card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .stage-card-desc {
+      font-size: 11px;
+      color: var(--c-text-muted);
+      line-height: 1.4;
+    }
+
+    .stage-card-tags {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stage-tag {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--c-text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Central Interactive Flow Visualizer */
+    .flow-canvas-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pipeline-interactive-hero {
+      background: #0d1017;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stage-flow-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 10px 0;
+    }
+
+    .stage-flow-track::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 50%;
+      height: 2px;
+      background: #252b3b;
+      z-index: 0;
+    }
+
+    .stage-flow-progress-line {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #38bdf8, #10b981);
+      z-index: 1;
+      width: 0%;
+      transition: width 0.4s var(--ease);
+    }
+
+    .flow-step-circle {
+      position: relative;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #141722;
+      border: 2px solid #2d3448;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+
+    .flow-step-circle:hover {
+      border-color: #818cf8;
+      transform: scale(1.1);
+    }
+
+    .flow-step-circle.active {
+      border-color: #6366f1;
+      background: #1e2538;
+      color: #ffffff;
+      box-shadow: 0 0 14px var(--c-glow-primary);
+    }
+
+    .flow-step-circle.done {
+      border-color: #10b981;
+      background: #0f2d22;
+      color: #34d399;
+    }
+
+    /* Stage Detail Inspector Panel */
+    .detail-card-box {
+      background: #11141c;
+      border: 1px solid #222634;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .detail-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-snippet-box {
+      background: #08090d;
+      border: 1px solid #1a1d26;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #cbd5e1;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TAB 2: SYSTEM ARCHITECTURE GRAPH
+       ═══════════════════════════════════════════════════════ */
+    .arch-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 14px;
+      padding: 16px 20px;
+      overflow: hidden;
+    }
+
+    .arch-canvas-wrap {
+      background: #0a0c11;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .arch-svg-viewport {
+      width: 100%;
+      height: 100%;
+    }
+
+    .arch-node {
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .arch-node:hover rect {
+      stroke: #818cf8;
+      stroke-width: 2px;
+      filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.4));
+    }
+
+    .arch-node.selected rect {
+      stroke: #38bdf8;
+      stroke-width: 2.5px;
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.5));
+    }
+
+    .arch-inspector-panel {
+      background: rgba(18, 21, 28, 0.9);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .component-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .badge-python { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-qt { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-webgl { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-cloud { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    /* ═══════════════════════════════════════════════════════
+       TAB 3: VIRTUAL CONTROLLER & 3DGS VIEWER STUDIO
+       ═══════════════════════════════════════════════════════ */
+    .studio-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 14px;
+      padding: 16px 20px;
+      overflow: hidden;
+    }
+
+    .qt-sim-window {
+      background: #101215;
+      border: 1px solid #232732;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .qt-titlebar {
+      background: #15181f;
+      border-bottom: 1px solid #232732;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .qt-window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .qt-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .qt-dot.close { background: #ef4444; }
+    .qt-dot.min { background: #eab308; }
+    .qt-dot.max { background: #22c55e; }
+
+    .qt-sim-body {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .qt-groupbox {
+      background: #14161d;
+      border: 1px solid #232734;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .qt-group-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qt-form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .qt-label {
+      font-size: 11px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    .qt-input, .qt-select {
+      background: #0b0c0f;
+      border: 1px solid #20232c;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #e2e8f0;
+      outline: none;
+      font-family: var(--font-sans);
+    }
+
+    .qt-btn {
+      background: #191b22;
+      border: 1px solid #282c37;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+    }
+
+    .qt-btn:hover {
+      background: #232732;
+      color: #ffffff;
+    }
+
+    .qt-btn.primary {
+      background: #283344;
+      border-color: #3d4f68;
+      color: #f1f5f9;
+    }
+
+    .qt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    .qt-table th {
+      background: #0f1117;
+      padding: 5px 8px;
+      color: #94a3b8;
+      border-bottom: 1px solid #202430;
+      font-weight: 600;
+    }
+
+    .qt-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #1a1d26;
+      color: #cbd5e1;
+    }
+
+    .viewer-sandbox-wrap {
+      background: #07080a;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #webgl-sandbox-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+
+    #webgl-sandbox-canvas:active {
+      cursor: grabbing;
+    }
+
+    .viewer-overlay-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 18, 25, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+    }
+
+    .hud-line {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+
+    .hud-val {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .watermark-overlay-preview {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: space-around;
+      justify-content: space-around;
+      overflow: hidden;
+      opacity: 0.18;
+      font-family: var(--font-sans);
+      font-weight: 800;
+      color: #ffffff;
+      transform: rotate(-25deg) scale(1.2);
+      user-select: none;
+      line-height: 2;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TAB 4: DIRECTORY & CODEBASE MATRIX
+       ═══════════════════════════════════════════════════════ */
+    .codebase-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 14px;
+      padding: 16px 20px;
+      overflow: hidden;
+    }
+
+    .tree-view-box {
+      background: #0f1219;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.15s var(--ease);
+    }
+
+    .tree-item:hover {
+      background: #181d28;
+      color: #ffffff;
+    }
+
+    .tree-item.active {
+      background: #1e2538;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .tree-item.folder {
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .tree-icon {
+      font-size: 13px;
+    }
+
+    .tree-sub {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      border-left: 1px solid #1e2433;
+      margin-left: 10px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TAB 5: QUALITY GATE & SPECS
+       ═══════════════════════════════════════════════════════ */
+    .specs-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding: 16px 20px;
+      overflow-y: auto;
+    }
+
+    .spec-card {
+      background: #10131b;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .spec-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+    }
+
+    .spec-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .spec-card-desc {
+      font-size: 12px;
+      color: var(--c-text-secondary);
+      line-height: 1.5;
+    }
+
+    .spec-rule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .spec-rule-item {
+      font-size: 11px;
+      color: #94a3b8;
+      padding-left: 12px;
+      position: relative;
+    }
+
+    .spec-rule-item::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #6366f1;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BOTTOM CONSOLE & LOG DOCK
+       ═══════════════════════════════════════════════════════ */
+    .bottom-log-dock {
+      height: 120px;
+      background: #090a0e;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .log-dock-header {
+      padding: 4px 16px;
+      background: #11131a;
+      border-bottom: 1px solid #1b1e29;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .log-dock-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .log-content-area {
+      flex: 1;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: #e2e8f0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: #08090d;
+    }
+
+    .log-entry {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .log-time { color: #475569; }
+    .log-level-info { color: #38bdf8; font-weight: 600; }
+    .log-level-success { color: #34d399; font-weight: 600; }
+    .log-level-warning { color: #fbbf24; font-weight: 600; }
+    .log-level-error { color: #f87171; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="app-shell">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-tier1">
+        <div class="brand-cluster">
+          <div class="brand-logo-badge">PR</div>
+          <div class="brand-title-group">
+            <h1>
+              POINTS &amp; REALITY
+              <span class="brand-version-tag">v2.248</span>
+            </h1>
+            <div class="brand-subtitle" id="i18n-subhead">Photorealistic 3D Gaussian Splatting Pipeline Architecture &amp; Execution Explorer</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn lang-btn" id="btn-lang-toggle">KO / EN</button>
+        </div>
+      </div>
+
+      <div class="header-tier2">
+        <div class="nav-tabs-group">
+          <button class="nav-tab-btn active" data-tab="tab-pipeline">
+            <span>🔄</span> <span id="tab-label-1">1. Pipeline Simulator</span>
+            <span class="nav-tab-badge">6 Stages</span>
+          </button>
+          <button class="nav-tab-btn" data-tab="tab-arch">
+            <span>🏛️</span> <span id="tab-label-2">2. Architecture Graph</span>
+            <span class="nav-tab-badge">Core Engine</span>
+          </button>
+          <button class="nav-tab-btn" data-tab="tab-studio">
+            <span>🎛️</span> <span id="tab-label-3">3. Virtual Qt &amp; 3DGS Studio</span>
+            <span class="nav-tab-badge">Interactive</span>
+          </button>
+          <button class="nav-tab-btn" data-tab="tab-codebase">
+            <span>📂</span> <span id="tab-label-4">4. Codebase Matrix</span>
+            <span class="nav-tab-badge">24 Files</span>
+          </button>
+          <button class="nav-tab-btn" data-tab="tab-specs">
+            <span>🛡️</span> <span id="tab-label-5">5. Quality Gate &amp; Specs</span>
+            <span class="nav-tab-badge">v2.248</span>
+          </button>
+        </div>
+
+        <div class="live-status-pill">
+          <span class="status-dot"></span>
+          <span>LOCAL HTTP :8080 READY</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Views -->
+    <main class="app-main-body">
+
+      <!-- TAB 1 -->
+      <section id="tab-pipeline" class="tab-view-container active">
+        <div class="pipeline-grid">
+          <div class="studio-panel">
+            <div class="panel-header">
+              <div class="panel-title"><span>📦</span> <span>6-Stage Standard Workflow</span></div>
+              <button class="header-btn" style="padding: 3px 8px; font-size: 11px;" id="btn-run-all-sim">⚡ Run Full Sim</button>
+            </div>
+            <div class="panel-body pipeline-stage-list" id="stage-card-list"></div>
+          </div>
+
+          <div class="flow-canvas-container">
+            <div class="pipeline-interactive-hero">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h3 style="font-size: 14px; font-weight: 800; color: #ffffff;">Live Data Pipeline Progression</h3>
+                  <p style="font-size: 11.5px; color: var(--c-text-muted);">Real-time tracking of file transformation across 6 stages</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="header-btn primary" id="btn-trigger-stage-step">▶ Step Forward</button>
+                  <button class="header-btn" id="btn-reset-sim">↺ Reset</button>
+                </div>
+              </div>
+
+              <div class="stage-flow-track">
+                <div class="stage-flow-progress-line" id="flow-progress-bar"></div>
+                <div class="flow-step-circle active" data-step="0">00</div>
+                <div class="flow-step-circle" data-step="1">01</div>
+                <div class="flow-step-circle" data-step="2">02</div>
+                <div class="flow-step-circle" data-step="3">03</div>
+                <div class="flow-step-circle" data-step="4">04</div>
+                <div class="flow-step-circle" data-step="5">05</div>
+              </div>
+
+              <div class="simulation-ctrl-bar" style="display: flex; justify-content: space-between; background: #12151d; border: 1px solid #232838; border-radius: 6px; padding: 10px 14px;">
+                <div style="display: flex; gap: 16px;">
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 10px; color: var(--c-text-muted); text-transform: uppercase; font-weight: 600;">Active Step</span>
+                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #e2e8f0;" id="sim-active-step-name">00_raw_footage</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 10px; color: var(--c-text-muted); text-transform: uppercase; font-weight: 600;">Payload Format</span>
+                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #e2e8f0;" id="sim-payload-format">MP4 / MOV (4K ProRes)</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column;">
+                    <span style="font-size: 10px; color: var(--c-text-muted); text-transform: uppercase; font-weight: 600;">Processing Engine</span>
+                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #e2e8f0;" id="sim-engine-name">ffprobe JSON</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="studio-panel" style="flex: 1;">
+              <div class="panel-header">
+                <div class="panel-title"><span>🔍</span> <span id="detail-stage-heading">Stage Specification</span></div>
+                <span class="stage-card-num" id="detail-stage-badge">STEP 00</span>
+              </div>
+              <div class="panel-body" id="detail-stage-body"></div>
+            </div>
+          </div>
+
+          <div class="studio-panel">
+            <div class="panel-header">
+              <div class="panel-title"><span>⚙️</span> <span>Pipeline Configuration</span></div>
+            </div>
+            <div class="panel-body">
+              <div class="qt-groupbox">
+                <div class="qt-group-title"><span>🎬</span> Video Extraction Setup</div>
+                <div class="qt-form-row">
+                  <span class="qt-label">Frame Step:</span>
+                  <select class="qt-select" id="cfg-frame-step">
+                    <option value="1">Step 1 (All Frames)</option>
+                    <option value="2" selected>Step 2 (Every 2nd)</option>
+                    <option value="5">Step 5 (Sparse)</option>
+                  </select>
+                </div>
+                <div class="qt-form-row">
+                  <span class="qt-label">Image Format:</span>
+                  <select class="qt-select" id="cfg-img-fmt">
+                    <option value="png" selected>PNG (Lossless)</option>
+                    <option value="jpg">JPG (95% HQ)</option>
+                    <option value="exr">OpenEXR (16-bit Float)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="qt-groupbox">
+                <div class="qt-group-title"><span>🤖</span> AI Trainer Bridge</div>
+                <div class="qt-form-row">
+                  <span class="qt-label">AI Engine:</span>
+                  <select class="qt-select" id="cfg-ai-engine">
+                    <option value="postshot" selected>Postshot 3DGS</option>
+                    <option value="lichtfeld">Lichtfeld Studio</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2 -->
+      <section id="tab-arch" class="tab-view-container">
+        <div class="arch-container">
+          <div class="arch-canvas-wrap">
+            <div class="panel-header" style="background: rgba(15,18,25,0.7);">
+              <div class="panel-title"><span>🗺️</span> <span>Interactive Component &amp; Thread Map</span></div>
+            </div>
+            <svg class="arch-svg-viewport" id="arch-svg" viewBox="0 0 920 560">
+              <g id="arch-links" stroke="#2a3348" stroke-width="1.5" fill="none">
+                <path d="M 120 70 L 120 140" />
+                <path d="M 120 190 L 120 280" />
+                <path d="M 120 190 L 320 280" />
+                <path d="M 120 190 L 520 280" />
+                <path d="M 120 190 L 720 280" />
+                <path d="M 120 330 L 120 440" stroke-dasharray="4,4" />
+                <path d="M 520 330 L 520 440" stroke-dasharray="4,4" />
+                <path d="M 720 330 L 720 440" stroke-dasharray="4,4" />
+                <path d="M 520 280 L 720 140" />
+                <path d="M 200 165 L 350 165" />
+              </g>
+              <g class="arch-node" data-node="main" transform="translate(40, 30)">
+                <rect width="160" height="42" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="22" fill="#38bdf8" font-size="11" font-family="JetBrains Mono" font-weight="700">main.pyw</text>
+                <text x="14" y="34" fill="#94a3b8" font-size="9.5" font-family="Inter">High-DPI Bootloader</text>
+              </g>
+              <g class="arch-node selected" data-node="master" transform="translate(40, 140)">
+                <rect width="160" height="50" rx="6" fill="#312e81" stroke="#6366f1" stroke-width="1.8" />
+                <text x="14" y="24" fill="#a5b4fc" font-size="11" font-family="JetBrains Mono" font-weight="700">ui_main_master.py</text>
+                <text x="14" y="38" fill="#e2e8f0" font-size="9.5" font-family="Inter">PointsAndRealityController</text>
+              </g>
+              <g class="arch-node" data-node="config" transform="translate(350, 140)">
+                <rect width="160" height="50" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="24" fill="#34d399" font-size="11" font-family="JetBrains Mono" font-weight="700">config.py &amp; utils.py</text>
+                <text x="14" y="38" fill="#94a3b8" font-size="9.5" font-family="Inter">Dark QSS, ffprobe, Struct</text>
+              </g>
+              <g class="arch-node" data-node="tab1" transform="translate(40, 280)">
+                <rect width="160" height="50" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="22" fill="#60a5fa" font-size="11" font-family="JetBrains Mono" font-weight="700">capture_sections/</text>
+                <text x="14" y="36" fill="#94a3b8" font-size="9" font-family="Inter">Ingest, Trainer Launch</text>
+              </g>
+              <g class="arch-node" data-node="tab2" transform="translate(240, 280)">
+                <rect width="160" height="50" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="22" fill="#60a5fa" font-size="11" font-family="JetBrains Mono" font-weight="700">tab_cleanup.py</text>
+                <text x="14" y="36" fill="#94a3b8" font-size="9" font-family="Inter">SuperSplat &amp; Crop Box</text>
+              </g>
+              <g class="arch-node" data-node="tab3" transform="translate(440, 280)">
+                <rect width="160" height="50" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="22" fill="#60a5fa" font-size="11" font-family="JetBrains Mono" font-weight="700">tab_webgl.py</text>
+                <text x="14" y="36" fill="#94a3b8" font-size="9" font-family="Inter">Manycore Aholo 3DGS Builder</text>
+              </g>
+              <g class="arch-node" data-node="tab4" transform="translate(640, 280)">
+                <rect width="160" height="50" rx="6" fill="#1e293b" stroke="#384258" stroke-width="1.2" />
+                <text x="14" y="22" fill="#60a5fa" font-size="11" font-family="JetBrains Mono" font-weight="700">tab_showroom.py</text>
+                <text x="14" y="36" fill="#94a3b8" font-size="9" font-family="Inter">Vercel Deployer &amp; Sync</text>
+              </g>
+              <g class="arch-node" data-node="thread_extract" transform="translate(40, 440)">
+                <rect width="160" height="46" rx="6" fill="#131926" stroke="#2563eb" stroke-dasharray="3,3" stroke-width="1.5" />
+                <text x="14" y="20" fill="#93c5fd" font-size="10.5" font-family="JetBrains Mono" font-weight="600">ExtractThread</text>
+                <text x="14" y="34" fill="#64748b" font-size="8.5" font-family="Inter">QThread + FFmpeg Worker</text>
+              </g>
+              <g class="arch-node" data-node="thread_http" transform="translate(440, 440)">
+                <rect width="160" height="46" rx="6" fill="#131926" stroke="#2563eb" stroke-dasharray="3,3" stroke-width="1.5" />
+                <text x="14" y="20" fill="#93c5fd" font-size="10.5" font-family="JetBrains Mono" font-weight="600">HTTPServerThread</text>
+                <text x="14" y="34" fill="#64748b" font-size="8.5" font-family="Inter">Local Server :8080</text>
+              </g>
+              <g class="arch-node" data-node="thread_vercel" transform="translate(640, 440)">
+                <rect width="160" height="46" rx="6" fill="#131926" stroke="#2563eb" stroke-dasharray="3,3" stroke-width="1.5" />
+                <text x="14" y="20" fill="#93c5fd" font-size="10.5" font-family="JetBrains Mono" font-weight="600">ShowroomUploadWorker</text>
+                <text x="14" y="34" fill="#64748b" font-size="8.5" font-family="Inter">Git Sync to Vercel</text>
+              </g>
+              <g class="arch-node" data-node="web_engine" transform="translate(640, 110)">
+                <rect width="160" height="54" rx="6" fill="#191728" stroke="#a855f7" stroke-width="1.5" />
+                <text x="14" y="20" fill="#d8b4fe" font-size="11" font-family="JetBrains Mono" font-weight="700">Manycore Aholo Engine</text>
+                <text x="14" y="34" fill="#c084fc" font-size="9" font-family="Inter">Aholo Viewer 1.8.1 (Universal)</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="arch-inspector-panel">
+            <div class="panel-header">
+              <div class="panel-title"><span>🔍</span> <span id="arch-node-title">Component Inspector</span></div>
+              <span class="component-badge badge-qt" id="arch-node-badge">PyQt5 Core</span>
+            </div>
+            <div class="panel-body" id="arch-node-desc"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3 -->
+      <section id="tab-studio" class="tab-view-container">
+        <div class="studio-layout">
+          <div class="qt-sim-window">
+            <div class="qt-titlebar">
+              <div class="qt-window-dots">
+                <div class="qt-dot close"></div>
+                <div class="qt-dot min"></div>
+                <div class="qt-dot max"></div>
+              </div>
+              <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Points &amp; Reality 3DGS Controller — WebGL Build Tab</span>
+              <span style="font-size: 10px; font-family: var(--font-mono); color: #64748b;">Qt 5.15</span>
+            </div>
+
+            <div class="qt-sim-body">
+              <div class="qt-groupbox">
+                <div class="qt-group-title"><span>📋</span> WebGL Model Batch Queue</div>
+                <table class="qt-table">
+                  <thead>
+                    <tr><th>Build</th><th>Source Model</th><th>Output HTML</th><th>Size</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="text-align: center;"><input type="checkbox" checked></td>
+                      <td style="font-family: var(--font-mono);">FordEscape01.sog</td>
+                      <td style="font-family: var(--font-mono); color: #38bdf8;">index.html</td>
+                      <td>42.8 MB</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: center;"><input type="checkbox" checked></td>
+                      <td style="font-family: var(--font-mono);">FordEscape_Int.ply</td>
+                      <td style="font-family: var(--font-mono); color: #cbd5e1;">Interior.html</td>
+                      <td>118.4 MB</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="qt-groupbox">
+                <div class="qt-group-title"><span>🎥</span> Camera Profile &amp; Constraints</div>
+                <div style="display: flex; gap: 4px;">
+                  <button class="qt-btn" id="btn-cam-front">🎯 Front</button>
+                  <button class="qt-btn" id="btn-cam-quarter">📐 3/4 Quarter</button>
+                  <button class="qt-btn" id="btn-cam-side">🚗 Side</button>
+                  <button class="qt-btn" id="btn-cam-top">🚁 Top</button>
+                </div>
+                <div class="qt-form-row" style="margin-top: 6px;">
+                  <span class="qt-label">🛡️ Ground Lock (-89°~0°):</span>
+                  <input type="checkbox" id="qt-chk-ground-lock" checked>
+                </div>
+              </div>
+
+              <div class="qt-groupbox">
+                <div class="qt-group-title"><span>🛡️</span> Client Review Watermark</div>
+                <div class="qt-form-row">
+                  <span class="qt-label">Enable:</span>
+                  <input type="checkbox" id="qt-chk-wm-enable" checked>
+                </div>
+                <div class="qt-form-row">
+                  <span class="qt-label">Text:</span>
+                  <input type="text" class="qt-input" id="qt-wm-text" value="POINTS & REALITY CONFIDENTIAL" style="flex: 1;">
+                </div>
+                <div class="qt-form-row">
+                  <span class="qt-label">Opacity:</span>
+                  <input type="range" id="qt-wm-opacity" min="5" max="60" value="18">
+                  <span id="qt-wm-opacity-val">18%</span>
+                </div>
+              </div>
+
+              <button class="qt-btn primary" style="padding: 8px; font-size: 11.5px;">⚡ Build Selected WebGL Package (05_web_build)</button>
+            </div>
+          </div>
+
+          <div class="viewer-sandbox-wrap">
+            <canvas id="webgl-sandbox-canvas"></canvas>
+            <div class="watermark-overlay-preview" id="wm-preview-layer">
+              <span>POINTS &amp; REALITY CONFIDENTIAL</span>
+              <span>POINTS &amp; REALITY CONFIDENTIAL</span>
+              <span>POINTS &amp; REALITY CONFIDENTIAL</span>
+              <span>POINTS &amp; REALITY CONFIDENTIAL</span>
+            </div>
+            <div class="viewer-overlay-hud">
+              <div class="hud-line">ENGINE: <span class="hud-val">Manycore Aholo Viewer 1.8.1 (Universal 3DGS)</span></div>
+              <div class="hud-line">FPS: <span class="hud-val">60 FPS</span> | SPLATS: <span class="hud-val">1,284,920</span></div>
+              <div class="hud-line">CAMERA: <span class="hud-val">Orbit (Ground Lock Clamped)</span></div>
+              <div class="hud-line" style="color: #64748b; font-size: 9.5px; margin-top: 4px;">Drag to Orbit • Scroll to Zoom</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4 -->
+      <section id="tab-codebase" class="tab-view-container">
+        <div class="codebase-grid">
+          <div class="tree-view-box">
+            <div style="font-size: 11.5px; font-weight: 700; color: #94a3b8; margin-bottom: 6px;">📁 Repository Files</div>
+            <div class="tree-item active" data-file="main.pyw"><span class="tree-icon">🐍</span> main.pyw</div>
+            <div class="tree-item" data-file="config.py"><span class="tree-icon">⚙️</span> config.py</div>
+            <div class="tree-item" data-file="utils.py"><span class="tree-icon">🛠️</span> utils.py</div>
+            <div class="tree-item" data-file="houdini_builder.py"><span class="tree-icon">🪄</span> houdini_builder.py</div>
+            <div class="tree-item" data-file="ui_main_master.py"><span class="tree-icon">🖥️</span> ui_main_master.py</div>
+            <div class="tree-item" data-file="tab_webgl.py"><span class="tree-icon">📦</span> tab_webgl.py</div>
+            <div class="tree-item" data-file="tab_showroom.py"><span class="tree-icon">🚀</span> tab_showroom.py</div>
+            <div class="tree-item" data-file="motion-engine.js"><span class="tree-icon">⚡</span> motion-engine.js</div>
+            <div class="tree-item" data-file="showroom.html"><span class="tree-icon">🏛️</span> showroom.html</div>
+            <div class="tree-item" data-file="vercel.json"><span class="tree-icon">☁️</span> vercel.json</div>
+          </div>
+          <div class="studio-panel" style="flex: 1;">
+            <div class="panel-header">
+              <div class="panel-title"><span>📄</span> <span id="file-inspector-title">main.pyw</span></div>
+              <span class="component-badge badge-python" id="file-inspector-badge">Entry Point</span>
+            </div>
+            <div class="panel-body" id="file-inspector-body"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5 -->
+      <section id="tab-specs" class="tab-view-container">
+        <div class="specs-grid">
+          <div class="spec-card">
+            <div class="spec-card-icon">1️⃣</div>
+            <div class="spec-card-title">Omission &amp; Disk-Sync Verification</div>
+            <div class="spec-card-desc">Ensures 100% preservation of all signals, slots, and QSettings during refactoring.</div>
+            <div class="spec-rule-list">
+              <div class="spec-rule-item">100% signal preservation (log_signal, proj_dir_changed)</div>
+              <div class="spec-rule-item">Two-way verification of write_to_file edits</div>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-icon">2️⃣</div>
+            <div class="spec-card-title">Lifecycle &amp; Runtime Safety</div>
+            <div class="spec-card-desc">Defensive hasattr guards, async QThread workers for FFmpeg and HTTP servers.</div>
+            <div class="spec-rule-list">
+              <div class="spec-rule-item">hasattr guards on dynamic widget updates</div>
+              <div class="spec-rule-item">Async QThread workers prevent UI freezing</div>
+            </div>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card-icon">3️⃣</div>
+            <div class="spec-card-title">Standard Pattern &amp; Anti-Clipping</div>
+            <div class="spec-card-desc">Pure Qt widgets and font-weight: 600 consistency prevent Windows DirectWrite font clipping.</div>
+            <div class="spec-rule-list">
+              <div class="spec-rule-item">QButtonGroup + QPushButton segmented tabs</div>
+              <div class="spec-rule-item">Ampersand (&amp;&amp;) mnemonic escaping</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Console Log Dock -->
+    <footer class="bottom-log-dock">
+      <div class="log-dock-header">
+        <div class="log-dock-title"><span>📟</span> <span>Controller Activity &amp; Live Process Logs</span></div>
+        <button class="header-btn" style="padding: 2px 8px; font-size: 10px;" id="btn-clear-logs">Clear</button>
+      </div>
+      <div class="log-content-area" id="log-console-stream"></div>
+    </footer>
+  </div>
+
+  <script>
+    const PROJECT_DATA = {
+      version: "v2.248",
+      currentLang: "KO",
+      currentStageIndex: 0,
+      stages: [
+        {
+          id: "00_raw_footage",
+          title: "00. Raw Footage Ingest",
+          title_ko: "00. 원본 비디오 인제스트",
+          desc: "Import multi-camera or smartphone videos (MP4, MOV, ProRes). Analyzes resolution, duration, FPS, and codec via ffprobe JSON stream.",
+          desc_ko: "촬영된 고해상도 비디오(.mp4, .mov, ProRes)를 인제스트하고 ffprobe로 메타데이터를 자동 분석합니다.",
+          engine: "ffprobe / IngestWidget",
+          input: "Raw Video Files (.mp4, .mov)",
+          output: "Parsed Metadata & Project Structure",
+          code: `# utils.py: Video Metadata Extraction via ffprobe\ndef get_video_metadata(file_path):\n    cmd = ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", file_path]\n    proc = subprocess.run(cmd, stdout=subprocess.PIPE, text=True)\n    return json.loads(proc.stdout)`
+        },
+        {
+          id: "01_extracted_frames",
+          title: "01. High-Precision Frame Extraction",
+          title_ko: "01. 고정밀 프레임 추출 & 3D LUT",
+          desc: "Extracts image sequences (PNG, JPG 95%, OpenEXR 16-bit Float) using multi-threaded FFmpeg with 3D LUT color grading.",
+          desc_ko: "멀티스레드 FFmpeg 스레드를 구동하여 무손실 이미지 시퀀스를 추출하고 3D LUT를 적용합니다.",
+          engine: "ExtractThread (QThread) + FFmpeg",
+          input: "00_raw_footage/*.mp4",
+          output: "01_extracted_frames/frame_%05d.png",
+          code: `# utils.py: ExtractThread\nclass ExtractThread(QThread):\n    def run(self):\n        cmd = ["ffmpeg", "-i", video_path, "-vf", "fps=fps/step,lut3d=lut.cube", "01_extracted_frames/frame_%05d.png"]\n        subprocess.run(cmd, creationflags=CREATE_NO_WINDOW)`
+        },
+        {
+          id: "02_camera_alignment",
+          title: "02. Structure from Motion (SfM)",
+          title_ko: "02. 카메라 트래킹 및 정렬",
+          desc: "Computes camera poses, sparse point clouds, and intrinsic/extrinsic matrices via COLMAP or RealityCapture.",
+          desc_ko: "COLMAP / RealityCapture를 통해 카메라 트래킹, 포즈 추정 및 희소 포인트 클라우드를 생성합니다.",
+          engine: "COLMAP / RealityCapture CLI",
+          input: "01_extracted_frames/*.png",
+          output: "02_camera_alignment/cameras.bin",
+          code: `# External Bridge: Structure from Motion CLI\ncolmap feature_extractor --image_path 01_extracted_frames\ncolmap exhaustive_matcher\ncolmap mapper --output_path 02_camera_alignment`
+        },
+        {
+          id: "03_splats_exports",
+          title: "03. 3D Gaussian Splatting AI Training",
+          title_ko: "03. 3DGS AI 트레이너 브릿지",
+          desc: "Trains 3D Gaussian Splats using Postshot, Lichtfeld Studio, Nerfstudio, or Brush. Background watcher detects exported .ply/.sog models.",
+          desc_ko: "Postshot, Lichtfeld Studio 등 최신 AI 트레이너를 원클릭 실행하고 모델 생성을 실시간 감지합니다.",
+          engine: "Postshot / Lichtfeld / FolderWatcher",
+          input: "01_extracted_frames + 02_camera_alignment",
+          output: "03_splats_exports/model.ply, model.sog",
+          code: `# section_launcher.py: One-Click Trainer Bridge\ndef launch_postshot(self):\n    postshot_exe = self.find_postshot_binary()\n    subprocess.Popen([postshot_exe, "--project", self.proj_dir])`
+        },
+        {
+          id: "04_splats_cleaned",
+          title: "04. Splat Noise Cleanup & Houdini SOP",
+          title_ko: "04. 스플랫 클린업 & 후디니 노드 편집",
+          desc: "Removes floating artifacts via embedded SuperSplat editor (with Fly-Lock) or procedural Houdini SOP networks.",
+          desc_ko: "SuperSplat 브릿지 또는 Houdini 절차적 SOP 네트워크를 통해 노이즈 플로터를 정밀 제거합니다.",
+          engine: "SuperSplat Template / houdini_builder.py",
+          input: "03_splats_exports/model.ply",
+          output: "04_splats_cleaned/model_clean.sog",
+          code: `# houdini_builder.py: Recreates procedural SOP graph\nnode_group = hou.node("/obj/geo1").createNode("groupcreate")\nnode_delete = hou.node("/obj/geo1").createNode("delete")\nnode_delete.parm("group").set("group1")`
+        },
+        {
+          id: "05_web_build",
+          title: "05. WebGL Packaging & Cloud Showroom",
+          title_ko: "05. 오프라인 WebGL 번들 & 클라우드 배포",
+          desc: "Generates standalone 100% offline Manycore Aholo 3DGS viewers (supporting PLY, SOG, SPZ, SPLAT, KSPLAT, LCC) with Ground Lock, 2-Point Perspective, and Watermark, then syncs to Vercel.",
+          desc_ko: "지면 회전 방지(Ground Lock), 건축 2점 투시, 5단계 품질 프리셋, 황금비 워터마크, 100% 오프라인 Manycore Aholo Viewer를 내장한 독립형 HTML5 번들을 빌드하고 Vercel로 동기화합니다.",
+          engine: "Manycore Aholo Viewer 1.8.1 + tab_webgl.py + Vercel Edge",
+          input: "04_splats_cleaned/model_clean.sog",
+          output: "05_web_build/index.html + showroom.html",
+          code: `# tab_webgl.py: Standalone HTML5 3DGS Builder\ndef build_webgl_bundle(self, model_file, output_html, cam_profile):\n    with open(output_path, "w", encoding="utf-8") as f:\n        f.write(rendered_standalone_html)`
+        }
+      ],
+      files: {
+        "main.pyw": { badge: "Entry Point", desc_ko: "High-DPI 4K 모니터 스케일링 설정 및 PyQt5 메인 윈도우 인스턴스를 초기화합니다." },
+        "config.py": { badge: "Constants & QSS", desc_ko: "버전(v2.250), 6대 서브폴더 리스트 및 프로 스튜디오 다크 테마 QSS를 정의합니다." },
+        "utils.py": { badge: "Thread Helper", desc_ko: "ffprobe 메타데이터 파서 및 FFmpeg 비동기 추출 스레드(ExtractThread)를 제공합니다." },
+        "houdini_builder.py": { badge: "Houdini SOP", desc_ko: "Houdini 내에서 절차적 지오메트리 클린업 SOP 네트워크를 100% 동일하게 자동 복제합니다." },
+        "ui_main_master.py": { badge: "Main Window", desc_ko: "2단 헤더, 프리셋 관리, 세그먼트 탭 전환 및 실시간 로그 콘솔을 총괄 제어합니다." },
+        "tab_webgl.py": { badge: "WebGL Builder", desc_ko: "복수 모델 일괄 빌드 테이블, Ground Lock(-89°~0°), 워터마크 및 내장 HTTP 서버(8080)를 제공합니다." },
+        "tab_showroom.py": { badge: "Cloud Deployer", desc_ko: "models.json 클라우드 매니페스트 생성 및 Git/Vercel 자동 배포/삭제를 수행합니다." },
+        "motion-engine.js": { badge: "Motion Engine", desc_ko: "motion.dev 기반 단어별 페이드인, 3D 카드 틸트 및 마그네틱 물리 인터랙션을 구동합니다." },
+        "showroom.html": { badge: "Web Portal", desc_ko: "배포된 3DGS 모델들을 실시간 탐색하고 60+ FPS WebGL 3D 모달 인터랙션을 제공합니다." },
+        "vercel.json": { badge: "Cloud Edge", desc_ko: "SharedArrayBuffer 지원 COOP/COEP 보안 헤더 및 바이너리 캐싱을 설정합니다." }
+      }
+    };
+
+    function initBgCanvas() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let w = (canvas.width = window.innerWidth), h = (canvas.height = window.innerHeight);
+      window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
+      const pts = Array.from({ length: 50 }, () => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2 + 1
+      }));
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            let dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y, d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 130) {
+              ctx.strokeStyle = `rgba(99, 102, 241, ${0.12 * (1 - d / 130)})`;
+              ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
+            }
+          }
+        }
+        pts.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+          ctx.fillStyle = 'rgba(99, 102, 241, 0.4)';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    function initTabs() {
+      const btns = document.querySelectorAll('.nav-tab-btn');
+      const views = document.querySelectorAll('.tab-view-container');
+      btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btns.forEach(b => b.classList.remove('active'));
+          views.forEach(v => v.classList.remove('active'));
+          btn.classList.add('active');
+          const target = document.getElementById(btn.getAttribute('data-tab'));
+          if (target) target.classList.add('active');
+          addLog(`Switched view to tab: [${btn.textContent.trim()}]`, "info");
+        });
+      });
+    }
+
+    function initPipelineSimulator() {
+      const list = document.getElementById('stage-card-list');
+      const circles = document.querySelectorAll('.flow-step-circle');
+      const pBar = document.getElementById('flow-progress-bar');
+      list.innerHTML = '';
+      PROJECT_DATA.stages.forEach((st, idx) => {
+        const c = document.createElement('div');
+        c.className = `stage-node-card ${idx === 0 ? 'active' : ''}`;
+        c.innerHTML = `
+          <div class="stage-card-header">
+            <span class="stage-card-num">STEP 0${idx}</span>
+            <span class="stage-tag">${st.engine.split(' ')[0]}</span>
+          </div>
+          <div class="stage-card-title">${st.title_ko}</div>
+          <div class="stage-card-desc">${st.desc_ko}</div>
+          <div class="stage-card-tags">
+            <span class="stage-tag">In: ${st.input.split(' ')[0]}</span>
+            <span class="stage-tag" style="color:#38bdf8;">Out: ${st.output.split(' ')[0]}</span>
+          </div>
+        `;
+        c.addEventListener('click', () => selectStage(idx));
+        list.appendChild(c);
+      });
+
+      circles.forEach(cir => {
+        cir.addEventListener('click', () => selectStage(parseInt(cir.getAttribute('data-step'), 10)));
+      });
+
+      function selectStage(idx) {
+        PROJECT_DATA.currentStageIndex = idx;
+        const st = PROJECT_DATA.stages[idx];
+        document.querySelectorAll('.stage-node-card').forEach((c, i) => c.classList.toggle('active', i === idx));
+        circles.forEach((c, i) => {
+          c.classList.toggle('active', i === idx);
+          c.classList.toggle('done', i < idx);
+        });
+        pBar.style.width = (idx / 5 * 100) + '%';
+        document.getElementById('sim-active-step-name').textContent = st.id;
+        document.getElementById('sim-payload-format').textContent = st.output;
+        document.getElementById('sim-engine-name').textContent = st.engine;
+        document.getElementById('detail-stage-heading').textContent = st.title_ko;
+        document.getElementById('detail-stage-badge').textContent = `STEP 0${idx} — ${st.id}`;
+        document.getElementById('detail-stage-body').innerHTML = `
+          <div class="detail-card-box">
+            <div class="detail-card-title"><span>📋</span> 파이프라인 단계 설명 및 입출력 명세</div>
+            <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">${st.desc_ko}</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px;">
+              <div style="background: #0d0f15; padding: 8px; border-radius: 4px; border: 1px solid #1e222f;">
+                <span style="font-size: 10px; color: var(--c-text-muted); font-weight: 700;">INPUT PAYLOAD:</span>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #cbd5e1;">${st.input}</div>
+              </div>
+              <div style="background: #0d0f15; padding: 8px; border-radius: 4px; border: 1px solid #1e222f;">
+                <span style="font-size: 10px; color: var(--c-text-muted); font-weight: 700;">OUTPUT DELIVERABLE:</span>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #38bdf8;">${st.output}</div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-card-box">
+            <div class="detail-card-title"><span>💻</span> 핵심 파이썬 및 엔진 구현 로직</div>
+            <pre class="code-snippet-box"><code>${escapeHtml(st.code)}</code></pre>
+          </div>
+        `;
+        addLog(`Inspecting Stage 0${idx}: [${st.id}]`, "info");
+      }
+
+      document.getElementById('btn-trigger-stage-step').addEventListener('click', () => {
+        selectStage((PROJECT_DATA.currentStageIndex + 1) % 6);
+      });
+      document.getElementById('btn-reset-sim').addEventListener('click', () => {
+        selectStage(0);
+        addLog("Pipeline simulation reset to Stage 00.", "warning");
+      });
+      document.getElementById('btn-run-all-sim').addEventListener('click', () => {
+        addLog("▶ [ SIMULATION START ] Executing full 6-stage 3DGS pipeline...", "info");
+        let step = 0; selectStage(0);
+        const inv = setInterval(() => {
+          step++;
+          if (step < 6) {
+            selectStage(step);
+            addLog(`Stage 0${step-1} complete ➔ Stage 0${step} active.`, "success");
+          } else {
+            clearInterval(inv);
+            addLog("✨ [ SIMULATION COMPLETE ] Standalone WebGL package built & ready for showroom!", "success");
+          }
+        }, 800);
+      });
+      selectStage(0);
+    }
+
+    function initArchGraph() {
+      const nodes = document.querySelectorAll('.arch-node');
+      const titleEl = document.getElementById('arch-node-title');
+      const badgeEl = document.getElementById('arch-node-badge');
+      const descEl = document.getElementById('arch-node-desc');
+      const MAP = {
+        main: { title: "main.pyw (Qt5 Bootloader)", badge: "Entry Point", desc: "4K High-DPI 스케일링을 강제 활성화하고 애플리케이션 라이프사이클을 부트스트랩합니다." },
+        master: { title: "ui_main_master.py (Central Orchestrator)", badge: "PyQt5 QMainWindow", desc: "2단 헤더, 프리셋 저장/로드, 세그먼트 탭 전환, 실시간 자동 스크롤 로그 콘솔을 총괄 제어합니다." },
+        config: { title: "config.py & utils.py", badge: "Core Engine", desc: "앱 버전(v2.250), 다크 테마 QSS, ffprobe 메타데이터 분석기 및 비동기 스레드를 제공합니다." },
+        tab1: { title: "capture_sections/ (Tab 1)", badge: "Ingest & Bridge", desc: "비디오 인제스트, FFmpeg 멀티스레드 추출 및 Postshot/Lichtfeld AI 트레이너를 원클릭 실행합니다." },
+        tab2: { title: "tab_cleanup.py (Tab 2)", badge: "Splat Cleanup", desc: "SuperSplat 웹 에디터(Fly-Lock 영구 활성화) 및 Houdini 절차적 SOP 네트워크를 연동합니다." },
+        tab3: { title: "tab_webgl.py (Tab 3)", badge: "Aholo 3DGS Builder", desc: "Manycore Aholo Viewer 기반 단일 통합 빌더. PLY/SOG/SPZ/SPLAT/KSPLAT 지원, 5단계 프리셋, 건축 2점 투시, Ground Lock, 황금비 워터마크 및 로컬 서버(8080)를 제공합니다." },
+        tab4: { title: "tab_showroom.py (Tab 4)", badge: "Vercel Deployer", desc: "선택적 패키지 업로드, models.json 매니페스트 생성 및 Git/Vercel 자동 배포를 수행합니다." },
+        thread_extract: { title: "ExtractThread (QThread)", badge: "FFmpeg Worker", desc: "백그라운드에서 FFmpeg 이미지 시퀀스를 비동기로 추출하여 메인 GUI 프리징을 방지합니다." },
+        thread_http: { title: "HTTPServerThread", badge: "HTTP Server", desc: "포트 8080 기반 멀티스레드 로컬 웹서버를 구동하여 즉시 3DGS 브라우저 미리보기를 지원합니다." },
+        thread_vercel: { title: "ShowroomUploadWorker", badge: "Cloud Worker", desc: "Git 커밋/푸시를 비동기로 실행하여 Vercel 엣지 배포를 원클릭 동기화합니다." },
+        web_engine: { title: "Manycore Aholo 3DGS Engine", badge: "Aholo Viewer 1.8.1", desc: "100% 오프라인 Manycore Aholo Viewer 코어(LOD 스트리밍, 10억 가우시안 렌더링, 범용 멀티 포맷 파서, 2점 투시, 톤 매핑)를 구동합니다." }
+      };
+      nodes.forEach(n => {
+        n.addEventListener('click', () => {
+          const k = n.getAttribute('data-node');
+          const d = MAP[k]; if (!d) return;
+          nodes.forEach(x => x.classList.remove('selected'));
+          n.classList.add('selected');
+          titleEl.textContent = d.title;
+          badgeEl.textContent = d.badge;
+          descEl.innerHTML = `
+            <div class="detail-card-box">
+              <div class="detail-card-title"><span>⚙️</span> 모듈 역할 및 시그널 인터페이스</div>
+              <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">${d.desc}</p>
+            </div>
+          `;
+          addLog(`Selected node: [${d.title}]`, "info");
+        });
+      });
+    }
+
+    function initViewerSandbox() {
+      const canvas = document.getElementById('webgl-sandbox-canvas');
+      const ctx = canvas.getContext('2d');
+      let w = (canvas.width = canvas.parentElement.clientWidth), h = (canvas.height = canvas.parentElement.clientHeight);
+      window.addEventListener('resize', () => { if (canvas.parentElement) { w = canvas.width = canvas.parentElement.clientWidth; h = canvas.height = canvas.parentElement.clientHeight; } });
+      let rotX = 0.3, rotY = 0.8, zoom = 1.0, isDragging = false, lastX = 0, lastY = 0;
+      const pts = [];
+      for (let i = 0; i < 700; i++) {
+        let u = Math.random() * Math.PI * 2, v = (Math.random() - 0.5) * Math.PI, r = 100 + Math.sin(u * 3) * 25 + Math.cos(v * 2) * 20;
+        pts.push({ x: r * Math.cos(v) * Math.sin(u) * 1.5, y: r * Math.sin(v) * 0.7, z: r * Math.cos(v) * Math.cos(u), c: Math.random() > 0.4 ? '#818cf8' : '#38bdf8' });
+      }
+      canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        rotY += (e.clientX - lastX) * 0.008;
+        if (document.getElementById('qt-chk-ground-lock').checked) rotX = Math.max(0.05, Math.min(1.5, rotX + (e.clientY - lastY) * 0.008));
+        else rotX += (e.clientY - lastY) * 0.008;
+        lastX = e.clientX; lastY = e.clientY;
+      });
+      canvas.addEventListener('wheel', e => { e.preventDefault(); zoom = Math.max(0.5, Math.min(2.5, zoom + e.deltaY * 0.001)); });
+
+      document.getElementById('btn-cam-front').onclick = () => { rotX = 0.2; rotY = 0; zoom = 1.0; addLog("Camera view set to: Front", "info"); };
+      document.getElementById('btn-cam-quarter').onclick = () => { rotX = 0.35; rotY = 0.78; zoom = 1.0; addLog("Camera view set to: 3/4 Quarter", "info"); };
+      document.getElementById('btn-cam-side').onclick = () => { rotX = 0.1; rotY = 1.57; zoom = 1.0; addLog("Camera view set to: Side", "info"); };
+      document.getElementById('btn-cam-top').onclick = () => { rotX = 1.45; rotY = 0; zoom = 1.2; addLog("Camera view set to: Top-Down", "info"); };
+
+      const wmC = document.getElementById('qt-chk-wm-enable'), wmT = document.getElementById('qt-wm-text'), wmO = document.getElementById('qt-wm-opacity'), wmL = document.getElementById('wm-preview-layer');
+      function updateWm() {
+        wmL.style.display = wmC.checked ? 'flex' : 'none';
+        wmL.style.opacity = wmO.value / 100;
+        document.getElementById('qt-wm-opacity-val').textContent = wmO.value + '%';
+        wmL.innerHTML = `<span>${wmT.value}</span><span>${wmT.value}</span><span>${wmT.value}</span><span>${wmT.value}</span>`;
+      }
+      wmC.onchange = updateWm; wmT.oninput = updateWm; wmO.oninput = updateWm;
+
+      function render3D() {
+        ctx.fillStyle = '#07080a'; ctx.fillRect(0, 0, w, h);
+        let cx = w / 2, cy = h / 2 + 40, cosY = Math.cos(rotY), sinY = Math.sin(rotY), cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        pts.forEach(p => {
+          let x1 = p.x * cosY - p.z * sinY, z1 = p.x * sinY + p.z * cosY;
+          let y1 = p.y * cosX - z1 * sinX, z2 = p.y * sinX + z1 * cosX;
+          let f = 380 / (380 + z2);
+          if (f > 0) {
+            ctx.fillStyle = p.c; ctx.beginPath();
+            ctx.arc(cx + x1 * f * zoom, cy + y1 * f * zoom, 2 * f * zoom, 0, Math.PI * 2); ctx.fill();
+          }
+        });
+        requestAnimationFrame(render3D);
+      }
+      render3D();
+    }
+
+    function initCodebaseTree() {
+      const items = document.querySelectorAll('.tree-item[data-file]');
+      const titleEl = document.getElementById('file-inspector-title');
+      const badgeEl = document.getElementById('file-inspector-badge');
+      const bodyEl = document.getElementById('file-inspector-body');
+      items.forEach(it => {
+        it.addEventListener('click', () => {
+          const fn = it.getAttribute('data-file');
+          const d = PROJECT_DATA.files[fn]; if (!d) return;
+          items.forEach(x => x.classList.remove('active'));
+          it.classList.add('active');
+          titleEl.textContent = fn;
+          badgeEl.textContent = d.badge;
+          bodyEl.innerHTML = `
+            <div class="detail-card-box">
+              <div class="detail-card-title"><span>📝</span> 파일 역할 및 기능 요약</div>
+              <p style="font-size: 12.5px; color: #e2e8f0; line-height: 1.6;">${d.desc_ko}</p>
+            </div>
+            <div class="detail-card-box">
+              <div class="detail-card-title"><span>🛡️</span> 품질 검증 규칙 (Quality Gate) 통과 내역</div>
+              <div style="font-size: 11.5px; color: #94a3b8; display: flex; flex-direction: column; gap: 4px;">
+                <div>✅ 기존 함수 및 시그널 100% 보존</div>
+                <div>✅ 비동기 QThread 스레드 안전성 보장</div>
+                <div>✅ Windows DirectWrite 폰트 가중치 일관성</div>
+              </div>
+            </div>
+          `;
+          addLog(`Inspecting codebase file: [${fn}]`, "info");
+        });
+      });
+      if (items[0]) items[0].click();
+    }
+
+    function addLog(msg, level = "info") {
+      const box = document.getElementById('log-console-stream');
+      if (!box) return;
+      const row = document.createElement('div');
+      row.className = 'log-entry';
+      row.innerHTML = `<span class="log-time">[${new Date().toTimeString().split(' ')[0]}]</span><span class="log-level-${level}">[${level.toUpperCase()}]</span><span>${escapeHtml(msg)}</span>`;
+      box.appendChild(row); box.scrollTop = box.scrollHeight;
+    }
+
+    function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initBgCanvas();
+      initTabs();
+      initPipelineSimulator();
+      initArchGraph();
+      initViewerSandbox();
+      initCodebaseTree();
+      document.getElementById('btn-clear-logs').onclick = () => { document.getElementById('log-console-stream').innerHTML = ''; addLog("Logs cleared.", "info"); };
+      addLog("Points & Reality 3DGS Pipeline Controller v2.248 architecture loaded.", "success");
+      addLog("Quality Gate 3-Tier safety check verified.", "info");
+    });
+  </script>
+</body>
+</html>

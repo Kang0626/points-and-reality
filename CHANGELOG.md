@@ -7,7 +7,18 @@ Points & Reality 3DGS Pipeline Controller의 릴리즈 내역 및 변경 사항 
 
 ## 🚀 Version Details
 
-### 🔹 v2.248 (Current)
+### 🔹 v2.250 (Current)
+* **전체 3DGS 뷰어 및 파이프라인 엔진을 Manycore Aholo Viewer 1.8.1로 전면 전환 (`v2.250`) ([`tab_webgl.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/tabs/tab_webgl.py), [`aholo_template.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/ui/templates/aholo_template.html), [`libs/aholo/`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/libs/aholo/), [`showroom.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/showroom.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`package.json`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/package.json), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
+  * **차세대 3DGS 렌더링 엔진 전면 도입**: Manycore Tech의 초고성능 WebGL/WebGPU 3DGS 렌더러인 `@manycore/aholo-viewer` (v1.8.1, 0 external dependencies)를 프로젝트 표준 단일 엔진으로 완전 채택.
+  * **100% 오프라인 내장 모듈화 (`libs/aholo/`)**: `index.js`, `splat-worker.js`, `splat-sort-worker.js`, `transcoder-worker.js` 및 맞춤형 `camera-control.js`를 로컬 내장하여 외부 CDN 의존성 없이 완전한 폐쇄망 오프라인 렌더링 보장.
+  * **범용 멀티 포맷 네이티브 지원**: 기존 엔진 분기(Route A: SuperSplat / Route B: GaussianSplats3D)를 단일 엔진으로 통합하고, `.ply`, `.sog`, `.spz`, `.splat`, `.ksplat`, `.lcc` 포맷을 자동 헤더 파싱 및 실시간 변환 없이 초고속 로드.
+  * **5단계 렌더링 품질 프리셋**: `Quality First`, `Max Quality (Full f32/TAA)`, `Balanced (LOD/Adaptive)`, `Performance First`, `Extreme Performance (Low VRAM)`를 UI 콤보박스에서 모델별로 지정 가능.
+  * **건축/공간 2점 투시 (2-Point Perspective)**: 수직 건물의 평행선을 왜곡 없이 수직 정렬하는 2점 투시 모드(`📐 2-Point Perspective`) 및 실시간 뷰어 토글 지원.
+  * **시네마틱 톤 매핑 (Tone Mapping)**: `Neutral`, `ACES`, `ACESFilmic`, `Reinhard`, `Linear` 컬러 그레이딩 곡선 연동.
+  * **향상된 오빗 카메라 & 지면 락 (`Ground Lock`)**: 마우스/터치 자동 감지, 지면 하단 침투 방지(-89°~0° 클램프), 줌 최소/최대 거리 제약 및 부드러운 관성 오빗 인터랙션.
+  * **쇼룸 & Vercel 배포 파이프라인 동기화**: `tab_showroom.py` 및 `dialog_web_publish.py`의 모델 에셋 동기화 확장자를 `.spz`, `.splat`, `.ksplat`, `.lcc`까지 전면 확장 및 `libs/aholo` 자동 동기화.
+
+### 🔹 v2.248
 * **웹 쇼룸(showroom.html & index.html) JavaScript ReferenceError 런타임 크래시 핫픽스 및 이벤트 위임 렌더링 엔진 고도화 (`v2.248`) ([`showroom.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/showroom.html), [`index.html`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/index.html), [`config.py`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/config.py), [`README.md`](file:///d:/Points%20&%20Reality/Points%20&%20Reality%20Pipeline/README.md))**:
   * **전역 변수 스코프 및 초기화 순서 정상화**: `showroom.html` 시작 시 `applyLanguage()` 호출 과정에서 발생하던 `Uncaught ReferenceError: allLoadedModels is not defined` 오류를 최상단 전역 상태 변수 명시 및 방어 로직으로 완전 해결 (페이지가 `Scanning Deliverables...` 상태 및 검은 화면으로 영구 정지되던 핵심 원인 해소).
   * **표준 이벤트 위임(Event Delegation) 기반 카드 인터랙션 구축**: 취약한 인라인 `onclick='setActiveStage(...)'` 패턴을 제거하고 그리드 레벨의 `data-idx` 기반 이벤트 리스너를 도입하여 안전한 3D 스테이지 로드 보장.

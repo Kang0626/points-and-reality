@@ -17,6 +17,7 @@
   "author": "Points & Reality",
   "license": "MIT",
   "dependencies": {
+    "@manycore/aholo-viewer": "^1.8.1",
     "motion": "^12.4.7"
   }
 }
