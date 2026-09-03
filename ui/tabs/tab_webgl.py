@@ -1698,7 +1698,35 @@ class WebGLTab(QWidget):
         wm_tag = f" [🛡️ Watermark: {watermark_size}px, {watermark_opacity}%]" if (enable_watermark and watermark_text) else ""
         self.log_signal.emit(f"Built Aholo 3DGS Standalone{wm_tag}: {html_filename} ({size_kb:.1f} KB) [Preset: {preset}, Cam: {cam_pos}]", "info")
         self._update_models_manifest(out_dir)
+        self._ensure_run_viewer_bat(out_dir, html_filename)
         return html_filename
+
+    def _ensure_run_viewer_bat(self, out_dir, default_html_name):
+        """Generate a double-clickable Run_Viewer.bat in the output directory."""
+        try:
+            bat_path = os.path.normpath(os.path.join(out_dir, "Run_Viewer.bat"))
+            bat_content = f'''@echo off
+title Points & Reality 3DGS Viewer Local Server
+cd /d "%~dp0"
+echo ========================================================
+echo   Points ^& Reality 3DGS Local Web Viewer
+echo   Serving directory: %~dp0
+echo ========================================================
+echo.
+echo [INFO] Starting local HTTP server on http://127.0.0.1:8080 ...
+echo [INFO] Close this command window when finished viewing.
+echo.
+start "" "http://127.0.0.1:8080/{default_html_name}"
+python -m http.server 8080
+if errorlevel 1 (
+    py -m http.server 8080
+)
+pause
+'''
+            with open(bat_path, "w", encoding="utf-8") as f:
+                f.write(bat_content)
+        except Exception:
+            pass
 
     def _update_models_manifest(self, out_dir):
         """Automatically create/update models.json manifest in the output folder (sorted newest-first)."""

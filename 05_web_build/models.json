@@ -1,7 +1,17 @@
 {
-  "updated_at": "2026-09-03 23:11:00",
-  "total_models": 3,
+  "updated_at": "2026-09-03 23:23:23",
+  "total_models": 4,
   "models": [
+    {
+      "title": "caseStudy02",
+      "raw_title": "caseStudy02",
+      "filename": "caseStudy02.html",
+      "path": "05_web_build/caseStudy02.html",
+      "is_index": false,
+      "is_review": false,
+      "mtime": 1788434541.603381,
+      "date": "2026-09-03 23:22"
+    },
     {
       "title": "caseStudy01",
       "raw_title": "caseStudy01",

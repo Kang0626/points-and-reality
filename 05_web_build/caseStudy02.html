@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>{{TITLE}}</title>
+    <title>Points & Reality 3DGS - caseStudy02</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -140,7 +140,7 @@
     <div id="hud-header">
         <div class="brand">✨ Points & Reality</div>
         <div class="sep">|</div>
-        <div class="model-name">{{DISPLAY_MODEL_TITLE}}</div>
+        <div class="model-name">caseStudy02</div>
         <div class="format-badge" id="lbl-format">3DGS</div>
         <div class="fps-badge" id="lbl-fps">FPS: --</div>
     </div>
@@ -152,7 +152,7 @@
 
     <!-- Controls Toolbar -->
     <div id="hud-controls">
-        {{COPY_CAM_BTN_HTML}}
+        
         <button class="hud-btn" id="btn-perspective" title="수직선 왜곡을 보정하는 건축용 2점 투시 모드 토글">📐 2-Point</button>
         <button class="hud-btn" id="btn-reset">🎥 Reset View</button>
         <button class="hud-btn" id="btn-orbit">🔄 Auto Orbit</button>
@@ -168,7 +168,7 @@
     </a>
 
     <!-- Client Watermark Overlay -->
-    {{POINTS_REALITY_WATERMARK}}
+    
 
     <!-- Loading Spinner & Progress -->
     <div id="loading">
@@ -277,16 +277,16 @@
         const hudHelp = document.getElementById('hud-help');
 
         // Configurable Parameters injected from Pipeline
-        const MODEL_URL = '{{MODEL_URL}}';
-        const INITIAL_CAM_POS = {{CAM_POS}};
-        const INITIAL_CAM_TARGET = {{CAM_TARGET}};
-        const INITIAL_CAM_FOV = {{CAM_FOV}};
-        const GROUND_LOCK = {{GROUND_LOCK}};
-        const MIN_DISTANCE = {{MIN_DIST}};
-        const MAX_DISTANCE = {{MAX_DIST}};
-        const PRESET_NAME = '{{AHOLO_PRESET}}'; // max_quality, quality_first, balanced, performance_first, extreme_performance
-        const INIT_TWO_POINT = {{TWO_POINT_PERSPECTIVE}};
-        const TONE_MAPPING_CURVE = ToneMapping.{{TONE_MAPPING_NAME}};
+        const MODEL_URL = './caseStudy01.sog';
+        const INITIAL_CAM_POS = [18.593, -3.229, -19.453];
+        const INITIAL_CAM_TARGET = [0.0, 0.0, 0.0];
+        const INITIAL_CAM_FOV = 50.0;
+        const GROUND_LOCK = true;
+        const MIN_DISTANCE = 0.5000000000000001;
+        const MAX_DISTANCE = 50.0;
+        const PRESET_NAME = 'quality_first'; // max_quality, quality_first, balanced, performance_first, extreme_performance
+        const INIT_TWO_POINT = false;
+        const TONE_MAPPING_CURVE = ToneMapping.Neutral;
 
         let viewer = null;
         let camera = null;
@@ -365,7 +365,12 @@
                 pbar.style.width = '30%';
                 loadText.textContent = 'Streaming 3D Gaussian Splats...';
 
-                {{CONTENTS_FETCH_LOGIC}}
+                
+        const resp = await fetch(MODEL_URL);
+        if (!resp.ok) throw new Error(`Failed to load model file: ${resp.statusText} (${resp.status})`);
+        const buffer = await resp.arrayBuffer();
+        const u8Data = new Uint8Array(buffer);
+    
 
                 pbar.style.width = '75%';
                 loadText.textContent = 'Parsing Splat Geometry & SH...';
@@ -497,7 +502,7 @@
                     });
                 }
 
-                {{COPY_CAM_JS_LOGIC}}
+                
 
             } catch (err) {
                 showError(err.message || String(err));
